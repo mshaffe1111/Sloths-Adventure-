@@ -1,6 +1,6 @@
 # ENG-OUTBACK REPORT (engine; R-165.583, R-165.584, R-165.585)
 
-## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:32 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
+## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:34 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
 STATE: (A) FIXED, RED-first, pushed (e10e208f5). NEW: on the fix the top 'stranded' cause is the little ones' line FREEZING at the
    far turn (adult seed 18, NEXT 3a), not the bot. (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
    door; the HUD waits for it, UI-22). (C) NOT STARTED (no bot code written). Nothing landed on t-build-28-wip. No freeze, no gates beyond tsc, generality and the
@@ -32,7 +32,19 @@ NEXT, in order:
           fix is NOT the bot skipping cages (BUILD-28's (C)) but the FOLLOW LINE stopping at the out-and-back's far turn: an engine
           question (follow.ts trail / stepLine / wallCap at the turn, where he leaves the out leg, y ~680-790, for the home leg, y ~1564).
           PRE-EXISTING, NOT FROM (A): the same probe on be2ebe7d2 prints the same run frame for frame (same cages opened, same freeze at
-          x 20858-20960, y 680 from ~80 s). A real player who takes the same way down would lose the line too. NEXT for a fresh box: (i) still the far turn on seed 18
+          x 20858-20960, y 680 from ~80 s). The same in all four stranded runs checked (cagenear-*-7a7efac76.txt: adult Normal 18 and
+          36, kid Normal 24, adult Easy 12): every cage opened, the line held at y 680, x ~20700-21200.
+          THE FRAME AND THE RULE (freeze.mts.txt, freeze-adult-normal-18-7a7efac76.txt): at 66.8 -> 67.0 s he drops off the out leg
+          (x ~21100, y 680 -> 905); his trail is cut back (s 3196 -> 3011.7, points 285 -> 275) and never grows again while he walks a
+          staircase of drops down to y 1535. follow.ts:130-137: a landing more than the trail's `step` (90 here) under the take-off is "a
+          drop they do not take": holdAtGround; the trail resumes only when he is back on that ground or a step below it (follow.ts:127).
+          He never goes back up to y 680, so the line waits at the lip.
+          THE OPEN QUESTION, FIRST FOR TOMORROW: the PASSING seed adult Normal 4 (cagenear-adult-normal-4-PASS-7a7efac76.txt) freezes at
+          the far turn TOO (x 20842-20944 from 80 s to 150 s), yet ends with all four 'home' at x 259-361, y 1505. Something brings a held
+          line home on seed 4 and not on seed 18 (a catch-up, a set-home, the door's fetch: firsttimer.ts ~:5815 LINE_SKILL.fetch, or
+          followPlay.ts). Name it (per-frame line x, state from 150 s to the end on seed 4), then decide with the lead: is the far turn's
+          way down a lay fault (it must offer a way down the line can take, every drop <= step, or a held line must be fetched), a
+          follow rule, or a bot one. A real player who takes the same way down loses the line the same way. NEXT for a fresh box: (i) still the far turn on seed 18
           (stills tool, both orientations) to see the way he goes down and where the line stands; (ii) per-frame his x, y and the line's
           s, x, y for 65-85 s, to name the frame and the follow rule that holds them (follow.ts); (iii) RED toy: an out-and-back turn
           where he drops a storey, the line must follow him down (or Dot must say why not), RED on 7a7efac76; (iv) only then (C)'s bot

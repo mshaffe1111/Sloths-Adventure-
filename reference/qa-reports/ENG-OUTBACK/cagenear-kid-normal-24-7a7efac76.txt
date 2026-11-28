@@ -1,0 +1,23 @@
+kid normal 24 end stranded t 177.9 goal {"got":0,"need":4}
+ follow at end [{"x":20777,"y":680,"s":"follow"},{"x":20743,"y":680,"s":"follow"},{"x":20709,"y":680,"s":"follow"},{"x":20675,"y":680,"s":"follow"}]
+  10s he 8936 line []
+  20s he 11130 line ["10475:follow"]
+  30s he 13488 line ["12051:follow"]
+  40s he 15583 line ["13633:follow","13586:join"]
+  50s he 17607 line ["15260:follow","15222:follow","15188:follow"]
+  60s he 19888 line ["16793:follow","16773:follow","16735:follow","18206:join"]
+  70s he 21466 line ["18255:follow","18217:follow","18179:follow","18141:follow"]
+  80s he 19043 line ["19963:follow","19963:follow","19963:follow","19929:follow"]
+  90s he 16397 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  100s he 14201 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  110s he 11768 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  120s he 9392 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  130s he 6923 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  140s he 4664 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  150s he 2485 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  160s he 225 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+  170s he 225 line ["20777:follow","20743:follow","20709:follow","20675:follow"]
+ cage 2 at 9199,748: nearest 30 px (dx 5, dy -30, cage minus his feet) at 11.8s; open true
+ cage 5 at 14001,810: nearest 30 px (dx -2, dy -30, cage minus his feet) at 32.7s; open true
+ cage 7 at 16129,810: nearest 30 px (dx -3, dy -30, cage minus his feet) at 43.3s; open true
+ cage 10 at 18934,785: nearest 30 px (dx 1, dy -30, cage minus his feet) at 56.3s; open true

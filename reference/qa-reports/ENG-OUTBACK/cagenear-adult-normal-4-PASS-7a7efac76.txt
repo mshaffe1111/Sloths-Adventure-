@@ -1,0 +1,21 @@
+adult normal 4 end shrine t 153.3 goal {"got":4,"need":4}
+ follow at end [{"x":259,"y":1505,"s":"home"},{"x":293,"y":1505,"s":"home"},{"x":327,"y":1505,"s":"home"},{"x":361,"y":1505,"s":"home"}]
+  10s he 9091 line []
+  20s he 11430 line ["10887:join"]
+  30s he 13887 line ["12776:join"]
+  40s he 16033 line ["14672:join","15360:follow"]
+  50s he 18120 line ["16570:join","16804:follow","16689:join"]
+  60s he 20647 line ["18469:join","18380:follow","18342:join","18346:follow"]
+  70s he 20870 line ["20363:join","20043:follow","20000:join","20005:follow"]
+  80s he 18347 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  90s he 15682 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  100s he 13032 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  110s he 10469 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  120s he 8173 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  130s he 5889 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  140s he 3519 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+  150s he 1279 line ["20944:follow","20910:follow","20876:follow","20842:follow"]
+ cage 2 at 9146,766: nearest 30 px (dx -1, dy -30, cage minus his feet) at 10.5s; open true
+ cage 5 at 13948,766: nearest 30 px (dx 3, dy -30, cage minus his feet) at 30.9s; open true
+ cage 7 at 16119,766: nearest 30 px (dx 5, dy -30, cage minus his feet) at 41.0s; open true
+ cage 10 at 19101,785: nearest 30 px (dx 5, dy -30, cage minus his feet) at 54.2s; open true

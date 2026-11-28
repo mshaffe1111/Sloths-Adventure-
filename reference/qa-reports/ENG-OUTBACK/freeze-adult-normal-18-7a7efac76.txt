@@ -1,0 +1,30 @@
+66.0s he 20865,680 G | head 19945,725 s 1890 follow | trail {"s":2882.7695526176462,"step":90} pts 261
+66.2s he 20921,680 G | head 19983,725 s 1928 follow | trail {"s":2938.0362192843163,"step":90} pts 267
+66.4s he 20976,680 G | head 20021,725 s 1966 follow | trail {"s":2993.3028859509864,"step":90} pts 273
+66.6s he 21031,708  | head 20059,725 s 2004 follow | trail {"s":3058.902264597715,"step":90} pts 279
+66.8s he 21087,833  | head 20097,725 s 2042 follow | trail {"s":3196.0573285856694,"step":90} pts 285
+67.0s he 21142,905 G | head 20134,722 s 2080 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+67.2s he 21197,905 G | head 20146,687 s 2118 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+67.4s he 21252,913  | head 20157,651 s 2156 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+67.6s he 21308,1005  | head 20192,640 s 2194 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+67.8s he 21323,1022 G | head 20222,662 s 2232 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+68.0s he 21323,1022 G | head 20252,680 s 2269 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+68.2s he 21340,1022 G | head 20290,680 s 2307 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+68.4s he 21396,1022 G | head 20328,680 s 2345 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+68.6s he 21451,1030  | head 20366,680 s 2383 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+68.8s he 21506,1122  | head 20404,680 s 2421 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+69.0s he 21523,1141 G | head 20442,680 s 2459 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+69.2s he 21523,1141 G | head 20480,680 s 2497 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+69.4s he 21550,1141 G | head 20518,680 s 2535 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+69.6s he 21605,1141 G | head 20556,680 s 2573 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+69.8s he 21661,1158  | head 20594,680 s 2611 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+70.0s he 21716,1254 G | head 20632,680 s 2649 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+70.2s he 21724,1254 G | head 20670,680 s 2687 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+70.4s he 21724,1254 G | head 20708,680 s 2725 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+70.6s he 21759,1254 G | head 20746,680 s 2763 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+70.8s he 21815,1254 G | head 20784,680 s 2801 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+71.0s he 21870,1262  | head 20822,680 s 2839 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+71.2s he 21925,1354  | head 20860,680 s 2877 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+71.4s he 21980,1532  | head 20898,680 s 2915 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+71.6s he 21987,1535 G | head 20936,680 s 2953 follow | trail {"s":3011.7251081732097,"step":90} pts 275
+71.8s he 21932,1535 G | head 20960,680 s 2978 follow | trail {"s":3011.7251081732097,"step":90} pts 275

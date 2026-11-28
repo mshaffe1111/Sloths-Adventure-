@@ -1,0 +1,23 @@
+adult easy 12 end stranded t 178.8 goal {"got":0,"need":3}
+ follow at end [{"x":21191,"y":680,"s":"follow"},{"x":21157,"y":680,"s":"follow"},{"x":21123,"y":680,"s":"follow"},{"x":21089,"y":680,"s":"follow"}]
+  10s he 8899 line []
+  20s he 11233 line ["10797:follow"]
+  30s he 13077 line ["12434:follow"]
+  40s he 15368 line ["14293:follow","14206:join"]
+  50s he 17505 line ["16081:follow","16061:follow","15953:join"]
+  60s he 19830 line ["17906:follow","17902:follow","17841:join","18911:join"]
+  70s he 22353 line ["19840:follow","19802:follow","19764:follow","19708:join"]
+  80s he 19780 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  90s he 17176 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  100s he 14761 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  110s he 12424 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  120s he 10055 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  130s he 7561 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  140s he 5010 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  150s he 2707 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  160s he 229 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+  170s he 229 line ["21191:follow","21157:follow","21123:follow","21089:follow"]
+ cage 2 at 9024,761: nearest 30 px (dx -4, dy -30, cage minus his feet) at 11.1s; open true
+ cage 5 at 14016,761: nearest 30 px (dx 2, dy -30, cage minus his feet) at 34.1s; open true
+ cage 7 at 16253,761: nearest 30 px (dx 4, dy -30, cage minus his feet) at 44.6s; open true
+ cage 10 at 19348,785: nearest 30 px (dx -3, dy -30, cage minus his feet) at 58.3s; open true
