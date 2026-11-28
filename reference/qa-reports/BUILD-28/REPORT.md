@@ -79,8 +79,8 @@ THE LEAD'S RULING (read after the 9:10:56 PM ET push): the TOOL GAP goes first, 
        over the water in both shots: a placement artifact, not what the player sees at spawn.
        Also: rise-2-8-L5-normal-x11626-{upright,sideways}.jpg, layout 5 = BUILT seed 6, the child's seed for the rise water life (x 11626).
        (The page's layout n BUILT seed n+1 on layouts 1, 2, 5, 28. The headless setLayoutVariant(2) gave spawn x 6449, the page's
-       BUILT seed 2's spawn. NOT CHECKED: that the bot's firstTimer('2-8', n) builds the same stage as setLayoutVariant(n); the cage and
-       spawn positions in (1)-(2) above are from setLayoutVariant(n) and assume it. The next box checks it first: the bot's own stage.)
+       BUILT seed 2's spawn. CHECKED: the bot's firstTimer('2-8', n) builds its stage by new RealPlay(id, seed) (firsttimer.ts:1891), whose
+       constructor calls setLayoutVariant(seed) (src/game/realPlay.ts:153-154), the same path the trace's positions came from.)
    DOT AT THE SEALED DOOR (w2Arc28.ts:75-78, LINES_28): missingCage "A little one's still caged! Back we go!" (said when the exit is
        locked and a cage is still shut); missingBank "One's waiting by the low road! Back we go!" (no cage shut, a little one waits at the
        low road's near bank). The goal line (GOAL_LINES_28, :85): "Bring {n} little ones home to open the sanctuary".
