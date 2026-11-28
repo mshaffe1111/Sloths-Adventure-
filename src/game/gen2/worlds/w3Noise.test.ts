@@ -41,9 +41,10 @@ const levels = generateAllLevels();
 const cfgOf = (id: string): LevelConfig => ({ ...levels.find((c) => c.id === id && !c.secret)!, unlocked: true });
 const cfg = cfgOf(DRAFT);
 const along = cfgOf(ALONG);
-/** the row a toy plays on: the drops on 3-2's run, the call and the punch on 3-1's way down */
-const stageOf = (row: Row) => (dropRow(row) ? ALONG : DRAFT);
-const configOf = (row: Row) => (dropRow(row) ? along : cfg);
+/** the row a toy plays on: every toy on 3-2's run (the lead's ruling, ENG-DROP box 2, R-165.564: on the trial merge with KIT-W3a's
+ *  bricks no roll of 3-1's way down lays the call or the punch toy); 3-1's draft stays the tower the declared drop is refused in */
+const stageOf = (_row: Row) => ALONG;
+const configOf = (_row: Row) => along;
 /** a chime stone's box (the toy's: about Pokey's knee to his chest; ENG-LURE gives the chime its own look and size) */
 const SOUNDS: Record<string, SoundRow> = { chime: { w: 60, h: 70 } };
 /** World 3's own ocelot row (w3.ts W3_CAST) as the kit lays it; the sleeper is the same animal laid asleep */
@@ -197,7 +198,7 @@ function inPlay<T>(row: Row, f: (q: Played) => T, plant?: (c: CastPlay) => void)
   }
 }
 
-test('the row: 3-1\'s draft on World 3\'s own kit; the toy section laid by gen2 (stone in the cast, World 3\'s ocelot on its floor; moss quiet)', () => {
+test('the rows: 3-1\'s draft (down) and 3-2\'s (along) on World 3\'s own kit; the toy section laid by gen2 (stone in the cast, World 3\'s ocelot on its floor; moss quiet)', () => {
   assert.equal(draftRow(DRAFT)?.kit, 'w3');
   assert.equal(cfg.travel, 'down', 'readied: the draft travels down');
   assert.equal(castDef('ocelot', 3)?.hears, OCELOT.hears, 'the registry hands World 3 its own ocelot, which hears');
