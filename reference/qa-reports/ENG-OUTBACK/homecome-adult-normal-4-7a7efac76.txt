@@ -1,0 +1,2 @@
+145.0s he 2481,1635 G | head 20944,680 s 17069 follow | trail {"s":17103.366804942205,"step":90} pts 1619
+153.3s he 225,1505 G | head 259,1505 s 170 home | trail {"s":204,"step":90} pts 2

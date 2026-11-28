@@ -1,6 +1,6 @@
 # ENG-OUTBACK REPORT (engine; R-165.583, R-165.584, R-165.585)
 
-## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:34 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
+## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:35 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
 STATE: (A) FIXED, RED-first, pushed (e10e208f5). NEW: on the fix the top 'stranded' cause is the little ones' line FREEZING at the
    far turn (adult seed 18, NEXT 3a), not the bot. (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
    door; the HUD waits for it, UI-22). (C) NOT STARTED (no bot code written). Nothing landed on t-build-28-wip. No freeze, no gates beyond tsc, generality and the
@@ -41,8 +41,14 @@ NEXT, in order:
           He never goes back up to y 680, so the line waits at the lip.
           THE OPEN QUESTION, FIRST FOR TOMORROW: the PASSING seed adult Normal 4 (cagenear-adult-normal-4-PASS-7a7efac76.txt) freezes at
           the far turn TOO (x 20842-20944 from 80 s to 150 s), yet ends with all four 'home' at x 259-361, y 1505. Something brings a held
-          line home on seed 4 and not on seed 18 (a catch-up, a set-home, the door's fetch: firsttimer.ts ~:5815 LINE_SKILL.fetch, or
-          followPlay.ts). Name it (per-frame line x, state from 150 s to the end on seed 4), then decide with the lead: is the far turn's
+          line home on seed 4 and not on seed 18. FIRST LOOK (homecome.mts.txt, homecome-adult-normal-4-7a7efac76.txt; frames printed
+          only when the line changes): on seed 4 the trail was NEVER held (at 145.0 s trail s 17103, 1619 points, still recording) and the
+          head's s ran on to 17069, yet its x, y stayed at 20944, 680 (the far turn); the next change is at 153.3 s, at the door: all
+          four 'home' at x 259-361, y 1505, trail reset (2 points). So on a PASSING run the line also stood at the far turn for ~70 s,
+          20,000 px behind him, and was counted home at the door: a second rough spot (what the player sees: the line stops following,
+          then appears at the exit), the opposite of seed 18's (held: counted 0). Name (1) why the head's x froze while its s ran on
+          (follow.ts stepLine / wallCap at the drop), (2) what set them home at the door (followPlay.ts, the exit), (3) why seed 18's
+          trail was held and seed 4's was not (his landing vs take-off, follow.ts:134). Then decide with the lead: is the far turn's
           way down a lay fault (it must offer a way down the line can take, every drop <= step, or a held line must be fetched), a
           follow rule, or a bot one. A real player who takes the same way down loses the line the same way. NEXT for a fresh box: (i) still the far turn on seed 18
           (stills tool, both orientations) to see the way he goes down and where the line stands; (ii) per-frame his x, y and the line's

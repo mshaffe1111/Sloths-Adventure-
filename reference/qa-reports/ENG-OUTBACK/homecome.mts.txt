@@ -1,0 +1,13 @@
+// per frame 66-84 s: his x, y, grounded/climbing, and the line's head (x, y, s, state) and his trail's length: bot setting seed
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { firstTimer } = await import(`${ROOT}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${ROOT}/tools/inspect/castBots.ts`);
+const [bot, setting, seed] = process.argv.slice(2);
+let n = 0; let prev = '';
+firstTimer('2-8', +seed, CAST_BOTS[bot][setting], { cap: 400, dotSetting: true, onFrame: (sim: any) => {
+  n++; if (n < 145 * 30 || n % 3) return;
+  const fp = sim.e?.follow; const p = sim.p; const h = fp?.line?.[0]; const tr = fp?.trail;
+  const line = `${(n / 30).toFixed(1)}s he ${Math.round(p.x)},${Math.round(p.y)} ${p.grounded ? 'G' : ''}${p.climbing ? 'C' : ''} | head ${h ? `${Math.round(h.x)},${Math.round(h.y)} s ${Math.round(h.s)} ${h.state}` : '-'} | trail ${tr ? JSON.stringify(Object.fromEntries(Object.entries(tr).filter(([k, v]) => typeof v === 'number'))) : '-'} pts ${tr?.pts?.length ?? tr?.points?.length ?? '?'}`;
+  if (line.slice(line.indexOf('|')) !== prev) console.log(line); prev = line.slice(line.indexOf('|'));
+} } as any);
