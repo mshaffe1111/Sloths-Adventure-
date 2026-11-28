@@ -1,5 +1,37 @@
 # ENG-DROP (R-165.562): the run lay lays a DESIGNED drop past its corridor, on a real World 3 row
 
+**Box 5 (ENG-DROP-e, a TAIL: gates only, no code) hand-over, stamped Fri Nov 27 8:50 PM ET (`TZ=America/New_York date`). Branch t-eng-drop at 401d000b6
+(= 110d234f6 + reference/ only; code = db46ae3e8) + this report commit. ALL 6 SUITE SHARDS GREEN on frozen 110d234f6; NOT landed (the box line
+came first). Box 5 started 8:21 PM ET (`date`: Fri Nov 27 20:21:59 EST 2026); line 8:49:59 PM ET.**
+
+## EXACT NEXT STEP (whoever lands starts here)
+1. DONE in box 5, FREEZE: `git worktree add --detach /home/user/wt-drop 110d234f6`, node_modules linked, `chattr -R +i src tools && chattr -i
+   src/game/gen2/proven` (exit 0); `touch src/x`, `touch tools/x` and an append to src/game/engine.ts -> "Operation not permitted"; the
+   proven folder writable (touch + rm ok).
+2. DONE in box 5, suite shards 3-6, ONE AT A TIME (a chain script with a STOP file; `b5-gates-summary.txt`, logs `b5-g-shard*.txt.gz`),
+   the deploy.yml:38 command word for word, `--test-shard=i/6`:
+   - shard 3/6: `# tests 635 # pass 635 # fail 0 # cancelled 0 # skipped 0 # todo 0` (exit 0, 467 s).
+   - shard 4/6: `# tests 733 # pass 733 # fail 0 # cancelled 0 # skipped 0 # todo 0` (exit 0, 193 s).
+   - shard 5/6: `# tests 652 # pass 650 # fail 0 # cancelled 0 # skipped 0 # todo 2` (exit 0, 577 s). The 2 todos are marked todos in
+     files this packet did not change, the same text on 7a580aefc: `R-165.312 ... (flag placer)` (src/game/gen2/worlds/w1Arc19.test.ts)
+     and `4-3 in the real engine ...` (src/game/w4RealReach.test.ts:22).
+   - shard 6/6: `# tests 654 # pass 653 # fail 0 # cancelled 0 # skipped 0 # todo 1` (exit 0, 336 s; started 8:44 PM ET inside the box,
+     finished past the line and recorded). The todo is src/game/w4Runtime.test.ts:392, on 7a580aefc too; it reports `ok ... # TODO`
+     (the todo body PASSES): worth the owner's look, it may be closable (not this packet's to change).
+   With box 4: all six shards green (703 / 798 / 635 / 733 / 652 / 654), plus lock 102/102 + key-set SAME, timecheck, roadmapcheck,
+   tierBots 9/9 and the CI tool line 355/354/0 fail/1 todo. No red anywhere, so nothing to run alone on 7a580aefc.
+3. NEXT, LAND (not started: the line came at 8:49:59 PM ET with shard 6 still running): `git ls-remote origin refs/heads/t-eng-w3` was
+   7a580aefc51bc13b43102c70fffb6a6a45e24337 at 8:50 PM ET (NOT moved). Just before landing, check it again. Still 7a580aefc:
+   fast-forward t-eng-w3 to this report commit (no force, never rebase), `git ls-remote` equal, message the lead the hash and the counts.
+   MOVED: STOP, no merge; tell the lead the new hash (the merge is then an engine box with the full re-gate, box 4's step 6).
+4. Lessons applied: one gate at a time on an immutable tree (D115); a gate started inside the box finished and recorded past the line,
+   no new work after it (D111, the lead's standing rule); times and hashes from `date` / `git ls-remote` in the same step (D30, D36).
+   Method used: dispatch-packet.md:81 (freeze), box 4's chain + STOP file. Method update: the STOP file set by a timer at the line
+   (`until [ $(date +%s) -ge T ]; do sleep 5; done; touch STOP`) needs no watching and made the hand-over exact (STOP set 8:50:00 PM ET).
+   Proposal for the lead: a tail whose last step is a 1-minute landing should be allowed to land past the line once its gates are green
+   and `git ls-remote` is unmoved; handing it over costs a successor about 89k of start-up for one fast-forward.
+
+
 **Box 4 hand-over, stamped Fri Nov 27 8:20 PM ET (`TZ=America/New_York date`). Branch t-eng-drop at 110d234f6 (code = db46ae3e8, unchanged in
 box 4) + this report commit. Lock PASSED; gates PARTLY run (below); NOT landed. Box 4 started 7:50 PM ET (`date`: Fri Nov 27 19:50:12 EST 2026).**
 
