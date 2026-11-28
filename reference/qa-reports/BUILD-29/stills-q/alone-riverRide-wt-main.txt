@@ -1,2 +1,180 @@
 49fdc8cb6 Me tools/inspect/riverRide.test.ts
 TAP version 13
+# Subtest: the fixture: one deep log river, rolled clean
+ok 1 - the fixture: one deep log river, rolled clean
+  ---
+  duration_ms: 156.717405
+  type: 'test'
+  ...
+# Subtest: middle, normal: rides the logs across the river and reaches the shrine
+ok 2 - middle, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1899.096868
+  type: 'test'
+  ...
+# Subtest: middle, easy: rides the logs across the river and reaches the shrine
+ok 3 - middle, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1594.189272
+  type: 'test'
+  ...
+# Subtest: child, normal: rides the logs across the river and reaches the shrine
+ok 4 - child, normal: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1619.616602
+  type: 'test'
+  ...
+# Subtest: child, easy: rides the logs across the river and reaches the shrine
+ok 5 - child, easy: rides the logs across the river and reaches the shrine
+  ---
+  duration_ms: 1100.916621
+  type: 'test'
+  ...
+# Subtest: the ride plant's roll: one deep log river, rolled clean
+ok 6 - the ride plant's roll: one deep log river, rolled clean
+  ---
+  duration_ms: 38.051825
+  type: 'test'
+  ...
+# Subtest: planted: with the ride skill off, the middle and child bots drown in the river
+ok 7 - planted: with the ride skill off, the middle and child bots drown in the river
+  ---
+  duration_ms: 7505.728208
+  type: 'test'
+  ...
+# Subtest: middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 8 - middle, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 718.610183
+  type: 'test'
+  ...
+# Subtest: middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 9 - middle, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 621.254598
+  type: 'test'
+  ...
+# Subtest: middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 10 - middle, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 691.258128
+  type: 'test'
+  ...
+# Subtest: middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 11 - middle, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 680.161854
+  type: 'test'
+  ...
+# Subtest: child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 12 - child, normal: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 1274.059886
+  type: 'test'
+  ...
+# Subtest: child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 13 - child, normal: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 1347.281542
+  type: 'test'
+  ...
+# Subtest: child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+ok 14 - child, easy: against the flow (W2_RIVERS.back), hops log to log off each front end and reaches the shrine
+  ---
+  duration_ms: 841.757782
+  type: 'test'
+  ...
+# Subtest: child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+ok 15 - child, easy: the long log (W2_RIVERS.long, laid deep) rides him in and hands him onto the far bank
+  ---
+  duration_ms: 811.361156
+  type: 'test'
+  ...
+# Subtest: planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar
+ok 16 - planted: with the handed-to-the-bank skill off, the child on Normal hops at the water off the long log and drowns over the bar
+  ---
+  duration_ms: 2921.086099
+  type: 'test'
+  ...
+# Subtest: 2-1, against the flow and up the far bank on: the child on Normal (16, 15, 8, 7, 40, 11) and the adult on Normal (16) cross clean
+ok 17 - 2-1, against the flow and up the far bank on: the child on Normal (16, 15, 8, 7, 40, 11) and the adult on Normal (16) cross clean
+  ---
+  duration_ms: 22667.235574
+  type: 'test'
+  ...
+# Subtest: 2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue
+ok 18 - 2-1, a refused hop leaves a way on: the child on Normal (1) is never stood at the far bank until a rescue
+  ---
+  duration_ms: 3632.596045
+  type: 'test'
+  ...
+# Subtest: 2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on
+ok 19 - 2-4, a bot that refuses a hop is never ridden into a rescue: the adult on Normal (30) is never carried under on a log he stands on
+  ---
+  duration_ms: 1652.697619
+  type: 'test'
+  ...
+# Subtest: 2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under
+ok 20 - 2-4, every hop off a log is judged: the adult on Normal (6) is never sent back onto a log going under
+  ---
+  duration_ms: 1703.335894
+  type: 'test'
+  ...
+# Subtest: 2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it
+ok 21 - 2-1, he never runs off the front of the log he just landed on: the child on Normal (11) stops on it
+  ---
+  duration_ms: 3797.85272
+  type: 'test'
+  ...
+# Subtest: planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives (15, 8, 6)
+ok 22 - planted: with the against-the-flow skill off, the child on Normal is rescued on 2-1 (16) and loses 5+ more lives (15, 8, 6)
+  ---
+  duration_ms: 24012.228846
+  type: 'test'
+  ...
+# Subtest: in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+ok 23 - in the real engine: on a log flowing AT him, a held hop the upstream gate refuses is aimed again after his reaction, never held for the whole ride back (SKILLS.reAim; RED with it off)
+  ---
+  duration_ms: 1041.495255
+  type: 'test'
+  ...
+# Subtest: SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+ok 24 - SKILLS.reAim keeps the honest aim (D121, the lead's two conditions): on a log a re-draw never comes inside his stopReact, and the press is decided on the aimed hop alone, never its drawn thumb noise
+  ---
+  duration_ms: 959.64836
+  type: 'test'
+  ...
+# Subtest: SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+ok 25 - SKILLS.reAim is the CHILD bot's alone (ENG-BOT27b, the lead's ruling 11-23): with it on, every other cast bot holds the refused aim exactly as with it off, frame for frame (RED if the switch leaks past FirstTimer.reAim)
+  ---
+  duration_ms: 7497.871465
+  type: 'test'
+  ...
+# Subtest: 2-7 middle Easy 11: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+ok 26 - 2-7 middle Easy 11: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+  ---
+  duration_ms: 1336.452835
+  type: 'test'
+  ...
+# Subtest: 2-7 expert Normal 29: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+ok 27 - 2-7 expert Normal 29: no floor is handed back to twice by a log, and no rescue (the hand-back loop, B+C)
+  ---
+  duration_ms: 964.078167
+  type: 'test'
+  ...
+# Subtest: on the race leg, a log running his way: every tier walks to its front and stands there, never off it, never into the water (the front stand)
+ok 28 - on the race leg, a log running his way: every tier walks to its front and stands there, never off it, never into the water (the front stand)
+  ---
+  duration_ms: 5516.836186
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 100860.806289
+exit 0

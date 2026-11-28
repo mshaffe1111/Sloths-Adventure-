@@ -47,9 +47,73 @@ STEP 3, THE REDS (each file run ALONE; stills-q/support-alone-*.txt, alone-*-*.t
   - src/game/mixer/support.test.ts:41: **RED on main 49fdc8cb6** ('no seated island-earth stone in gen2 1-1 seeds 1-24', 1 of 2)
     and RED on f4e77273 (same). INHERITED: R-165.576's family. CI: NO workflow runs src/game/mixer/ (deploy.yml:38's globs are
     src/audio, src/game/*.test.ts, components, gen2, gen2/worlds, art; gates.yml:157's tool line names no mixer/ or validate/ file).
-  - (stumps.test.ts:40, validate.test.ts x5, riverRide.test.ts:278 on main and f4e77273: see STEP 3b below.)
+STEP 3b, box 16's other reds (its final counts, t-build-29-m 6a28dda8b: 3413 tests, 3401 pass, 8 FAIL; none of the failing files
+  changed vs main), each file ALONE on main 49fdc8cb6 (/home/user/wt-main) and on f4e77273 (/home/user/wt-f4e):
+  - src/game/mixer/stumps.test.ts:40 "a log on a stump is thin ...": RED on main (tests 3, pass 2, fail 1) and on f4e77273 (same).
+    INHERITED, R-165.576's family (mixer/, run by no workflow).
+  - tools/validate/validate.test.ts :216 (chase), :537, :547, :555 (route), :568 (beats): RED on main (tests 43, pass 38, fail 5, the
+    same five) and on f4e77273 (same five). INHERITED = R-165.531 (validate / world1, owned). CI: no workflow runs tools/validate/.
+  - tools/inspect/riverRide.test.ts:278 (the 2-1 upstream plant): **GREEN on main (28/28)**, RED on f4e77273 (27/28, not ok 22 at :278).
+    NOT inherited from main, and that is EXACTLY R-165.574's finding (ROADMAP:1147 on the lead branch: green on main, red on any branch
+    holding both main's C14 re-plant and 74d88d236's 2-1 list; owner INT-R6, re-planted once on release 6's combined head). Named, not
+    traced, by the lead's ruling. CI: gates.yml:157 (the tool line) DOES run it, so the landed branch's CI tool line is red on it until
+    INT-R6. Files: stills-q/alone-{stumps,validate,riverRide}-wt-{main,f4e}.txt, support-alone-wt-{main,f4e}.txt.
 
-## EXACT NEXT STEP (session 16, BUILD-29-p, hand-over 8:41 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+STEP 4, FROZEN: /home/user/frozen-q at **a2d3a384b** (src = 496271e74's), `chattr -R +i src tools` (lsattr: ----i----), then
+  `chattr -R -i src/game/gen2/proven` (box 14's way). Lock base: gates/lock-base-49fdc8cb6.json.gz gunzipped, sha256 764b4dd982f2af88 verified.
+STEP 5, THE ONE GATE RUN (on a2d3a384b):
+  - THE LOCK, ALONE (`lockall.ts --layouts 16 --out /home/user/lock-cand-a2d3a384b.json --check /home/user/lock-base-49fdc8cb6.json`:
+    one run gives the verdict AND the candidate's keys for the key-set diff), STARTED 9:16:25 PM inside the box: RESULT in the
+    line below (gates/lockcheck-a2d3a384b.txt, gates/keyset-a2d3a384b.txt).
+  - THE SUITE in 6 shards: NOT STARTED, by the lead's word tonight ("the LAST 2-9 box tonight ... Do not start any gate that cannot
+    finish within about 40 minutes ... nothing left running"): box 15's took 44 min. The runner is ready: copy /home/user/run-shards-q.sh's
+    line (deploy.yml:38's own `--test-shard=i/6` and globs, 3 at a time; art-director and art-raw-2026-11-07 fetched first as CI does).
+  - Everything else in the gate list: NOT STARTED (LEFT c-d).
+LEFT (a FRESH box tomorrow, in order, on the FROZEN head a2d3a384b; src = 496271e74's. The container may be gone: `git fetch origin
+   t-build-29-q t-build-29 main t-build-29-m && git worktree add --detach /home/user/frozen-q a2d3a384b`, `npm ci --legacy-peer-deps` and
+   `git fetch --unshallow origin` as tracked background tasks, node_modules linked, `chattr -R +i src tools`, `chattr -R -i
+   src/game/gen2/proven`; the lock base: `gunzip -k -c reference/qa-reports/BUILD-29/gates/lock-base-49fdc8cb6.json.gz`, sha256 764b4dd982f2af88):
+a. ReadNotifications. `git ls-remote`: main 49fdc8cb6, t-build-29 f4e77273 (moved: stop, tell the lead).
+b. The bots stand (09e29447's table above; the only src change after it is render-only, STEP 2). The lock is DONE (STEP 5: do not
+   re-run it unless src moves). If 2-1/2-4 moved in it, the 1-stage lock across 74d88d236 (`--stages 2-1,2-4`, recorded at 74d88d236,
+   checked on the frozen head) as box 15 did. THEN THE SUITE in 6 shards (above), 0 fail expected (box 16's 8 importer-run reds are all
+   outside deploy.yml:38's globs: mixer/ x2, tools/validate, tools/inspect/riverRide); any red: file:line, run alone on main 49fdc8cb6.
+c. Then, each with its verdict word and counts line, on the frozen head: the CI tool line (gates.yml:157, the whole list; riverRide:278
+   = R-165.574 named: green on main, red on f4e77273, STEP 3b); seedlist --check for EVERY list (`registrycheck.ts --lists`, all
+   shards); tierBots (`npx tsx --test tools/inspect/tierBots.test.ts`); `registrycheck.ts --stage 2-9`; drawcheck 2-9 (the court:
+   6 clumps + dais + throne = 8 decor draws; the re-tint is still one drawImage per piece); storyTipScan --check; `tipwalk.ts
+   --layouts 4`; `teachFirstScan.ts --check --seeds 20`; timecheck `node tools/timecheck.mjs --repo . --range 49fdc8cb6..HEAD`
+   (history is unshallowed here); buildcheck + kbdcheck + clipcheck (index.html changed in box 16).
+d. THE STILLS OF RECORD (vite on the frozen tree; `PW=/opt/node-tools/node_modules/playwright/index.mjs node
+   reference/qa-reports/BUILD-29/stills-o/court.mjs 5199 <out> normal|easy`): the court (look at the dais's left pad at 2x: the rim
+   must be gone on the page as in stills-q/q-dais-rim-2x-before-after.jpg), the roar on the page, the frog crops; each looked at first.
+e. LAND: `git fetch origin t-build-29-m` (merge by hash if it moved; reference/ only), push HEAD to origin/t-build-29 as a
+   fast-forward of f4e77273 (`git merge-base --is-ancestor f4e77273 HEAD` first; no force, never rebase); ls-remote equal; the
+   debrief (reference/methods/level.md) with the bot table above (09e29447 = the new record), the clock and "Learned".
+LEARNED (q): (1) A bot table of record goes stale the moment a merge brings in another line's bot change: before tracing a move to
+   this box's changes, run the RECORD'S OWN harness on today's tree (separates harness from tree), then bisect at the merges (two
+   kid runs per commit named the step in 1 minute: main's bot fix at 4b605cdf4). (2) A "known" red is proven by running it alone on
+   main AND on the landing base: riverRide:278 is green on main, red on ours, exactly as R-165.574 says; the others are red on both.
+   (3) An anti-aliased rim is the band's own edge: re-tint by ADJACENCY (a pixel touching the band), never by widening the colour rule
+   (that would catch painted grey stone too).
+PROPOSED RULE CHANGES (for the lead, level.md): (i) "A level's bot table of record names the merges it predates; after any merge of
+   main or another line, the build box re-runs the bots and the new table is the record" (the check: the REPORT's table carries its
+   head; castBots rows by head). (ii) "A re-tint or key of painted art is tested on a measured pixel from the atlas (a plant)".
+PUSHBACK: src/game/riverArt.ts is draw code (roles/README.md's table: draw code is Engine's); the lead's packet named the change, so it
+   is done here, render only, and named for the lead's check. The 2x crop is from the atlas over a flat dark ground (Python, the
+   exact rule); the page still at 2x is LEFT (d).
+LESSONS APPLIED: :23 (ReadNotifications at every push and before the report); :27 D7/D24 (proved each red by running it, not by reading);
+   time from `date`; D171 (bots first, on the frozen head, before any gate); D168 (pre-freeze vs main for every file changed).
+POLISH CHECK (looked at by me): stills-q/q-dais-rim-2x-before-after.jpg at 2x: the left pad's light rim is gone, the shadow under the
+   pads now meets the outline cleanly; the throne's foot the same. Named, not fixed: pale flecks at the stool's right foot and round the
+   throne's reeds, ABOVE the band (the cut's keying fringe, not the shadow). Not yet seen on the PAGE at 2x (LEFT d).
+UNRESOLVED: the gate run past the lock (LEFT b-d), the stills of record, the landing and the debrief (LEFT e). Which line of main's bot
+   fix moves the snapper hits (named, not traced). The keying flecks above. riverRide:278 stays red on the CI tool line until INT-R6.
+METHOD USED: reference/roles/CONTENT.md; the dispatch packet's D171 (bots first) and D168 (pre-freeze vs the landing base); box 15's lock way.
+METHOD UPDATE (proposed, level.md / dispatch-packet.md): the bot-record rule and the measured-pixel plant above (PROPOSED RULE CHANGES).
+TURNOVER NOTE: reference/handoffs/art-director.md NOT rewritten (the job continues in a fresh box; this EXACT NEXT STEP is the turnover).
+
+## (superseded) EXACT NEXT STEP (session 16, BUILD-29-p, hand-over 8:41 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 8:13:27 PM ET; no stops (npm ci tracked in the background, 1 min; vite tracked; the importer run started
 8:27:02 PM inside the box and is finished and recorded past the line, the lead's standing rule); hand-over at the time above.
 WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed). The src head is **09e29447** (on 3e3ca0ee: the court's four polish fixes);
