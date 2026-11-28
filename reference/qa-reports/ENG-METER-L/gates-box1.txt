@@ -1,0 +1,37 @@
+== tsc (08:03:53 PM) on be2ebe7d2
+EXIT 0 tsc (08:04:04 PM)
+== generality (08:04:04 PM) on be2ebe7d2
+generality check: 72 engine files (239 exempt under the engine folders), 26 literals, 26 known
+PASS
+EXIT 0 generality (08:04:05 PM)
+== knowncheck (08:04:05 PM) on be2ebe7d2
+known-list check against 49fdc8cb
+✓ tools/perf/clipknown.json: 44 entries
+✓ src/game/playerText.known.json: 4 entries
+✓ tools/perf/limits.json: 14 entries
+✓ tools/engine/generality.known.json: 26 entries
+✓ src/game/ciTests.known.json: 16 entries
+✓ tools/difficulty/coverage.known.json: 6 entries
+✓ tools/engine/paintcheck.known.json: 383 entries
+✓ tools/engine/depthSteps.known.json: 0 entries
+✓ src/game/heroBody.known.json: 2 entries
+✓ src/game/artUse.allow.json: 210 entries
+PASS
+EXIT 0 knowncheck (08:04:05 PM)
+== roadmapcheck (08:04:05 PM) on be2ebe7d2
+roadmap check: shallow clone, proofs cannot be checked (fetch-depth 0): FAIL
+EXIT 2 roadmapcheck (08:04:05 PM)
+== coverage (08:04:05 PM) on be2ebe7d2
+meter coverage: 18 built stages (1-1 1-2 1-3 1-4 1-5 1-6 1-7 1-8 1-9 1-10 2-1 2-2 2-3 2-4 2-5 2-6 2-7 2-8), 31 pieces used, 5 known gaps
+coveragecheck: PASS
+EXIT 0 coverage (08:05:43 PM)
+== node tools/roadmapcheck.mjs (08:04:17 PM) on be2ebe7d2
+  R-162 Later (PLAN-TO-80's "Later" list: good ideas, not for launch): S186 M77 L18 = 704.1 helper hours
+  by tier (helper hours, measured, R-12): Day 1 953, Important 363, Parking lot 147.5, Matt's call 4.1
+  all: 1467.6 helper hours (Matt's own items and the decisions left out: 23)
+PASS
+EXIT 0
+== node tools/timecheck.mjs (08:04:24 PM) on be2ebe7d2
+time-stamp check over 49fdc8cb6fd3e0b7ffc548124916add0604a0af5..HEAD: 299 commits, 15 files, 3510 lines they wrote, 109 stamps
+PASS
+EXIT 0

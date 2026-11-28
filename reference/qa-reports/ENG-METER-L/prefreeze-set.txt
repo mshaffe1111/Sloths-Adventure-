@@ -1,0 +1,38 @@
+### w1-head
+== w1Arc16 on be2ebe7d2 (08:06:44 PM)
+# tests 8
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+EXIT 0 (08:07:42 PM)
+### w1-base
+== w1Arc16 on 48f889a05 (08:06:44 PM)
+# tests 8
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+EXIT 0 (08:07:47 PM)
+### rh-head
+== routeHumps on be2ebe7d2 (08:06:44 PM)
+# tests 4
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+EXIT 0 (08:07:05 PM)
+### rh-base
+== routeHumps on 48f889a05
+# tests 4
+# pass 4
+# fail 0
+EXIT 0
+### band-head
+== band16 on be2ebe7d2 (08:06:44 PM)
+1-6 Normal 6.434 6.30 6.32 6.87 6.55 | Easy 3.096 3.08 3.11 2.94 3.28
+EXIT 0 (08:07:34 PM)
+### band-base
+== band16 on 48f889a05 (08:06:44 PM)
+1-6 Normal 6.434 6.30 6.32 6.87 6.55 | Easy 3.096 3.08 3.11 2.94 3.28
+EXIT 0 (08:07:40 PM)

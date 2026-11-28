@@ -55,6 +55,16 @@ HEAD:src, so the stage lock and the src suite do not move (they read src only).
 - PASS coveragecheck (8:04:05-8:05:43 PM ET): '18 built stages (1-1 .. 2-8), 31 pieces used, 5 known gaps'.
 - CI tool line (gates.yml:157, every tools test file CI runs, the three meter test files among them): CI-LINE-PLACEHOLDER
 
+## The lead's pre-freeze set (D168; message received mid-box): every importer of a changed file, run WHOLE (prefreeze-set.txt)
+- `git grep -l` for difficulty/score, difficulty/lineChannel, difficulty/lineToy, meter-coverage (reference/ left out): code importers of
+  score.ts are src/game/gen2/worlds/w1Arc16.test.ts (dynamic, :129), tools/inspect/rowWheels.test.ts (static; on the CI tool line), and
+  tools/difficulty's own files (band.ts, beatpts.ts, coveragecheck.ts, every *.test.ts there). nodeAsks.ts, nodeCode.ts, w1Arc16.ts,
+  route.ts and routeHumps.test.ts name it in comments only. lineToy.ts is imported by lineChannel.test.ts alone.
+- w1Arc16.test.ts WHOLE: 48f889a05 tests 8, pass 8, fail 0; be2ebe7d2 tests 8, pass 8, fail 0.
+- routeHumps.test.ts WHOLE: 48f889a05 tests 4, pass 4, fail 0; be2ebe7d2 tests 4, pass 4, fail 0.
+- 1-6's meter number did NOT move (band.ts 1-6, seeds 1-4): Normal 6.434 (6.30 6.32 6.87 6.55), Easy 3.096 (3.08 3.11 2.94 3.28) on
+  BOTH 48f889a05 and be2ebe7d2, every seed equal.
+
 ## Lessons applied
 - D15 (test the measuring tool before trusting its numbers): the mirror was checked against the game before it was trusted, and it was
   wrong for the leave; the shipped flight is proven against safeWindow by the one-cycle lag, both ways.
