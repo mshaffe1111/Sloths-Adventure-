@@ -1,0 +1,95 @@
+wood in x 0-1300, y 0-30000 (95): 212-632@360 branch 
+632-1052@360 moss_stone 
+168-496@641 branch 
+496-1280@641 branch 
+54-216@1081 branch 
+216-496@1081 branch 
+488-636@1141 fragile branch 
+608-756@1201 fragile branch 
+728-876@1261 fragile branch 
+0-216@1321 branch 
+216-896@1321 branch 
+692-940@1602 branch 
+940-1280@1602 branch 
+252-692@1642 branch 
+208-728@1923 branch 
+0-128@2363 branch 
+128-808@2363 branch 
+452-852@2644 branch 
+852-1280@2644 branch 
+408-768@2925 branch 
+328-848@3285 branch 
+624-892@3566 branch 
+892-1280@3566 branch 
+244-624@3606 branch 
+200-720@3887 branch 
+0-120@4307 branch 
+120-800@4307 branch 
+636-844@4588 branch 
+256-636@4628 branch 
+212-652@4909 branch 
+570-750@5008 branch 
+750-958@5008 branch 
+0-132@5289 branch 
+0-832@5289 branch 
+132-732@5289 branch 
+832-1072@5289 branch 
+548-776@5570 branch 
+876-1186@5570 branch 
+1186-1280@5570 branch 
+188-548@5610 branch 
+144-412@5891 branch 
+412-662@5891 branch 
+662-890@5891 branch 
+946-1166@6131 branch 
+1166-1280@6131 branch 
+767-925@6181 fragile branch 
+628-786@6231 fragile branch 
+489-647@6281 fragile branch 
+30-198@6331 branch 
+198-946@6331 branch 
+0-84@6612 branch 
+84-309@6612 branch 
+309-1280@6612 branch 
+409-869@6612 branch 
+869-1210@6612 branch 
+1210-1280@6612 branch 
+365-805@6893 branch 
+285-885@7293 branch 
+641-929@7574 branch 
+241-641@7614 branch 
+197-637@7895 branch 
+575-755@7994 branch 
+755-1043@7994 branch 
+0-817@8255 branch 
+117-717@8255 branch 
+817-1157@8255 branch 
+1157-1280@8255 branch 
+0-321@8536 branch 
+321-761@8536 branch 
+321-761@8896 branch 
+761-875@8896 branch 
+277-717@9177 branch 
+717-875@9177 branch 
+875-989@9177 branch 
+163-277@9577 branch 
+277-717@9577 branch 
+717-1137@9577 branch 
+114-334@9858 branch 
+366-524@9858 fragile branch 
+657-815@9858 fragile branch 
+775-933@9858 fragile branch 
+933-1181@9858 branch 
+1181-1280@9858 branch 
+334-1022@9938 branch 
+0-70@10219 branch 
+70-249@10219 branch 
+249-557@10219 branch 
+657-1136@10219 branch 
+500-888@10539 branch 
+988-1250@10539 branch 
+386-828@10759 branch 
+828-1128@10759 branch 
+0-640@11040 moss_stone 
+640-1172@11040 moss_stone 
+1172-1280@11040 moss_stone
