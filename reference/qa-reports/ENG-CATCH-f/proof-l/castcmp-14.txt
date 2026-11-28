@@ -1,0 +1,20 @@
+runs base 144 cand 144; floor 100.0 s
+bot    setting  holds base -> cand (of N)
+adult  easy     16 -> 16  (of 16)
+adult  normal   16 -> 16  (of 16)
+child  easy      6 ->  7  (of 16)
+child  normal    3 ->  4  (of 16)
+expert normal    8 ->  9  (of 16)
+kid    easy     14 -> 14  (of 16)
+kid    normal   12 -> 13  (of 16)
+middle easy     11 -> 10  (of 16)
+middle normal    8 ->  6  (of 16)
+REGRESSIONS (holds on base, not on cand): 3
+   ('middle', 'easy', 11) base 185.9 s | cand shrine rescued x1
+   ('middle', 'normal', 6) base 213.4 s | cand shrine rescued x4
+   ('middle', 'normal', 15) base 150.9 s | cand shrine rescued x1
+gains (holds on cand, not on base): 4
+   ('child', 'easy', 5) base shrine rescued x1 | cand 217.7 s
+   ('child', 'normal', 10) base shrine rescued x2 | cand 241.6 s
+   ('expert', 'normal', 13) base shrine rescued x1 | cand 169.3 s
+   ('kid', 'normal', 16) base shrine rescued x1 | cand 129.5 s

@@ -1,0 +1,22 @@
+TAP version 13
+# Subtest: a dark stop holds at the lip: the toy's child on Easy slides his middle past the dark rim's end while the engine still stands him on its piece; he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)
+ok 1 - a dark stop holds at the lip: the toy's child on Easy slides his middle past the dark rim's end while the engine still stands him on its piece; he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)
+  ---
+  duration_ms: 17284.13535
+  type: 'test'
+  ...
+# Subtest: the stop read by the piece's span alone (noLipHold, the plant): the toy's lip: his middle past the rim's end, the stop drops and he walks over it before its landing is lit (RED)
+ok 2 - the stop read by the piece's span alone (noLipHold, the plant): the toy's lip: his middle past the rim's end, the stop drops and he walks over it before its landing is lit (RED)
+  ---
+  duration_ms: 12150.45333
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31251.578365

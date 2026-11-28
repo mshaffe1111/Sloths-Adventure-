@@ -38,7 +38,13 @@ running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t
     row, `not ok 45 ... # TODO measured 1 of 3 (ENG-B4)`, a todo node does not count as a fail)
   - tierBots: tests 9, pass 9, fail 0, cancelled 0, skipped 0 (334.3 s)
   - `seedlist.ts 1-4 --check`: PASS (100 seeds, each clean on both settings; the verdicts refuse 0 of 100)
-  - castBots 1-4, seeds 1-16, both settings, par 4, candidate AND 7a580aefc: RUNNING (started inside the box)
+  - castBots 1-4, seeds 1-16, both settings, par 4, candidate AND 7a580aefc (both frozen; floor 100 s; proof-l/castcmp-14.txt):
+    runs that hold 94 -> 95 of 144. adult easy 16->16, adult normal 16->16, child easy 6->7, child normal 3->4, expert normal 8->9,
+    kid easy 14->14, kid normal 12->13, middle easy 11->10, middle normal 8->6. 7 ROWS MOVED (level.md rule 28: traced before green):
+    PASS->FAIL 3: middle easy 11 (base 185.9 s | cand shrine rescued x1), middle normal 6 (213.4 s | rescued x4), middle normal 15
+    (150.9 s | rescued x1). FAIL->PASS 4: child easy 5 (217.7 s), child normal 10 (241.6 s), expert normal 13 (169.3 s), kid normal 16
+    (129.5 s). Under the floor 0 on both trees. The rows are the tower's 1-4 move (src vs 7a580aefc: pipeline.ts, tower.ts + tests),
+    not the toy (a test file). Asked the lead: A) trace the 3 PASS->FAIL rows, then land; B) rule them the intended move, land now.
   - the normal-4 stills at y 10364, upright and sideways, both trees: RUNNING (started inside the box)
   - timecheck: PASS (349 commits, 14 files, 67 stamps). roadmapcheck: PASS.
 - Proof files: proof-l/ (the runs' outputs, the toy copy).
