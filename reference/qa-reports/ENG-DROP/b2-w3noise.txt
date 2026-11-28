@@ -1,0 +1,87 @@
+TAP version 13
+# Subtest: the rows: 3-1's draft (down) and 3-2's (along) on World 3's own kit; the toy section laid by gen2 (stone in the cast, World 3's ocelot on its floor; moss quiet)
+ok 1 - the rows: 3-1's draft (down) and 3-2's (along) on World 3's own kit; the toy section laid by gen2 (stone in the cast, World 3's ocelot on its floor; moss quiet)
+  ---
+  duration_ms: 386.5179
+  type: 'test'
+  ...
+# Subtest: in play: a punch on the stone rings it; World 3's ocelot comes to look, under the stone; the punch makes ONLY the stone's sound
+ok 2 - in play: a punch on the stone rings it; World 3's ocelot comes to look, under the stone; the punch makes ONLY the stone's sound
+  ---
+  duration_ms: 102.991772
+  type: 'test'
+  ...
+# call: drawn 0.10 s after the press from 420 px, goal 13729 (stone 13729), closest 4 px; heard [bell]
+# Subtest: planted: the stone's emitter off (a struck stone makes no noise) -> World 3's ocelot never comes
+ok 3 - planted: the stone's emitter off (a struck stone makes no noise) -> World 3's ocelot never comes
+  ---
+  duration_ms: 59.249579
+  type: 'test'
+  ...
+# Subtest: in play: his punch wakes World 3's ocelot asleep within 240 px; one 300 px off sleeps on
+ok 4 - in play: his punch wakes World 3's ocelot asleep within 240 px; one 300 px off sleeps on
+  ---
+  duration_ms: 98.602275
+  type: 'test'
+  ...
+# punch: 200 px woke, 300 px slept
+# Subtest: planted: his punch off the channel (the seam drops it) -> the sleeper 200 px off sleeps on
+ok 5 - planted: his punch off the channel (the seam drops it) -> the sleeper 200 px off sleeps on
+  ---
+  duration_ms: 21.266783
+  type: 'test'
+  ...
+# Subtest: in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 3's sleeping ocelot 300 px off
+ok 6 - in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 3's sleeping ocelot 300 px off
+  ---
+  duration_ms: 49.510447
+  type: 'test'
+  ...
+# drop: moss (393 px) slept [] (sleeper 295 px off), stone (393 px) woke [landing] (293 px off)
+# Subtest: planted: the ground's quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes
+ok 7 - planted: the ground's quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes
+  ---
+  duration_ms: 21.127811
+  type: 'test'
+  ...
+# planted: moss ignored -> woke [landing] (sleeper 293 px off)
+# Subtest: ENG-DROP: the drop toy is laid on 3-2's run past the corridor, in view (the camera's own look finds its landing; nothing across its fall)
+ok 8 - ENG-DROP: the drop toy is laid on 3-2's run past the corridor, in view (the camera's own look finds its landing; nothing across its fall)
+  ---
+  duration_ms: 0.235348
+  type: 'test'
+  ...
+# 3-2 seed 2: the moss toy's drop 393 px, laid clean
+# Subtest: PLANTED: the corridor exemption removed (the toy's drop undeclared) -> no roll of 3-2 lays the drop toy
+ok 9 - PLANTED: the corridor exemption removed (the toy's drop undeclared) -> no roll of 3-2 lays the drop toy
+  ---
+  duration_ms: 1513.824131
+  type: 'test'
+  ...
+# undeclared: laid 0 of 40
+# Subtest: ENG-DROP: a declared drop is never laid in a tower (3-1's way down): no roll lays it
+ok 10 - ENG-DROP: a declared drop is never laid in a tower (3-1's way down): no roll lays it
+  ---
+  duration_ms: 87400.242928
+  type: 'test'
+  ...
+# tower: laid 0 of 40
+# Subtest: ENG-DROP: a designed drop not in view is refused BY NAME: wood across its fall; a fall past the view (dropSeen)
+ok 11 - ENG-DROP: a designed drop not in view is refused BY NAME: wood across its fall; a fall past the view (dropSeen)
+  ---
+  duration_ms: 0.564462
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 92987.473405
+
+real	1m33.307s
+user	1m34.315s
+sys	0m0.940s

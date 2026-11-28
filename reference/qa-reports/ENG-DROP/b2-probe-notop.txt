@@ -1,0 +1,12 @@
+NO TOP: normal seed 1: floor x 13741-14541 y 974; section placed {"uid":"s14","template":"w3-noise-toy-moss","node":"n5","phase":"ten","tension":0.72,"mirrored":false,"x0":13529,"x1":14541,"seconds":9.191632928475034}
+  plat x 13110-13394 (w 284) y 443 dy-to-floor 531 gap 347
+  plat x 13394-13529 (w 135) y 518 dy-to-floor 456 gap 212
+  plat x 13529-13731 (w 202) y 443 dy-to-floor 531 gap 10
+  plat x 13741-14541 (w 800) y 974 dy-to-floor 0 gap -800 quiet
+3-2 normal (drop declared): clean 39/40, toy laid 33/40, laid+clean 33/40, laid in view (dropSeen) 28/33
+3-2 normal (drop declared): clean 39/40, toy laid 33/40, laid+clean 33/40, laid in view (dropSeen) 28/33
+  5 x final stage not in view: no top found
+  1 x THROW gen# #-#: no section fits node n# (ketsu): the pool is spent (# that fit are laid already, slot #)
+3-2 easy (drop declared): clean 39/40, toy laid 33/40, laid+clean 33/40, laid in view (dropSeen) 28/33
+  5 x final stage not in view: no top found
+  1 x THROW gen# #-#: no section fits node n# (ketsu): the pool is spent (# that fit are laid already, slot #)

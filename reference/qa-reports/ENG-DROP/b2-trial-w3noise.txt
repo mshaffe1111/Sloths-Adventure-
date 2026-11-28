@@ -1,0 +1,93 @@
+TAP version 13
+# Subtest: the rows: 3-1's draft (down) and 3-2's (along) on World 3's own kit; the toy section laid by gen2 (stone in the cast, World 3's ocelot on its floor; moss quiet)
+ok 1 - the rows: 3-1's draft (down) and 3-2's (along) on World 3's own kit; the toy section laid by gen2 (stone in the cast, World 3's ocelot on its floor; moss quiet)
+  ---
+  duration_ms: 358.099478
+  type: 'test'
+  ...
+# Subtest: in play: a punch on the stone rings it; World 3's ocelot comes to look, under the stone; the punch makes ONLY the stone's sound
+ok 2 - in play: a punch on the stone rings it; World 3's ocelot comes to look, under the stone; the punch makes ONLY the stone's sound
+  ---
+  duration_ms: 93.340936
+  type: 'test'
+  ...
+# call: drawn 0.10 s after the press from 420 px, goal 11555 (stone 11555), closest 4 px; heard [bell]
+# Subtest: planted: the stone's emitter off (a struck stone makes no noise) -> World 3's ocelot never comes
+ok 3 - planted: the stone's emitter off (a struck stone makes no noise) -> World 3's ocelot never comes
+  ---
+  duration_ms: 82.169348
+  type: 'test'
+  ...
+# Subtest: in play: his punch wakes World 3's ocelot asleep within 240 px; one 300 px off sleeps on
+ok 4 - in play: his punch wakes World 3's ocelot asleep within 240 px; one 300 px off sleeps on
+  ---
+  duration_ms: 93.139222
+  type: 'test'
+  ...
+# punch: 200 px woke, 300 px slept
+# Subtest: planted: his punch off the channel (the seam drops it) -> the sleeper 200 px off sleeps on
+ok 5 - planted: his punch off the channel (the seam drops it) -> the sleeper 200 px off sleeps on
+  ---
+  duration_ms: 20.681275
+  type: 'test'
+  ...
+# Subtest: in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 3's sleeping ocelot 300 px off
+ok 6 - in play: a 400 px drop onto moss wakes nothing; onto stone it wakes World 3's sleeping ocelot 300 px off
+  ---
+  duration_ms: 72.462044
+  type: 'test'
+  ...
+# drop: moss (392 px) slept [] (sleeper 304 px off), stone (392 px) woke [landing] (302 px off)
+# Subtest: planted: the ground's quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes
+ok 7 - planted: the ground's quiet ignored (the cast hears every landing as on stone) -> the sleeper by the moss wakes
+  ---
+  duration_ms: 28.299228
+  type: 'test'
+  ...
+# planted: moss ignored -> woke [landing] (sleeper 302 px off)
+# Subtest: PLANTED: wood laid across the drops' fall column (between the top and the floor) -> the pick refuses the roll
+ok 8 - PLANTED: wood laid across the drops' fall column (between the top and the floor) -> the pick refuses the roll
+  ---
+  duration_ms: 0.337011
+  type: 'test'
+  ...
+# Subtest: ENG-DROP: the drop toy is laid on 3-2's run past the corridor, in view (the camera's own look finds its landing; nothing across its fall)
+ok 9 - ENG-DROP: the drop toy is laid on 3-2's run past the corridor, in view (the camera's own look finds its landing; nothing across its fall)
+  ---
+  duration_ms: 0.340834
+  type: 'test'
+  ...
+# 3-2 seed 3: the moss toy's drop 392 px, laid clean
+# Subtest: PLANTED: the corridor exemption removed (the toy's drop undeclared) -> no roll of 3-2 lays the drop toy
+ok 10 - PLANTED: the corridor exemption removed (the toy's drop undeclared) -> no roll of 3-2 lays the drop toy
+  ---
+  duration_ms: 1895.561241
+  type: 'test'
+  ...
+# undeclared: laid 0 of 40
+# Subtest: ENG-DROP: a declared drop is never laid in a tower (3-1's way down): no roll lays it
+ok 11 - ENG-DROP: a declared drop is never laid in a tower (3-1's way down): no roll lays it
+  ---
+  duration_ms: 78971.789514
+  type: 'test'
+  ...
+# tower: laid 0 of 40
+# Subtest: ENG-DROP: a designed drop not in view is refused BY NAME: wood across its fall; a fall past the view (dropSeen)
+ok 12 - ENG-DROP: a designed drop not in view is refused BY NAME: wood across its fall; a fall past the view (dropSeen)
+  ---
+  duration_ms: 0.406817
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 84957.782695
+
+real	1m25.249s
+user	1m27.053s
+sys	0m1.069s
