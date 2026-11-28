@@ -413,7 +413,7 @@ export const DOT_HINTS: Record<string, string> = {
   w1_snail: 'In Branch Snakes he stays on the ground. Snails hate heights.',
   w2_note: 'Petals for the Crown: past the second flag, by the water.',
   w2_keepsake: 'Somewhere along the bank in River Snappers. Watch your toes!',
-  w2_book: 'Look along the banks in Before the Water Rises. Hurry!',
+  w2_book: 'Before the Water Rises: peek in the Hush Ferns!',
   w2_snail: 'Stuck in the Reeds? So is a certain slow friend.',
   w3_note: 'Glowworm Path: past the third flag, before the watching eyes.',
   w3_keepsake: 'Sleeping Vines: after a log, just before the bell room.',
