@@ -17,7 +17,7 @@ import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { countWord, goalLine, sealedLine } from '../../stagePlan.ts';
 import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
 import { DECOR_CLEAR, dressClear } from '../../protoStage.ts';
-import { shadowRetint } from '../../riverArt.ts';
+import { retintBand, shadowEdge, shadowRetint } from '../../riverArt.ts';
 import { W2_FRAMES } from '../../w2PropsData.ts';
 import { COURT_29, DRUM_CARD_29, KICK_29, LINES_29, MISSION_29, STAGE_29 } from './w2Arc29.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
@@ -232,6 +232,29 @@ test('2-9 court: the dais\'s and throne\'s pale painted ground shadow is re-tint
   assert.equal(shadowRetint(150, 125, 95, 255), null, 'the bamboo is kept');
   assert.equal(shadowRetint(240, 240, 240, 10), null, 'an empty pixel is kept');
   assert.notDeepEqual(shadowRetint(226, 219, 211, 237), [226, 219, 211, 237], 'PLANT: the band\'s own mean colour (measured) is changed');
+});
+
+test('2-9 court: the dais band\'s anti-aliased rim is re-tinted with it (BUILD-29-q: the hairline light rim at 2x), painted grey is kept', () => {
+  // a 4 x 3 strip from row 0: row 0 the pale band, row 1 the rim under the pad's outline (measured 192,188,173 / 170,165,155 in the atlas),
+  // row 2: a grey pixel touching nothing re-tinted (x 3, painted stone), a green pad pixel touching the band (x 0)
+  const W = 4, H = 3;
+  const px = new Uint8ClampedArray(W * H * 4);
+  const set = (x: number, y: number, c: number[]) => px.set(c, (y * W + x) * 4);
+  for (let x = 0; x < W; x++) set(x, 0, [226, 219, 211, 250]);
+  set(0, 1, [192, 188, 173, 255]); set(1, 1, [170, 165, 155, 255]); set(2, 1, [130, 145, 95, 255]); set(3, 1, [8, 5, 0, 255]);
+  set(0, 2, [130, 145, 95, 255]); set(1, 2, [8, 5, 0, 255]); set(2, 2, [8, 5, 0, 255]); set(3, 2, [160, 158, 150, 255]);
+  const at = (x: number, y: number) => Array.from(px.slice((y * W + x) * 4, (y * W + x) * 4 + 4));
+  const n = retintBand(px, W, H, 0);
+  assert.equal(n, 6, `4 band + 2 rim pixels changed (got ${n})`);
+  for (const [x, y] of [[0, 1], [1, 1]]) assert.ok(at(x, y)[0] < 60 && at(x, y)[3] < 255, `the rim at ${x},${y} is shadow: ${at(x, y)}`);
+  assert.deepEqual(at(2, 1), [130, 145, 95, 255], 'a green pad pixel touching the band is kept');
+  assert.deepEqual(at(3, 2), [160, 158, 150, 255], 'a grey pixel touching nothing re-tinted (painted stone) is kept');
+  assert.deepEqual(at(3, 1), [8, 5, 0, 255], 'the dark outline is kept');
+  assert.equal(shadowEdge(192, 188, 173, 255) !== null, true, 'PLANT: the measured rim pixel is a rim');
+  assert.equal(shadowRetint(192, 188, 173, 255), null, 'PLANT: and the band rule alone misses it (the hairline box 16 named)');
+  const px0 = new Uint8ClampedArray(px.length);
+  px0.set([192, 188, 173, 255], 0);
+  assert.equal(retintBand(px0, W, H, 0), 0, 'a rim pixel with no band beside it is kept');
 });
 
 /** every piece laid in the court on a stage as Play builds it: dressing within DECOR_CLEAR of a court piece's side, a creature's box over it */

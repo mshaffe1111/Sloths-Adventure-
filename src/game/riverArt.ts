@@ -67,6 +67,49 @@ export function shadowRetint(r: number, g: number, b: number, a: number): [numbe
   if (a < 20 || lum <= 185 || Math.max(r, g, b) - Math.min(r, g, b) >= 35) return null;
   return [34, 27, 20, Math.round(a * Math.min(0.5, ((255 - lum) / 255) * 2.4))];
 }
+/** the band's anti-aliased rim (BUILD-29-q: at 2x, the phone's density, a hairline light rim stayed where the pale band met the pads'
+ *  dark outline: edge pixels a little darker than the band, mean 110-185, e.g. 192,188,173 under the left pad, measured): a colourless
+ *  pixel of mean over 110 that TOUCHES a re-tinted one gets the same shadow; a grey pixel that touches none (painted stone) is kept */
+export function shadowEdge(r: number, g: number, b: number, a: number): [number, number, number, number] | null {
+  const lum = (r + g + b) / 3;
+  if (a < 20 || lum <= 110 || lum > 185 || Math.max(r, g, b) - Math.min(r, g, b) >= 35) return null;
+  return [34, 27, 20, Math.round(a * Math.min(0.5, ((255 - lum) / 255) * 2.4))];
+}
+/** the band of an RGBA picture `w` x `h` re-tinted from row `fromRow` down: every pale pixel (shadowRetint), then `rims` passes over the
+ *  rim (shadowEdge, a pixel touching one already re-tinted, 8 ways); returns how many pixels changed. In place. */
+export function retintBand(px: Uint8ClampedArray | Uint8Array, w: number, h: number, fromRow: number, rims = 2): number {
+  const done = new Uint8Array(w * h);
+  let n = 0;
+  for (let k = Math.max(0, fromRow) * w; k < w * h; k++) {
+    const i = k * 4;
+    const t = shadowRetint(px[i], px[i + 1], px[i + 2], px[i + 3]);
+    if (!t) continue;
+    [px[i], px[i + 1], px[i + 2], px[i + 3]] = t;
+    done[k] = 1;
+    n++;
+  }
+  for (let pass = 0; pass < rims; pass++) {
+    const add: number[] = [];
+    for (let y = Math.max(0, fromRow); y < h; y++) for (let x = 0; x < w; x++) {
+      const k = y * w + x;
+      if (done[k]) continue;
+      let touches = false;
+      for (let dy = -1; dy <= 1 && !touches; dy++) for (let dx = -1; dx <= 1; dx++) {
+        const xx = x + dx, yy = y + dy;
+        if (xx >= 0 && xx < w && yy >= fromRow && yy < h && done[yy * w + xx] === 1) { touches = true; break; }
+      }
+      if (touches && shadowEdge(px[k * 4], px[k * 4 + 1], px[k * 4 + 2], px[k * 4 + 3])) add.push(k);
+    }
+    for (const k of add) {
+      const i = k * 4;
+      const t = shadowEdge(px[i], px[i + 1], px[i + 2], px[i + 3])!;
+      [px[i], px[i + 1], px[i + 2], px[i + 3]] = t;
+      done[k] = 1;
+      n++;
+    }
+  }
+  return n;
+}
 const retinted = new Map<W2Piece, HTMLCanvasElement>();
 let retintedFor: HTMLImageElement | null = null;
 function retintedPiece(n: W2Piece): HTMLCanvasElement | null {
@@ -88,10 +131,7 @@ function retintedPiece(n: W2Piece): HTMLCanvasElement | null {
   try {
     const d = g.getImageData(0, 0, f.w, f.h);
     const px = d.data;
-    for (let i = Math.floor(f.h * from) * f.w * 4; i < px.length; i += 4) {
-      const t = shadowRetint(px[i], px[i + 1], px[i + 2], px[i + 3]);
-      if (t) [px[i], px[i + 1], px[i + 2], px[i + 3]] = t;
-    }
+    retintBand(px, f.w, f.h, Math.floor(f.h * from));
     g.putImageData(d, 0, 0);
   } catch {
     return null;
