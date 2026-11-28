@@ -1,0 +1,20 @@
+roll 17 noLipHold=false end=shrine
+  held past: t=216.73 rim 672,9912 dir -1 facing -1 x 671.8 turn - runOff true
+     end t=217.50 x 671.8 grounded true stop false
+  unlit: []
+  gaveUp: []
+roll 17 noLipHold=true end=shrine
+  held past: t=216.73 rim 672,9912 dir -1 facing -1 x 671.8 turn - runOff true
+     end t=216.77 x 671.8 grounded true stop false
+  unlit: []
+  gaveUp: []
+roll 29 noLipHold=false end=shrine
+  held past: t=117.90 rim 666,7029 dir 1 facing 1 x 667.0 turn - runOff true
+     end t=119.27 x 668.3 grounded true stop false
+  unlit: []
+  gaveUp: []
+roll 29 noLipHold=true end=shrine
+  held past: t=117.90 rim 666,7029 dir 1 facing 1 x 667.0 turn - runOff true
+     end t=117.93 x 668.3 grounded true stop false
+  unlit: []
+  gaveUp: []

@@ -1,0 +1,44 @@
+TAP version 13
+# Subtest: a dark stop holds at the lip: on the first child Easy roll (1-32, whole runs) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)
+ok 1 - a dark stop holds at the lip: on the first child Easy roll (1-32, whole runs) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)
+  ---
+  duration_ms: 125546.43268
+  type: 'test'
+  ...
+# roll 17, the rim at x 672, y 9912 (: held past the end 23 frames, unlit []
+# Subtest: the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)
+not ok 2 - the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)
+  ---
+  duration_ms: 6418.567205
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/darkBots.test.ts:607:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    he went over that rim dark ([])
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/darkBots.test.ts:612:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# roll 17, the rim at x 672, y 9912 (: planted unlit []
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 132591.532036
+
+real	2m12.922s
+user	2m19.057s
+sys	0m0.986s

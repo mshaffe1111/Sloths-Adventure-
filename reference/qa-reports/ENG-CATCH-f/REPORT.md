@@ -1,6 +1,77 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
+(box 6, ENG-CATCH-k, engine, written 8:20 PM ET Fri 11-27 by `date`; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and at
+the hand-over; this branch = b557b7c90 + reference/ only; darkBots.test.ts is UNCHANGED from 192a433ae, so nothing is half-built)
+NOT LANDED. THE LEAD RULED A (message during box 6): the two roll-8 rows (darkBots.test.ts:559-585 on 192a433ae, `lip8` and its two tests)
+are REPLACED by a TOY in the real engine, like box 22's shape toy (`shapeRead`, darkBots.test.ts:512-557). There is no real-row unit row
+(the whole-stage dark bots already cover real rows). B (search other bots or rolls) is REFUSED: it rerolls for a case.
+1. BUILD THE TOY (darkBots.test.ts only). Every number comes from the toy's own pieces: no stage, seed or stage literal.
+   Hooks, read in this box:
+   - Run `firstTimer(DRAFT, 1, { ...CAST_BOTS.child.easy!, noLipHold }, { cap: <short>, dotSetting: true, onFrame })`. On the first frame,
+     as shapeRead does at :527-531: `sim.platforms.length = 0`, then push the toy pieces: a floor piece, and a landing piece below and
+     past its rim.
+   - Hand-build one DarkRim (dark.ts:94 `{ piece, dir, x, y, land, light, onto, drop }`) with `light = { id: <an id no stage light
+     uses>, sleep: true }` (glowRimsOf keeps `light.sleep && light.id !== undefined`, firsttimer.ts:3624).
+   - Put it in the bot's private caches: `bot.glowRims = [rim]` (firsttimer.ts:1393; glowWait reads it at :3629 and :3700) and
+     `bot.rimWatch = new RimWatch([rim])` (built at :4807 from darkRims; the watch's step reads `e.glowWake.get(l.id)`, :4810).
+   - Place the child on the floor, moving toward the rim: bot.placeAt (:592 shows the toy use), set his speed, and set the route
+     (`bot.prog.pts` / `cur`, as shapeRead does at :532-536) to run over the rim, so his stop starts within GLOW_NEAR and the Easy slide
+     carries his middle past the end while `e.standingOnId === rim.piece.id`.
+   - The light wakes at a time the toy chooses: `e.glowWake.set(id, t)` from onFrame. Glow is read by glowGo (:3717-3727) and by the
+     watch alike. Without a wake he gives up after GLOW_GIVEUP and goes unlit, so the cap or the wake must come before that.
+   GREEN with the hold: frames with glowStop at the toy rim, grounded, `(p.x - rim.x) * rim.dir > 0` and standingOnId the rim's piece
+   (past > 0); `litAhead(rimWatch.crossings, 'easy')` (or FTRun.dark.unlit) has no entry for the toy rim.
+   RED with noLipHold: unlit 1 for the toy rim. The comment says why the real row was replaced: ENGINE.md:51 (a test pins properties,
+   never x); R-165.573 (the tower's catch trims moved roll 8 off the lay); and proof-k (no child Easy roll 1-96 on the tower's lay holds
+   an own-light lip the plant bites).
+   Prove it both ways, on the candidate AND on 7a580aefc (copy the test into a 7a580aefc worktree; seconds). Then darkBots.test.ts
+   WHOLE green on the candidate.
+2. Then steps 2-4 of the ENG-CATCH-k brief, unchanged: the pre-freeze against 7a580aefc (`git diff --name-only 7a580aefc HEAD -- src
+   tools` = pipeline.ts, tower.ts, tower.test.ts, towerMend.test.ts + darkBots.test.ts), `git ls-remote` t-eng-w3 (merge BY HASH if it
+   moved), the freeze, the gates (shard 1/6 whole, or all 6 if merged; the CI tool line; tierBots; seedlist 1-4 --check; castBots 1-4
+   both settings on both trees; the normal-4 stills at y 10364), and the landing.
+
+## FINDINGS for R-165.580 (the lead opens an engine box AFTER the tower lands; NOT this box's fix)
+- Roll 74 of draft 3-1, child Easy, on the candidate 192a433ae: an OWN-light rim (`the rim at x 514, y 4917 (right end of 247-514)`).
+  WITH the hold on, he goes over it dark at 78.13 s ("with its landing dark (needs 1.6 s)"). His stop is held past the end from 78.07 s
+  (x 516.9) for 2 frames. Then his slide carries him off the piece: at 78.13 s, x 535.3, grounded false, glowStop STILL SET.
+  With noLipHold, the same crossing, unlit 1 (proof-k/plant-52-74-76.txt).
+  So the hold lets go of nothing: the slide takes him off the piece while it is held. Either the stop starts too late for his Easy slide,
+  or the engine lets a stopped Pokey slide off a ledge. R-165.580's first step, per the lead: a slide-off toy, red first on 7a580aefc.
+- (Read-only, run before I read the ruling, which crossed with it: roll 74 on 7a580aefc behaves the same, 2 frames held, unlit 1
+  (proof-k/plant-74-base-7a580aefc.txt). The lead notes a different lay proves nothing about the mechanism. The toy decides.)
+
+## Box 6 (ENG-CATCH-k, engine): the re-pin by property, proven impossible on the tower's lay; the lead's ruling A; nothing landed
+(started 8:01 PM ET Fri 11-27 by `date`; on b557b7c90; npm ci as a tracked task, exit 0)
+- The property re-pin (proof-k/darkBots-property-draft.diff; NOT committed to the test): the FIRST child Easy roll where a dark stop is
+  held at a rim, he is grounded with his middle past its end, and standingOnId is still the rim's piece; no x or y literal.
+  - On 7a580aefc it finds roll 8 at `the rim at x 515, y 4375`, exactly box 22's pin. Held past the end 85 frames, unlit []; plant
+    unlit 1 at 103.37 s. Pair 2/2, both at rolls 1-16 cap 110 (60 s) and at rolls 1-32 cap 400 (68 s) (proof-k/lip-base-*.txt).
+  - On the candidate: rolls 1-16 cap 110 find NO roll, 0/2 (107 s). Rolls 1-32 cap 400 find roll 17, `x 672, y 9912`: green passes, the
+    plant FAILS, planted unlit [] (1/2, 133 s; proof-k/lip-cand-*.txt).
+- Why the plant misses: of the candidate's 18 lip moments in rolls 1-96 (whole runs, every run ends at the shrine; 17 rolls), 15 are RUN-OFF rims
+  (rim.runOff: a lit edge, so going over it is no dark crossing of that rim; rolls 17 and 29 checked, planted unlit [],
+  proof-k/plant-17-29.txt). The 3 own-light ones: roll 52 (the plant run diverges before the lip, no held frame, unlit []), roll 76
+  (the plant drops the stop, no crossing, unlit []), and roll 74 (green ALSO unlit 1, the finding above). Scan:
+  proof-k/scan-cand-1-32.txt, scan-cand-33-96.txt.
+- B, checked before the ruling arrived: child Normal, middle Easy, kid Easy and adult Easy, rolls 1-32 each, whole runs: 0 own-light lip
+  moments (proof-k/scan2-other-bots-1-32.txt, 128 runs).
+- The scratch tools (read only, run from the scratchpad on a repo root): proof-k/lipscan.mts, lipscan2.mts, lipplant.mts.
+- Not run this box: the toy, darkBots whole, the pre-freeze, the freeze, every gate, the landing. All are owed, on the toy's head.
+- Lessons applied: ENGINE.md:51 (no x pin; the property and then the toy); D59 (each read-only run finished and recorded); D30 (stamps
+  from `date`); law 22 (no bar lowered: when the property's plant missed, I did not widen the plant or drop it, I asked); law 3 (each
+  claim proven by a run, with its file).
+- Own miss: I ran two read-only checks (roll 74 on 7a580aefc, the B scan) after the lead's ruling had reached this session and before I
+  read it. I did not call ReadNotifications between those waits as the brief says. Nothing was changed by them; it cost about 4 minutes.
+- Polish check: no screen changed or judged (the stills are owed on the landing head).
+- Learned: a pinned roll's moment can vanish from a new lay, and so can the CASE itself. On the tower's lay the lip case only shows on
+  run-off rims, where the plant cannot bite. Before re-pinning a planted row by property, check that the PLANT bites on the found case,
+  not only the green. Method update (level.md / gates.md, the lead's call): "a planted row whose real case is gone from the lay becomes
+  a toy in the real engine (box 22's shapeRead precedent), never a search over rolls".
+
+## Box 5's next step (superseded by box 6 above)
+
 (box 5, ENG-CATCH-j, a TAIL, STOPPED ON A RED, written 7:50 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
 NOT LANDED. The frozen candidate 192a433ae (code 9afeaf31c) fails 2 suite tests that pass on 7a580aefc: OURS, proven alone.
 - src/game/gen2/darkBots.test.ts:578 (test at :576, "a dark stop holds at the lip ... child Easy roll 8, the rim at x 515, y 4375"):

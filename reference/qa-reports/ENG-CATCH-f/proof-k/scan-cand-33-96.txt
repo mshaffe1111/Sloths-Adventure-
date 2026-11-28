@@ -1,0 +1,64 @@
+roll 33 end=shrine 27.9s: -
+roll 34 end=shrine 16.8s: -
+roll 35 end=shrine 12.1s: -
+roll 36 end=shrine 15.3s: -
+roll 37 end=shrine 13.8s: -
+roll 38 end=shrine 18.1s: -
+roll 39 end=shrine 11.9s: -
+roll 40 end=shrine 12.8s: -
+roll 41 end=shrine 23.1s: -
+roll 42 end=shrine 15.0s: -
+roll 43 end=shrine 15.1s: the rim at x 664, y 10300 ([runOff] t=211.40 n=89 unlit=0
+roll 44 end=shrine 14.6s: -
+roll 45 end=shrine 15.3s: -
+roll 46 end=shrine 11.7s: -
+roll 47 end=shrine 14.6s: -
+roll 48 end=shrine 15.9s: -
+roll 49 end=shrine 23.1s: -
+roll 50 end=shrine 19.2s: the rim at x 645, y 8848 ([runOff] t=221.27 n=90 unlit=0
+roll 51 end=shrine 13.1s: the rim at x 604, y 8317 ([runOff] t=184.00 n=88 unlit=0
+roll 52 end=shrine 11.8s: the rim at x 527, y 10240 ([own] t=227.20 n=68 unlit=0
+roll 53 end=shrine 11.0s: -
+roll 54 end=shrine 18.2s: -
+roll 55 end=shrine 16.7s: the rim at x 757, y 7434 ([runOff] t=189.93 n=89 unlit=0
+roll 56 end=shrine 12.1s: -
+roll 57 end=shrine 22.4s: -
+roll 58 end=shrine 21.0s: -
+roll 59 end=shrine 15.7s: -
+roll 60 end=shrine 17.2s: -
+roll 61 end=shrine 14.9s: the rim at x 719, y 7417 ([runOff] t=191.90 n=90 unlit=0
+roll 62 end=shrine 11.0s: -
+roll 63 end=shrine 20.4s: the rim at x 626, y 3480 ([runOff] t=66.30 n=89 unlit=0
+roll 64 end=shrine 10.8s: -
+roll 65 end=shrine 27.1s: -
+roll 66 end=shrine 13.2s: the rim at x 585, y 8715 ([runOff] t=193.43 n=89 unlit=0
+roll 67 end=shrine 12.0s: the rim at x 626, y 5782 ([runOff] t=119.33 n=91 unlit=0
+roll 68 end=shrine 11.8s: -
+roll 69 end=shrine 11.5s: -
+roll 70 end=shrine 12.9s: -
+roll 71 end=shrine 18.0s: the rim at x 708, y 3119 ([runOff] t=88.10 n=90 unlit=0 | the rim at x 611, y 6592 ([runOff] t=195.27 n=88 unlit=0
+roll 72 end=shrine 14.9s: the rim at x 567, y 9635 ([runOff] t=250.10 n=4 unlit=0
+roll 73 end=shrine 26.3s: the rim at x 713, y 3118 ([runOff] t=61.07 n=90 unlit=0
+roll 74 end=shrine 17.2s: the rim at x 514, y 4917 ([own] t=78.07 n=2 unlit=1
+roll 75 end=shrine 14.3s: -
+roll 76 end=shrine 15.0s: the rim at x 1014, y 6771 ([own] t=151.47 n=87 unlit=0
+roll 77 end=shrine 23.4s: -
+roll 78 end=shrine 17.6s: -
+roll 79 end=shrine 13.1s: -
+roll 80 end=shrine 7.9s: -
+roll 81 end=shrine 23.6s: -
+roll 82 end=shrine 12.1s: -
+roll 83 end=shrine 17.0s: -
+roll 84 end=shrine 14.9s: the rim at x 769, y 6616 ([runOff] t=164.03 n=89 unlit=0
+roll 85 end=shrine 17.3s: -
+roll 86 end=shrine 15.5s: -
+roll 87 end=shrine 18.1s: -
+roll 88 end=shrine 10.8s: -
+roll 89 end=shrine 27.0s: -
+roll 90 end=shrine 17.6s: -
+roll 91 end=shrine 12.4s: -
+roll 92 end=shrine 11.7s: -
+roll 93 end=shrine 15.5s: -
+roll 94 end=shrine 15.6s: -
+roll 95 end=shrine 13.1s: -
+roll 96 end=shrine 14.7s: -

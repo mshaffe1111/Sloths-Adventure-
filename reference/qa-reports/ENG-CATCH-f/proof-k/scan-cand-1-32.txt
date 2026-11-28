@@ -1,0 +1,32 @@
+roll 1 end=shrine 15.5s: -
+roll 2 end=shrine 7.8s: -
+roll 3 end=shrine 5.3s: -
+roll 4 end=shrine 6.9s: -
+roll 5 end=shrine 6.8s: -
+roll 6 end=shrine 7.4s: -
+roll 7 end=shrine 6.6s: -
+roll 8 end=shrine 7.2s: -
+roll 17 end=shrine 11.9s: the rim at x 672, y 9912 ( t=216.73 n=23 unlit=0
+roll 18 end=shrine 7.8s: -
+roll 19 end=shrine 9.8s: -
+roll 20 end=shrine 6.5s: -
+roll 21 end=shrine 7.3s: -
+roll 22 end=shrine 8.1s: -
+roll 23 end=shrine 6.9s: -
+roll 24 end=shrine 6.0s: -
+roll 25 end=shrine 13.0s: -
+roll 26 end=shrine 6.6s: -
+roll 27 end=shrine 6.9s: -
+roll 28 end=shrine 5.8s: -
+roll 29 end=shrine 6.4s: the rim at x 666, y 7029 ( t=117.90 n=41 unlit=0
+roll 30 end=shrine 7.9s: -
+roll 31 end=shrine 8.5s: -
+roll 32 end=shrine 6.9s: -
+roll 9 end=shrine 13.3s: -
+roll 10 end=shrine 7.5s: -
+roll 11 end=shrine 8.5s: -
+roll 12 end=shrine 8.1s: -
+roll 13 end=shrine 8.4s: -
+roll 14 end=shrine 7.8s: -
+roll 15 end=shrine 6.4s: -
+roll 16 end=shrine 7.6s: -

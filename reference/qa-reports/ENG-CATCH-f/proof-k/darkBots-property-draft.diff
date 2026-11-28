@@ -1,0 +1,83 @@
+diff --git a/src/game/gen2/darkBots.test.ts b/src/game/gen2/darkBots.test.ts
+index 02b93ae8..c890934b 100644
+--- a/src/game/gen2/darkBots.test.ts
++++ b/src/game/gen2/darkBots.test.ts
+@@ -556,32 +556,60 @@ test("every ledge over him read as a step up (noLevelRead, the plant): the SHAPE
+   assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
+ });
+ 
+-/** the lip (ENG-DARK box 22, 7 of the 9 unlit crossings of c15's x40): the child on Easy, roll 8, comes onto 251-515 (y 4375) toward its
+- *  dark right rim; his stop starts at 102.67 s, his slide carries his middle past the end (to x 524) while the engine still stands him on
+- *  the piece (standingOnId), and the stop read the piece's span alone: it dropped and he walked over the rim at 103.37 s, its landing
+- *  dark. The stop is held while the engine stands him on the rim's piece. The run to 110 s: the frames of a stop held at that rim with
+- *  his middle past its end, and the rim's crossings */
+-async function lip8(noLipHold: boolean) {
++/** the lip (ENG-DARK box 22, 7 of the 9 unlit crossings of c15's x40): the child on Easy comes onto a piece toward its dark rim; his
++ *  stop starts, his slide carries his middle past the end while the engine still stands him on the piece (standingOnId), and the stop
++ *  read the piece's span alone: it dropped and he walked over the rim, its landing dark. The stop is held while the engine stands him on
++ *  the rim's piece. FOUND BY PROPERTY, never by its x (ENGINE.md: a test pins properties of a roll; R-165.573: the tower's catch trims
++ *  upstream moved box 22's pinned moment, roll 8 at the rim x 515, off the lay): over the draft's child Easy rolls LIP_ROLLS, each run
++ *  to LIP_CAP s (a whole run: each ends at the shrine well inside it; the case is rare, 2 of 32 rolls on the tower's lay), the FIRST roll with a frame where a dark stop is held at a rim, he is grounded with his middle past its end, and the
++ *  engine stands him on the rim's own piece. That roll and that rim: the frames of the stop held there past the end, and its crossings;
++ *  the plant (noLipHold) on the same roll and the same rim */
++const LIP_ROLLS = Array.from({ length: 32 }, (_, i) => i + 1), LIP_CAP = 400;
++/** one run of the child on Easy: the first rim his stop is held at past its end (its label, as litAhead names a rim), the frames held
++ *  past the end at `want` (or that first rim), and that rim's unlit crossings */
++async function lipRun(roll: number, noLipHold: boolean, want?: string) {
+   if (readied !== DRAFT) readyDraft(DRAFT);
+   const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
+   const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
+-  let past = 0;
+-  const r = firstTimer(DRAFT, 8, { ...CAST_BOTS.child.easy!, noLipHold }, { cap: 110, dotSetting: true, onFrame(sim, b) {
+-    const g = (b as unknown as { glowStop: { rim: { x: number; y: number } } | null }).glowStop;
+-    if (g && g.rim.x === 515 && Math.round(g.rim.y) === 4375 && sim.p.grounded && sim.p.x > 515) past++;
++  let first: string | undefined;
++  const past = new Map<string, number>();
++  const r = firstTimer(DRAFT, roll, { ...CAST_BOTS.child.easy!, noLipHold }, { cap: LIP_CAP, dotSetting: true, onFrame(sim, b) {
++    const bot = b as unknown as { glowStop: { rim: { x: number; y: number; dir: -1 | 1; piece: { id: number } } } | null; e: { standingOnId: number } };
++    const g = bot.glowStop, p = sim.p;
++    if (!g || !p.grounded || (p.x - g.rim.x) * g.rim.dir <= 0 || bot.e.standingOnId !== g.rim.piece.id) return;
++    const at = `the rim at x ${g.rim.x}, y ${Math.round(g.rim.y)} (`;
++    first ??= at;
++    past.set(at, (past.get(at) ?? 0) + 1);
+   } });
+-  return { past, unlit: (r.dark?.unlit ?? []).filter((u) => u.includes('the rim at x 515, y 4375')) };
++  const rim = want ?? first;
++  return { roll, rim, past: rim ? past.get(rim) ?? 0 : 0, unlit: rim ? (r.dark?.unlit ?? []).filter((u) => u.includes(rim)) : [] };
++}
++let lipFound: Promise<Awaited<ReturnType<typeof lipRun>> | undefined> | undefined;
++/** the first roll of LIP_ROLLS whose run holds a stop past a rim's end (the scan runs once for both rows) */
++function lipCase() {
++  return (lipFound ??= (async () => {
++    for (const roll of LIP_ROLLS) {
++      const c = await lipRun(roll, false);
++      if (c.rim) return c;
++    }
++    return undefined;
++  })());
+ }
+ 
+-test("a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)", async () => {
+-  const { past, unlit } = await lip8(false);
+-  assert.ok(past > 0, 'the stop was held with his middle past the end');
+-  assert.deepEqual(unlit, [], 'he did not go over that rim with its landing dark');
++test("a dark stop holds at the lip: on the first child Easy roll (1-32, whole runs) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)", async (t) => {
++  const c = await lipCase();
++  assert.ok(c, `a roll of ${LIP_ROLLS[0]}-${LIP_ROLLS[LIP_ROLLS.length - 1]} holds a stop past a rim's end within ${LIP_CAP} s`);
++  t.diagnostic(`roll ${c.roll}, ${c.rim}: held past the end ${c.past} frames, unlit ${JSON.stringify(c.unlit)}`);
++  assert.ok(c.past > 0, 'the stop was held with his middle past the end');
++  assert.deepEqual(c.unlit, [], 'he did not go over that rim with its landing dark');
+ });
+ 
+-test("the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)", async () => {
+-  const { unlit } = await lip8(true);
+-  assert.equal(unlit.length, 1, `he went over that rim dark (${JSON.stringify(unlit)})`);
++test("the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)", async (t) => {
++  const c = await lipCase();
++  assert.ok(c, 'the lip case was found (the row above)');
++  const plant = await lipRun(c.roll, true, c.rim);
++  t.diagnostic(`roll ${c.roll}, ${c.rim}: planted unlit ${JSON.stringify(plant.unlit)}`);
++  assert.equal(plant.unlit.length, 1, `he went over that rim dark (${JSON.stringify(plant.unlit)})`);
+ });
+ 
+ test("the bot's own put-back (placeAt: a rescue, a room's put-back) starts the dark's rim watch again: a teleport is no crossing (dark.test's put-back toy; GREEN; planted: placeAt without RimWatch.put)", async () => {

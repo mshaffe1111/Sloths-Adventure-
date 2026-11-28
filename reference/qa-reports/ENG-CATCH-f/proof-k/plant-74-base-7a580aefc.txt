@@ -1,0 +1,10 @@
+roll 74 noLipHold=false end=shrine
+  held past: t=78.07 rim 514,4917 dir 1 facing 1 x 516.9 turn - runOff false
+     end t=78.13 x 535.3 grounded false stop true
+  unlit: ["dark: went over the rim at x 514, y 4917 (right end of 247-514) at 78.13 s with its landing dark (needs 1.6 s)"]
+  gaveUp: []
+roll 74 noLipHold=true end=shrine
+  held past: t=78.07 rim 514,4917 dir 1 facing 1 x 516.9 turn - runOff false
+     end t=78.10 x 526.4 grounded true stop false
+  unlit: ["dark: went over the rim at x 514, y 4917 (right end of 247-514) at 78.13 s with its landing dark (needs 1.6 s)"]
+  gaveUp: []

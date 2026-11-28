@@ -1,0 +1,48 @@
+TAP version 13
+# Subtest: a dark stop holds at the lip: on the first child Easy roll (1-16) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)
+not ok 1 - a dark stop holds at the lip: on the first child Easy roll (1-16) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)
+  ---
+  duration_ms: 104607.495893
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/darkBots.test.ts:599:1'
+  failureType: 'testCodeFailure'
+  error: "a roll of 1-16 holds a stop past a rim's end within 110 s"
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/darkBots.test.ts:601:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)
+not ok 2 - the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)
+  ---
+  duration_ms: 0.605004
+  type: 'test'
+  location: '/home/user/Sloths-Adventure-/src/game/gen2/darkBots.test.ts:607:1'
+  failureType: 'testCodeFailure'
+  error: 'the lip case was found (the row above)'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/Sloths-Adventure-/src/game/gen2/darkBots.test.ts:609:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 106729.607794
+
+real	1m47.062s
+user	1m50.577s
+sys	0m0.901s

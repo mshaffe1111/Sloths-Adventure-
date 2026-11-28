@@ -1,0 +1,29 @@
+roll 52 noLipHold=false end=shrine
+  held past: t=227.20 rim 527,10240 dir -1 facing -1 x 512.8 turn - runOff false
+     end t=229.47 x 512.8 grounded true stop false
+  unlit: []
+  gaveUp: []
+roll 52 noLipHold=true end=shrine
+  held past: -
+  unlit: []
+  gaveUp: []
+roll 74 noLipHold=false end=shrine
+  held past: t=78.07 rim 514,4917 dir 1 facing 1 x 516.9 turn - runOff false
+     end t=78.13 x 535.3 grounded false stop true
+  unlit: ["dark: went over the rim at x 514, y 4917 (right end of 247-514) at 78.13 s with its landing dark (needs 1.6 s)"]
+  gaveUp: []
+roll 74 noLipHold=true end=shrine
+  held past: t=78.07 rim 514,4917 dir 1 facing 1 x 516.9 turn - runOff false
+     end t=78.10 x 526.4 grounded true stop false
+  unlit: ["dark: went over the rim at x 514, y 4917 (right end of 247-514) at 78.13 s with its landing dark (needs 1.6 s)"]
+  gaveUp: []
+roll 76 noLipHold=false end=shrine
+  held past: t=151.47 rim 1014,6771 dir -1 facing -1 x 1012.5 turn - runOff false
+     end t=154.37 x 1006.0 grounded true stop false
+  unlit: []
+  gaveUp: []
+roll 76 noLipHold=true end=shrine
+  held past: t=151.47 rim 1014,6771 dir -1 facing -1 x 1012.5 turn - runOff false
+     end t=151.50 x 1007.3 grounded true stop false
+  unlit: []
+  gaveUp: []

@@ -1,0 +1,28 @@
+TAP version 13
+# Subtest: a dark stop holds at the lip: on the first child Easy roll (1-16) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)
+ok 1 - a dark stop holds at the lip: on the first child Easy roll (1-16) where his stop is held with his middle past a rim's end and the engine still stands him on its piece, he stands there until its landing is lit, and does not go over that rim dark (GREEN; planted: noLipHold)
+  ---
+  duration_ms: 52487.559045
+  type: 'test'
+  ...
+# roll 8, the rim at x 515, y 4375 (: held past the end 85 frames, unlit []
+# Subtest: the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)
+ok 2 - the stop read by the piece's span alone (noLipHold, the plant): on that roll, at that lip, he walks over that rim dark (RED)
+  ---
+  duration_ms: 5370.39067
+  type: 'test'
+  ...
+# roll 8, the rim at x 515, y 4375 (: planted unlit ["dark: went over the rim at x 515, y 4375 (right end of 251-515) at 103.37 s with its landing dark (needs 1.6 s)"]
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 59975.477435
+
+real	1m0.308s
+user	1m2.006s
+sys	0m0.934s
