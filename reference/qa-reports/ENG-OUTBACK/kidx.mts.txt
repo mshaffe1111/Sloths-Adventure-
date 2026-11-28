@@ -1,0 +1,8 @@
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { firstTimer } = await import(`${ROOT}/tools/inspect/firsttimer.ts`);
+const { CAST_BOTS } = await import(`${ROOT}/tools/inspect/castBots.ts`);
+const xs: string[] = []; let n = 0;
+const r: any = firstTimer('2-8', 30, CAST_BOTS.kid.normal, { cap: 60, dotSetting: true, onFrame: (sim: any) => { if (n++ % 30 === 0) xs.push(`${Math.round(n / 30)}s:${Math.round(sim.p.x)}`); } } as any);
+console.log('end', r.end, 't', r.time, 'spawn?', xs[0]);
+console.log(xs.join(' '));

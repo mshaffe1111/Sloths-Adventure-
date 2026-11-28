@@ -1,6 +1,6 @@
 # ENG-OUTBACK REPORT (engine; R-165.583, R-165.584, R-165.585)
 
-## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:29 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
+## EXACT NEXT STEP (box 1, started 9:15:46 PM ET (from date); hand-over written 9:31 PM ET (from date), the last box tonight (the lead: no successor until Matt restarts the team tomorrow); branch t-eng-outback, head: see the lead message / git ls-remote)
 STATE: (A) FIXED, RED-first, pushed (e10e208f5). (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
    door; the HUD waits for it, UI-22). (C) NOT STARTED (no bot code written). Nothing landed on t-build-28-wip. No freeze, no gates beyond tsc, generality and the
    river/flood suites. The lead has the step-4 table for (A) only (message sent with this hand-over).
@@ -17,11 +17,15 @@ NEXT, in order:
       so every other row must come back identical: run it, do not assume it.
    3. TRACE the moved 2-8 rows (started; run28.mts.txt, run-kid30-child12-*.txt in this folder):
       (a) kid Normal seed 30: on be2ebe7d2 'sealed door t 47 x 226, goal 0/4' (straight home); on e10e208f5 'shrine t 160.8, goal 4/4'
-          (a win). So (A) changed the bot's ROAD, not only its lives: on the fix it goes right for the cages first. WHY is not traced:
-          first suspect, the old skew put a wrong live surface on rivers the bot's route and aim read in the running engine (the parade at
-          y 880; the low road's 'close' deep on another river), which made the way left read differently. Trace with a per-frame x log
-          on both heads for the first 60 s. This decides (C)'s RED toy: if the fixed 2-8 now routes cages-first on most seeds, the out-and-back
-          gap still lives (adult 19/40 'stranded 0/4') but shows on fewer seeds.
+          (a win). So (A) changed the bot's ROAD, not only its lives. Per-second x (kidx.mts.txt, kidx-kid30-*.txt): on BOTH heads he
+          walks RIGHT from the spawn (x 6699) for 8 s, to x 8581; on be2ebe7d2 he turns there and walks home (x 226 at 44 s); on the fix
+          he goes on right for the cages. Seed 30's rivers (flood.mts 30 on the fix): river 3 is x 8356-8498, surface 847, on that way
+          right, just before where he turned. On be2ebe7d2 it took water 2's level (1648 -> 1628), 780 px under its own surface. That
+          assumes seed 30's pre-sort indices follow seed 28's printed pattern (water j -> river 0,2,3,4,5,6,7), which is INFERRED, not
+          printed for seed 30 on the base. So BUILD-28's "every bot walks straight home first" was largely (A)'s skew: the bot's route
+          already runs out and back (it walks right first). (C) STILL LIVES on the seeds that stay 'stranded goal 0/N' (adult Normal
+          19/40, kid 8/40): trace ONE of them on the fix (adult Normal seed 18) with kidx.mts (bot adult) to see where it turns home,
+          then build (C)'s RED toy on THAT behaviour, not on BUILD-28's.
       (b) 'shrine rescued xN' is the PARADE again, without a life: child Normal seed 12 on e10e208f5 splashed back 8 times at the dip
           x 2554-2654 (stuck 'set down here 8 times' at x 2579), then the bot's rescue at x 3221 (the splash-back point is 3224). A child
           missing a flat 100-px hop 8 times is a bot-skill question (fly-2-8: maxGap(0) single 143.3 px) or a lay one (the run-up: he is
