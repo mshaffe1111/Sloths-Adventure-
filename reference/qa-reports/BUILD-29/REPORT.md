@@ -1,7 +1,70 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 14, BUILD-29-n, hand-over 7:08 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+## EXACT NEXT STEP (session 15, BUILD-29-o, hand-over 8:10 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+BOX CLOCK (by `date`): start 7:57:00 PM ET (`TZ=America/New_York date` 19:57:00); no stops (npm ci tracked in the background, 1 min);
+hand-over at the time above, inside the 28-minute box. Nothing left running (vite stopped).
+WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed: the gates are not run on the new head). The new src head is **889835c7**
+(on box 14's 43f20100f = frozen ae5d22ce6 + reference/); this hand-over commit adds only this report. Pushed to **t-build-29-m**.
+`git ls-remote` at 8:09 PM: main 49fdc8cb6, t-build-29 f4e77273 (both unmoved).
+DONE (all five reds fixed at their cause; none by a weaker test or a grown list):
+1. THE FIVE REDS PROVEN FIRST, each file run ALONE on main 49fdc8cb6 and on t-build-29 f4e77273 (worktrees /home/user/wt-main,
+   /home/user/wt-f4e; logs reds-o/wt-*.txt): on MAIN all green (verdicts 33/33, groundwork 5/5, artUse 1/1, judgedTable 6/6); on
+   f4e77273 the same five red (verdicts #24, groundwork #4, artUse #1, judgedTable #1 and #3). So all five were BORN ON OUR BRANCH.
+2. (r1) 2-9's eight flown rows entered in reference/specs/chain.md §1 ("Rows ... Normal 2-9", 2-7's form at :101) and flownArcs.ts
+   cites `chain.md §1 "2-9: ..."`; the FIGURES UNCHANGED (each cited string checked present in chain.md). verdicts 33/33, flown12 4/4.
+3. (r4, r5) judgedTable.test.ts's two expected JUDGED tables gain '2-9': 'normal-2-9' (2-7's method). judgedTable 6/6.
+4. (r2) PROVEN BY THE RUN (reds-o/goalprobe-*.txt, the test's own loop): main checks 6 (2-8 10/10, **2-9 23 of 30**, 3-3 14/19, 3-9
+   21/28, 4-8 20/20, 4-9 13/17); f4e77273 checks 5, the same five with the SAME counts: only the hand-built 2-9 is gone, ENG-LATE's
+   kind-counting (R-165.569) cut nothing. THE CHECK MOVED (law 22): w2Arc29.test "2-9's Normal goal lands in Matt's band" (the same band
+   and slack as groundwork.test:83-86), as Play builds it (withGoals), on ALL 100 listed seeds: goal 5 of 7 animals on every one (0.714;
+   Easy 3) (reds-o/goal29-out.txt). PLANTS: 7 of 7, 3 of 7, Easy over Normal, each named; with the band switched off the test goes RED
+   ("a goal of 7 of 7 is named", reds-o/plant-off.txt). Only then groundwork's hand floor 6 -> 5, the reason in a comment. groundwork 5/5.
+5. (r3) THE COURT DRESSED: finish29 (w2Arc29.ts; listed.ts FINISH 'w2-29', 2-6's finish26 method, decor only): the hand-built court's
+   own sizes (w2Sections.ts:485-491 on main): lily carpets 200 px at 170 apart, the dais 250, the empty throne 200 on it, the shrine 340
+   past the throne; each piece whole on the shrine's ground at its height (a carpet that would hang over the barge's river is not laid).
+   artUse.test PASSES with artUse.allow.json UNCHANGED; inventory w2.json slots `proto.decor key throne / dais / lilyCarpet`, scale_ok.
+   w2Arc29.test "the King's Court is dressed ..." on all 100 listed seeds BOTH settings, as Play finishes it (playFinish): one throne on
+   one dais, 2+ carpets (3 on every seed shot), each whole on ground. It is decor only: nothing he stands on moves, so no bot can see it,
+   but the lock's 2-9 decor hash moves (2-9 already moves in every part).
+6. On the final tree (889835c7): tsc CLEAN; generalitycheck PASS; the six touched files together (artUse, groundwork, judgedTable,
+   verdicts, flown12, w2Arc29): **tests 58, pass 58, fail 0** (reds-o/final-six.txt).
+POLISH CHECK (stills-o/, vite on the working tree at 889835c7's src, seed 1, Pokey stood on the first carpet, 6 s after the card):
+- o-2-9-normal-court-sideways.jpg: the court READS: Pokey on the lily carpet, three carpets leading to the bamboo throne on its lily dais;
+  Pokey drawn IN FRONT of the carpet. Good. (The first shot at 1.5 s had the stage card up and his blink: re-shot.)
+- o-2-9-normal-court-upright.jpg: two carpets and Pokey; the throne is off screen right (550 px on). Fine.
+- o-2-9-easy-court-{upright,sideways}.jpg: as Normal, Dot's "Still 3 snappers" box up.
+ROUGH, NAMED (not fixed; the next box judges and fixes, or the lead rules):
+- (a) each lily-carpet heap stands about 1.3x Pokey's height with a stepped top, at the OLD court's 200 px: it may read as something to
+  stand on (level.md: what looks standable must be standable). The art is a heap of pads, not a flat runner. Options: a smaller width
+  (inventory pokey_scale 0.91; I did not prove what width that scale names), or the carpets set behind the throne's line. Not decided.
+- (b) EASY: the quay's frog on its stone sits inside the third carpet, and a crab overlaps the dais's left edge (sideways still).
+  finish29 must keep clear of the stage's other decor (or move the court), with a test that no court piece overlaps other decor.
+- (c) one page error on every shot: "Cannot read properties of null (reading 'classList')" (the still script's jump via __play; also
+  seen on box 14's? not checked). Trace or name it.
+LEFT (the next box, in order):
+a. ReadNotifications. `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`; `git ls-remote`: main 49fdc8cb6,
+   t-build-29 f4e77273 (if either moved, stop and tell the lead).
+b. Fix rough (a) and (b) above (the lead may rule on (a)); re-shoot the four stills (`PW=/opt/node-tools/node_modules/playwright/index.mjs
+   node reference/qa-reports/BUILD-29/stills-o/court.mjs 5199 <out> normal|easy`, vite on the tree) and judge at 1x and 2x.
+c. STEP 2 OF THE BRIEF (not started): the WHOLE test file of every importer of every src file changed vs MAIN
+   (`git diff --name-only 49fdc8cb6 HEAD -- src`: 79 files; listed.ts is new in that set and imported widely) + tsc + generality;
+   then re-freeze the head in a detached worktree (dispatch-packet.md:81), `chattr`, ls-remote.
+d. STEP 3: the lock --check half against the SAME main base (sha256 764b4dd982f2af88) with the key-set diff (R-165.577); expected
+   moves = box 14's (2-9 every part, its decor now too; 2-5 proto.dress; 2-1/2-4 = 74d88d236; verdict-only lines) and nothing more;
+   the suite in 6 shards, 0 fail; then box 14's LEFT list in order (CI line with riverRide:278 = R-165.574 named, not traced; seedlist
+   every list; tierBots; registrycheck 2-9; drawcheck 2-9 (the court adds three decor draws: watch the per-frame limits); castBots x40
+   both settings; the three tip scans; stills incl. the roar on the page and the frog crops).
+e. STEP 4: LAND as a fast-forward of f4e77273 (no force); ls-remote equal; the debrief.
+LEARNED (o): (1) prove a red's birth with the TEST'S OWN LOOP as a probe on both trees (goalprobe.mts): it named the one lost stage and
+the five unchanged counts in seconds, where reading the diff would have been a guess. (2) A still shot 1.5 s after __play catches the
+stage card and the spawn blink: wait 6 s and set invincibleTimer 0 before judging layering. (3) Moving dress onto a bank another
+finish already dresses collides on one setting only (Easy's frog): test a new finish against the stage's existing decor.
+PROPOSED RULE CHANGE (for the lead, level.md): "A stage's own finish that adds decor is tested against every other decor on the stage
+(no overlap) on every listed seed, both settings" (the check: a test like w2Arc29's court test).
+LESSONS APPLIED: D7/D24 (the probe read the value on both trees, not the diff); :23 (ReadNotifications before the report: none queued);
+time from `date` (every time above); D18 (no acceptance on my own tests: the gates are LEFT and named).
+## (superseded) EXACT NEXT STEP (session 14, BUILD-29-n, hand-over 7:08 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 6:46:33 PM ET; stops (each with its cause): 6:52:42-7:03:14 PM the lock's --check half run ALONE (10m32s against the base's 7m10s: nothing heavy beside it, by the brief), the roar script and this report written meanwhile; 7:03:52-7:05:58 the 2-stage lock across 74d88d236, alone; the suite started 7:06 and was RUNNING at the hand-over (finished and recorded after it, below); hand-over at the time above (inside the 28-minute box).
 WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed: the one gate run is NOT finished). The FROZEN head is **ae5d22ce6**
 (step 0 only, on top of box 13's 6ce989f8e); this hand-over commit adds only reference/ (report, stills-n tools and logs). Pushed to
