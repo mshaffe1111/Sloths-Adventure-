@@ -1,7 +1,7 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
-(box 7, ENG-CATCH-l, engine, written 8:49 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
+(box 7, ENG-CATCH-l, engine, written 8:50 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
 this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
 NOT LANDED (the lead ruled A: 1-4 is SHIPPED; trace the castBots 1-4 PASS->FAIL rows, sort them into classes, land only after the
 lead reads them). Candidate 049a20abc is frozen and every gate but the rows is green below (shard 1/6 752/753 + 1 todo, 0 fail).
@@ -51,6 +51,9 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      trimmed overlap, so the lead rules where the root fix goes (the trim merging flush same-height pieces into one, or the bots reading
      flush pieces as one floor), never a re-pin. Still to do: which bot read stops him at the seam (frames just after each landing), and whether the 4
      FAIL->PASS rows share the family (trace each the same way), and the stills of each spot, both trees, upright.
+   - FAIL->PASS child EASY 5 (one of the 4; the trace reproduces both rows: base 163.9 s, 1 rescue; cand 217.7 s, 0): the runs part at
+     46.133 s, both on id 18 at y 8536: the candidate stops at x 667.2 (base walks on: 665.9, 656.4, 647.5). The same piece id on both
+     trees, so whether a seam is near is UNVERIFIED (print the wood at y 8536 on both trees, x 400-900). proof-l/trace/path-ce5-*.gz.
    - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
      (trace each the same way).
    - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
