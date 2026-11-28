@@ -1,0 +1,33 @@
+# Subtest: a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is l
+not ok 260 - a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is
+  ---
+  duration_ms: 13245.25959
+  type: 'test'
+  location: '/home/user/wt-frozen/src/game/gen2/darkBots.test.ts:576:1'
+  failureType: 'testCodeFailure'
+  error: 'the stop was held with his middle past the end'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/user/wt-frozen/src/game/gen2/darkBots.test.ts:578:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+--
+# Subtest: the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)
+not ok 261 - the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)
+  ---
+  duration_ms: 14131.062932
+  type: 'test'
+  location: '/home/user/wt-frozen/src/game/gen2/darkBots.test.ts:582:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    he went over that rim dark ([])
+    
+    0 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 0

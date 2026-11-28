@@ -1,0 +1,15 @@
+== base 7a580aefc
+exit 0 16s
+ok 1 - a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim a
+ok 2 - the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)
+# tests 2
+# pass 2
+# fail 0
+== frozen 192a433ae
+exit 1 14s
+not ok 1 - a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the r
+not ok 2 - the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)
+# tests 2
+# pass 0
+# fail 2
+DARKDONE

@@ -1,6 +1,46 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
+(box 5, ENG-CATCH-j, a TAIL, STOPPED ON A RED, written 7:50 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
+NOT LANDED. The frozen candidate 192a433ae (code 9afeaf31c) fails 2 suite tests that pass on 7a580aefc: OURS, proven alone.
+- src/game/gen2/darkBots.test.ts:578 (test at :576, "a dark stop holds at the lip ... child Easy roll 8, the rim at x 515, y 4375"):
+  past=0, "the stop was held with his middle past the end". And :584 (test at :582, its noLipHold plant): unlit 0 !== 1.
+- Alone (proof-j/dark8.txt): 7a580aefc 2/2 pass (16 s); frozen 192a433ae 0/2 (14 s).
+- Why: the candidate trims 12 branch catches on draft 3-1 easy roll 8 and drops 1 (236 -> 235 solid). The trims start at y 1752
+  (806-1180 -> 1077-1180), long before the rim. The wood at the rim (251-515 @ 4375, 137-531 and 531-815 @ 4497, 210-565 and
+  658-861 @ 4778) is byte for byte the same (proof-j/3-1-easy8-wood.diff, all8.mts/near8.mts, read only). So the child's route
+  changes upstream, and the pinned lip moment (his stop at 102.67 s, darkBots.test.ts:560) never happens. 3-1 is a draft, so
+  the 102-stage lock never covered it.
+- THE LEAD RULES (a tail writes no code): the fix is an engine packet that re-points these two rows to a roll where the lip case
+  still happens on the new lay, with the same bar and plant (as 38e4892e did for noLevelRead), never a loosened bar
+  (ENGINE.md:51: a test pins properties of a roll, not its x). Then that head goes through the freeze and the gates again.
+- If the fix touches only darkBots.test.ts (no src/ or tools/ lay code), these carry over (D118): the suite's other shards
+  2-6 (green) and the steps below that were not run.
+NOT RUN this box (the red stopped the tail; all still owed, ALONE, each on the frozen tree of the next candidate):
+  the CI tool line (gates.yml:157); tierBots; `seedlist.ts 1-4 --check`; castBots 1-4 both settings on the candidate AND on
+  7a580aefc (`--seeds 1-16 --setting both --par 4 --rows <f>`, the bar runHolds castBots.ts:32; compare: proof-j/castcmp.py base.jsonl cand.jsonl <floor>); the
+  normal-4 stills at y 10364, upright and sideways, both trees. Scratch tools ready in proof-j/: castcmp.py, shoot14.mjs (stills: <root> <port> <out> <label> 4 normal 1000 10364), near8/all8.mts.
+
+## Box 5 (ENG-CATCH-j, a tail): the suite on the frozen tree; a red, proven ours; stopped before landing
+(started 7:05 PM ET Fri 11-27 by `date`, on 192a433ae frozen; no code written)
+- t-eng-w3 = 7a580aefc (`git ls-remote`, at the start and at the hand-over). Frozen worktree at 192a433ae: chattr +i on src/ and
+  tools/, src/game/gen2/proven writable, `touch src/x`, `tools/x` and `src/game/gen2/x` -> "Operation not permitted"; `git diff
+  --name-only 9afeaf31c 192a433ae -- src tools`: 0 files. A base worktree at 7a580aefc for the solo runs.
+- THE SUITE, 6 shards (deploy.yml:38 glob, 3 at a time), verdict RED: 4189 tests, 4184 pass, 2 fail, 3 todo (proof-j/suite-totals.txt).
+  1/6: 753, 750 pass, 2 fail, 1 todo (892 s). 2/6: 656/656 (996 s). 3/6: 749/749 (1170 s). 4/6: 685/685 (707 s).
+  5/6: 725/725 (666 s). 6/6: 621, 619 pass, 0 fail, 2 todo (1236 s; its `not ok` is the TODO w1Arc19.test.ts:191, R-165.312).
+  The 2 fails: darkBots.test.ts:578 and :584 (proof-j/shard1-reds.txt). Solo runs, OURS: 7a580aefc 2/2, frozen 0/2 (proof-j/dark8.txt).
+  R-165.550 ctestPicker:78 (inherited, owned) did not fail in this run.
+- Not run: the CI tool line, tierBots, seedlist 1-4, castBots, stills, landing (the red stops a tail; see the EXACT NEXT STEP).
+- Lessons applied: D115 (frozen tree, chattr; each solo run in its own worktree), D59 (I waited for the suite past the box
+  rather than stop with it running), D30 (stamps from `date`), D52 (cites checked last), ENGINE.md:51 (the fix is a re-point, not x).
+- Polish check (box 5): no screen judged; the 1-4 stills are still owed, and the red stopped the box before them.
+- Learned: the lock covers the 102 table stages, not the drafts. A lay change on a draft (3-1) shows up only in the suite's
+  pinned-roll bots. A tail that freezes a lay change should run the draft-pinned tests (darkBots, w3*) FIRST, minutes, before the
+  35-minute suite. Method update (dispatch-packet / gates.md): add "drafts the candidate's lay reaches: run their pinned-roll tests
+  first, alone, on both trees".
+
+## Box 4's EXACT NEXT STEP (superseded by the one above)
 (box 4, ENG-CATCH-i, a TAIL, handed over, written 7:04 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
 FROZEN CANDIDATE = code 9afeaf31c (frozen as 192a433ae: src/ and tools/ byte for byte 9afeaf31c's). The branch head after it
 (origin/t-eng-catch-f, the hash in the lead message) adds docs only: engine-core.md §0zr-CATCH, lockbase-7a580aefc.json.gz, proof-i/,
