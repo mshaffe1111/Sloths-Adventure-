@@ -54,11 +54,28 @@ STEP 2 (pre-freeze), STARTED 8:27:02 PM: `git diff --name-only 49fdc8cb6 HEAD --
    stands ..." -> `no seated island-earth stone in gen2 1-1 seeds 1-24` (prefreeze-p/shard1.txt:2223). It builds gen2 1-1 (seeds 1-24) and
    reads terrain.ts footingsFor; nothing in it names 2-9. NOTE: src/game/mixer/*.test.ts is NOT in CLAUDE.md's suite globs, so the
    earlier boxes' suite runs may never have run this file: run it ALONE on main 49fdc8cb6 (/home/user/wt-main) and on this head first.
+STEP 2 RESULT (recorded past the line; the run started 8:27:02 PM inside the box, ended 9:12:07 PM; prefreeze-p/clock.txt, totals.txt):
+   470 files on 09e29447: **3413 tests, 3401 pass, 8 FAIL** (shard0 603/606 + 1 TODO, shard1 543/544, shard2 629/635 + 1 TODO, shard3
+   619/619, shard4 535/536 + 1 TODO, shard5 472/473 + 1 TODO; the TODOs are marked `# TODO` and are not fails). NONE of the failing test
+   files changed vs main (`git diff 49fdc8cb6 HEAD` empty for each). NOT TRACED (no new work after the line); each: alone on main and on
+   this head FIRST:
+   1. tools/inspect/riverRide.test.ts:278 (shard0.txt:3576), the child on Normal 2-1 with against-the-flow off = **R-165.574, named
+      in the brief (the CI line), not traced**.
+   2. src/game/mixer/stumps.test.ts:40 (shard0.txt:1564) "a log on a stump is thin ...": `no log on a stump was laid: the test reads nothing`.
+   3. src/game/mixer/support.test.ts:27 (assert at :41; shard1.txt:2219) "a stone step seated on a deep bank stands ...": `no seated
+      island-earth stone in gen2 1-1 seeds 1-24`. (2 and 3 both find NO piece on gen2 1-1 / mixer builds: the same cause is likely, a
+      1-1 build or footing change; a guess until run on main.)
+   4-8. tools/validate/validate.test.ts:216 (chase: outrun false, caught 0, reached true), :537 (route down at x 150: through the branch),
+      :547 (route: the middle ledge on the way), :555 (route: down at x 700 inside the fall zone), :568 (beats: a 160 px rotten stretch
+      that holds 0.25 s is a hop) (shard2.txt:3680-3910). Five in one file on the route/beat judge: likely one cause.
+   NOTE: src/game/mixer/*.test.ts and tools/validate/*.test.ts are NOT in CLAUDE.md's suite globs: if CI runs them (ciTests.test says
+   every test file has a workflow), check gates.yml to see whether main's CI is green on them before calling any of them ours.
+
 LEFT (the next box, in order):
 a. ReadNotifications. `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`; ls-remote main 49fdc8cb6,
    t-build-29 f4e77273 (moved: stop, tell the lead).
-b. RED 1 first (support.test.ts:41, above): alone on main and on this head; born here -> fix at its cause; on main too -> name it to the
-   lead (it is outside the suite globs). Then read STEP 2 RESULT below; any other red: run that file ALONE on main 49fdc8cb6 (worktree /home/user/wt-main exists) and on this head, name
+b. STEP 2's 8 reds (STEP 2 RESULT above; riverRide:278 is R-165.574, named): each file ALONE on main 49fdc8cb6 and on this head;
+   born here -> fixed at its cause; on main too -> named to the lead. Then any other red: run that file ALONE on main 49fdc8cb6 (worktree /home/user/wt-main exists) and on this head, name
    file:line. Then FREEZE in a detached worktree (dispatch-packet.md:81).
 c. STEP 3 on the frozen head: the lock --check half against main base sha256 764b4dd982f2af88 + key-set diff (R-165.577). EXPECTED MOVES:
    2-9 (decor AND proto.dress now: the court's dressing moved clear); 2-5 proto.dress; 2-1/2-4 = 74d88d236; verdict-only lines. Anything
