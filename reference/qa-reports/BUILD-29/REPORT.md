@@ -1,7 +1,7 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 16, BUILD-29-p, hand-over NOT YET (a safe-keeping commit inside the box; the stamp from `date` follows at the line); head = this commit, on branch t-build-29-m, NOT on t-build-29)
+## EXACT NEXT STEP (session 16, BUILD-29-p, hand-over 8:41 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 8:13:27 PM ET; no stops (npm ci tracked in the background, 1 min; vite tracked; the importer run started
 8:27:02 PM inside the box and is finished and recorded past the line, the lead's standing rule); hand-over at the time above.
 WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed). The src head is **09e29447** (on 3e3ca0ee: the court's four polish fixes);
@@ -47,11 +47,18 @@ DONE, the brief's step 1 (all four, src changed, so all BEFORE the freeze):
 TESTS on 09e29447: tsc CLEAN; generalitycheck PASS (26 literals, 26 known); w2Arc29.test whole file **12/12** (stills-p/w2Arc29-whole.txt).
 STEP 2 (pre-freeze), STARTED 8:27:02 PM: `git diff --name-only 49fdc8cb6 HEAD -- src tools` = 91 files (prefreeze-p/changed.txt);
    their own tests + every test importing one directly = **470 test files** (prefreeze-p/tests.txt; 50 under tools/), 6 shards, 3 at a time
-   (4 cores). RESULT: see "STEP 2 RESULT" below (recorded when it finished, past the line).
+   (4 cores). AT THE LINE (8:41 PM): shard1 FINISHED, **544 tests, 543 pass, 1 FAIL**; shards 0, 2, 3 running, 4 and 5 queued (the run is
+   finished and recorded past the line, in a later commit: "STEP 2 RESULT" below). So far: shard0 88 ok, shard2 462 ok + 1 TODO (not a
+   fail: support/roost R-165.312 `# TODO`), shard3 154 ok.
+   **RED 1 (not traced, by the rule: no new work after the line): src/game/mixer/support.test.ts:41** "a stone step seated on a deep bank
+   stands ..." -> `no seated island-earth stone in gen2 1-1 seeds 1-24` (prefreeze-p/shard1.txt:2223). It builds gen2 1-1 (seeds 1-24) and
+   reads terrain.ts footingsFor; nothing in it names 2-9. NOTE: src/game/mixer/*.test.ts is NOT in CLAUDE.md's suite globs, so the
+   earlier boxes' suite runs may never have run this file: run it ALONE on main 49fdc8cb6 (/home/user/wt-main) and on this head first.
 LEFT (the next box, in order):
 a. ReadNotifications. `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`; ls-remote main 49fdc8cb6,
    t-build-29 f4e77273 (moved: stop, tell the lead).
-b. Read STEP 2 RESULT below; any red: run that file ALONE on main 49fdc8cb6 (worktree /home/user/wt-main exists) and on this head, name
+b. RED 1 first (support.test.ts:41, above): alone on main and on this head; born here -> fix at its cause; on main too -> name it to the
+   lead (it is outside the suite globs). Then read STEP 2 RESULT below; any other red: run that file ALONE on main 49fdc8cb6 (worktree /home/user/wt-main exists) and on this head, name
    file:line. Then FREEZE in a detached worktree (dispatch-packet.md:81).
 c. STEP 3 on the frozen head: the lock --check half against main base sha256 764b4dd982f2af88 + key-set diff (R-165.577). EXPECTED MOVES:
    2-9 (decor AND proto.dress now: the court's dressing moved clear); 2-5 proto.dress; 2-1/2-4 = 74d88d236; verdict-only lines. Anything
