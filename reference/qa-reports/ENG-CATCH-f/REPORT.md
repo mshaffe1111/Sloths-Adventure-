@@ -1,7 +1,7 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
-(box 7, ENG-CATCH-l, engine, written 8:48 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
+(box 7, ENG-CATCH-l, engine, written 8:49 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
 this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
 NOT LANDED (the lead ruled A: 1-4 is SHIPPED; trace the castBots 1-4 PASS->FAIL rows, sort them into classes, land only after the
 lead reads them). Candidate 049a20abc is frozen and every gate but the rows is green below (shard 1/6 752/753 + 1 todo, 0 fail).
@@ -11,8 +11,12 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
    - middle EASY 11: cand rescue 1 at 179.87 s from x 288, y 4307, on 120-800@4307, put at 734, 4588 (stuck: "in a dip 281 px deep",
      "a trunk beside him, the way on is 319 px down"). The wood at the spot is IDENTICAL on both trees (x 0-1300, y 4150-4700:
      0-120@4307 | 120-800@4307 | 636-844@4588 | 256-636@4628). The base bot stalled at the same spot (stuck x 355/283, "the way on is
-     321 px down") and got down unrescued. PROVISIONAL (ii). Next: the first frame the two runs part (diff the traces' x by time), and
-     the wood moved there; show the route down 120-800@4307 -> 256-636@4628 / 636-844@4588 as fair (a drop he takes on base).
+     321 px down") and got down unrescued. THE RUNS PART at 36.000 s (proof-l/trace/path-e11-*.txt.gz), falling onto y 8255 near x 732:
+     base lands on id 18 and walks on left (714.8, 705.9, 696.4); the candidate lands on id 91 (717-817@8255, the overlap trim's 100 px
+     remnant) and STOPS DEAD at x 725.3. The whole stage's wood, base vs cand (proof-l/trace/wl-e11all-*.txt), differs ONLY by the three
+     overlap trims, each leaving a 100 px remnant: 0-832@5289 -> 732-832@5289; 309-1280@6612 -> 309-409@6612; 0-817@8255 -> 717-817@8255.
+     THE SAME CAUSE FAMILY AS NORMAL 6: he lands on a trim remnant and stops at its flush seam; the run is later by that pause and
+     parts from there (the rescue at 179.87 s is downstream). Next: confirm the stop's cause (which bot read, frames 36.07-36.5 s).
    - middle NORMAL 15: cand rescue 1 at 98.30 s from x 1178, y 6139, on 1034-1280@6139, put at 1007, 5418 (stuck x 1036: "fell back
      down from here 8 times"). The wood IDENTICAL on both trees (x 250-1300, y 5850-6550). PROVISIONAL (ii); same next step as Easy 11.
    - middle NORMAL 6: cand 4 rescues: 152.67 s from x 841, y 6228 (on 764-924@6228, stuck "in a dip 321 px deep, the way on is 320 px
@@ -36,7 +40,12 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      timed piece, a creaking limb, a hop off the climb), and the frames 110.6-111.07 s (why he stops: which bot read: an edge stop, a lip, a dark/glow rim? `stuck` says "in a dip 321 px
      deep" later at x 852), then confirm (ii) or find an engine cause (a flush seam the engine treats as an end is an engine red).
      NOTE for the lead: if a flush seam the tower's trims make stops any bot, every trimmed overlap on every stage can do it: the fix is
-     at the root (the trim merges flush same-height pieces, or the bots read flush pieces as one floor), never a re-pin.   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
+     at the root (the trim merges flush same-height pieces, or the bots read flush pieces as one floor), never a re-pin.
+   - CAUSE FAMILY (2 of 3 rows, two runs each: castBots + the trace): the overlap trim (no two pieces overlap) keeps a 100 px remnant
+     flush with the piece it overlapped; the middle bot landing on the remnant stops dead at the flush seam (0.5 s on Normal 6), and the
+     run parts from there. The wood stays continuous (a fair route for a player): (ii) as the class reads, BUT made by the tower on every
+     trimmed overlap, so the lead rules where the root fix goes (the trim merging flush same-height pieces into one, or the bots reading
+     flush pieces as one floor), never a re-pin. Normal 15: not yet traced for its first parting (its rescue spot's wood is unchanged).
    - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
      (trace each the same way).
    - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
