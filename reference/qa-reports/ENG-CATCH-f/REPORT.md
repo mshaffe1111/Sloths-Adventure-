@@ -29,10 +29,16 @@ DONE THIS BOX (on this branch's head, src diff vs 5a9af1813 = tower.ts, pipeline
   base too and the trim's merge cannot green it; the test is scoped to THE TRIM'S OWN CUT. On 049a20abc 1-4 holds 1217: the trims ADD 40
   seams (every one a 100 px remnant at its cut, e.g. 717-817|817-1157@8255, 930-1030|1030-1228@7422, 766-866|866-1118@5626) and drop 31.
 NEXT, IN ORDER:
-1. darkBots red: trace roll 1's spot (x 556, y 3672 onto x 673, y 3850) on 049a20abc vs this tree (the draft's wood in a box at the first
-   frame): did a merge grow a piece across that edge? Class it: the pinned fixture moved (the edge is no longer an edge: the toy is
-   hand-built like lipToy, a REPLACEMENT the lead rules on) or a lost route. Run the test alone on 7a580aefc and on 049a20abc (both green
-   per box 7). Do not re-pin a roll.
+1. darkBots red, TRACED AS FAR AS (9:09 PM ET, proof-m/spot.mts `ROOT=<tree> npx --prefix <repo> tsx spot.mts`: draft 3-1 roll 1 Normal,
+   the adult's first frame, wood in x 250-900, y 3550-3950, and runOffRims there): **roll 1 is a DIFFERENT STAGE after the merge**, not
+   a local change at the edge. 049a20abc: 87:376-556@3672 | 18:444-673@3850 | 149:262-444@3850 | 88:684-864@3742 | 89:864-1052@3742 |
+   17:818-938@3569; run-off 556,3672 -> 664,3850 (the test's). This tree: 90:257-437@3563 | 154:143-325@3741 | 18:325-539@3741 |
+   91:569-931@3677 | 92:211-549@3919 | 19:549-788@3919; run-off 437,3563 -> 539,3741. Every height differs, so the roll as a whole moved:
+   find why first (a guess to check, not a finding: the merge changed a down-tower lay's miss count, `left`, so `again`/`first` or a
+   TowerRefusal flipped and the seed search drew another roll; or a grown stage piece changed a later leg's lay). Print, per towerCatches
+   call on roll 1, before/after misses and any refusal on both trees. Then class it: the draft's pinned fixture moved (the test is
+   rebuilt as a hand-built toy like lipToy, a REPLACEMENT the lead rules on) or an engine red. Do not re-pin a roll. Run the test alone on
+   7a580aefc and 049a20abc (both green per box 7).
 2. Re-run proof-m/seams.mts on this tree (`ROOT=<tree> V=1 STAGES=1-4 npx --prefix <repo> tsx seams.mts`): the 40 trim seams must be gone.
    Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
    in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
