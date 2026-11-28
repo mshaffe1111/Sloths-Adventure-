@@ -58,8 +58,18 @@ NEXT, IN ORDER:
    an UP tower, one towerCatches call** (`CALL up false 43 3`: flow up, 43 pieces laid, 3 seams recorded), all 3 seams the catch's kind and
    merged (e.g. remnant 480-580 into 580-1100 at tower y -6854: as built, 41:480-1100, the s17 foot piece grown). The seams left at 480
    and 60 (93:60-480, 96:0-60) are NOT fit's cuts (no record): pieces laid flush against the trimmed piece by another rule of the lay
-   (rule 1's run-on into the wall, or the no-slot flush). NEXT: on easy 6, print every put (x0, x1, y, which rule) at that y to name the
-   rule that lays 60-480 and 0-60; then the lead rules whether those join the merge (they are new vs base, so the trim's change made them).
+   (rule 1's run-on into the wall, or the no-slot flush). PUTS PRINTED (every put at tower y -6854, with its call site, same scratch copy):
+   `PUT 60 480` from tower.ts:573 (rule 2: a BRIDGE laid from its anchor's end, flush with the anchor by design), `PUT 0 60` from :552
+   (rule 1: a run-on into the wall from a piece's end), `PUT 480 1280` from :582 (up flow: an end run on to the wall at its height; fit
+   trimmed it to 480-580 against 580-1100: THE recorded seam, merged). So the seams left are the lay's own bridge/run-on flush joins,
+   the same family as base's 1179, made at new places because the trim changed the anchor. They are not the trim's output. **QUESTION
+   FOR THE LEAD**: do the bridge (:573) and wall run-on (:552) joins merge into the piece they are laid from (the same mergeSeams, one
+   more record at the put: a wider job, it would also move base's own seams on every tower stage), or does this job stop at fit's cut?
+   Recommendation: stop at fit's cut (the brief's root, and the 30 of 38 it removes); trace whether the middle bot stops at any of the 8
+   on castBots first (rows decide it, not opinion).
+LESSONS APPLIED (LESSONS.md, read by headline this box): check the fact before the brief's wording (the 1180 base seams); a test that
+pins a roll's x positions moves with any lay change (the darkBots roll-1 red: name it, never re-pin); time stamps from `date` only (one
+stamp corrected before push, timecheck PASS).
    Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
    in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
    (the second stage piece is taken out of platforms and seams only: if it is a section's own PIECE, `pieces` still holds it: a red).
