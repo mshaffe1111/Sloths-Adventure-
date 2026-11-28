@@ -1,6 +1,71 @@
-# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date)
+# BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date) BUILD-28-p (box 16), started 6:58 PM ET (from date)
 
-## EXACT NEXT STEP (BUILD-28 box 15, BUILD-28-o, started 6:23 PM ET (from date); hand-over 6:47 PM ET (from date); CODE HEAD 4cabd94d3 on t-build-28-wip, unchanged this box)
+## EXACT NEXT STEP (BUILD-28 box 16, BUILD-28-p, started 6:58 PM ET (from date); hand-over 7:22 PM ET (from date); FROZEN HEAD be5e9fc12 on t-build-28-wip)
+CLOCK (the 2-hour level clock's dry run): start 6:58:05 PM ET; stops: none mid-job (the rulings came back about 2 min after the
+   question, and the box kept working while it waited: fix A was prepared and tested); the lock ran alone 7:11:10-7:22:08 PM ET (work, not a stop; the box waited for it rather than hand over with it running, LESSONS 83); hand-over 7:22 PM ET (from date) (box 16 of the job;
+   boxes 14-16 of this phase: box 15 started 6:23:06 PM ET).
+DONE:
+0. THE KEEPER'S LINE (19964dfb8): finds.ts:416 w2_book = 'Before the Water Rises: peek in the Hush Ferns!' word for word (t-story
+   ee84f05b5). The 19 whole test files that grep finds or DOT_HINTS (story, findsPlaced, storyNotice, w5Stage54, finds, playerText,
+   findKeptAtTouch, storyStyle, badges, fixaWords, w6Stages, w1Arc18, findSpot, w5Stages, w5Stage55, saveRoundTrip, findHints,
+   storyScore, saveLoadWords): '# tests 244, # pass 244, # fail 0'.
+0b. THE TWO REDS, each traced by a run:
+   - CORRECTION (sent to the lead, who logged it as its own miss): src/game/firsttimer.ts does not exist; the bot is
+     tools/inspect/firsttimer.ts and it differs from both parents. The lead's 'identical' came from a git diff on a missing path.
+   - lineBot.test.ts:455 (the marsh dip; this line's own toy, e08716828): GREEN a29c1528a, RED from ccc94633f (box 13's merge of
+     release 5 c9770adb2); box 14's merges move nothing here. On ccc94633f, a29c1528a's tools/inspect/firsttimer.ts alone turns it
+     GREEN (engine.ts + terrain.ts do not). The merge is faithful: c9770adb2 -> ccc94633f's firsttimer lines == c73cb9766 -> a29c1528a's
+     (116/116). Per tier (seeds 1-3) only the ADULT changed: take-off x 1085 y 860 both; landing x 1251 -> 1244 y 860 (dip 1150-1250);
+     paddled true, dry false both; the expert still flat. Cause: the toy's measure used his LEFT edge (`Math.max(off.x, p.x) > b`).
+     THE LEAD'S RULING (word for word): "RED 2, lineBot.test.ts:455: your A is APPROVED. Fix the measure to his support: the landing
+     counts when `p.x + p.width > b`, the take-off rule stays `off.x < a`, and the same height stays required. Conditions: run the
+     whole file before and after; both plants (:455's claim and :477's flat && dry plant) must still turn RED with their skill off;
+     run every test that imports the file; write the commit message on why the old measure was wrong (the left edge, 6 px of 44 over
+     the dip). Commit it." DONE be5e9fc12: whole file before 23/24 (:455 red), after '# tests 24, # pass 24, # fail 0'; plants: the
+     swim off in every run -> :455 RED (adult seed 1 flat, dry); the floor off in every run -> RED (middle seed 1 high road, walked
+     false); :477 (flat && dry, swim off) holds. No test imports lineBot.test.ts (the 5 grep hits are comments).
+   - riverRide.test.ts:278 (the upstream plant): NOT this line's. main 49fdc8cb6 + ONLY 74d88d236 (cherry-picked, 3 files) fails it
+     with the head's exact words ('upstream off, 1 more lives (at least 5): on child normal seed 8: ... lives 1 ... off lives 2,
+     stuck x 19577 an open drop ahead, water ahead'); t-eng-29's own version (17; 3, 15; 16) also fails on the head (seed 3: -1).
+     THE LEAD'S RULING (word for word): "RED 1, riverRide.test.ts:278: NOT yours, and not to be touched on this line. It is
+     R-165.574. It is born where main's C14 re-plant meets t-eng-29's 74d88d236 list, so it is red on ANY branch that holds both.
+     The plant depends on the final 2-1 list and bot, so it is re-planted ONCE on release 6's integration head, by the test's own
+     method at the same bar (UPSTREAM_MORE 5). Name it in your gate run as R-165.574, owned by INT-R6, and do not trace it again."
+1. PRE-FREEZE on 19964dfb8/be5e9fc12: tsc rc=0; generalitycheck PASS ('26 literals, 26 known'); `git ls-remote`: main 49fdc8cb6,
+   t-eng-29 337ba7d0b (unmoved). FROZEN be5e9fc12 in a detached worktree (pushed; ls-remote equal).
+2. THE LOCK, ALONE, on frozen be5e9fc12 (`lockall.ts --layouts 16 --check <gunzipped lockbase-49fdc8cb6>`, base sha256 764b4dd9...
+   as box 14's; nothing else running): COUNTS LINE 'lock: 95/102 stages unchanged' (exit 1: no --intended list given, as box 14), 7:11:10-7:22:08 PM ET. Moved: 2-8 (this build); 2-1, 2-4 whole lay (74d88d236); 1-4, 2-6 proto.hints (0057bd6f5); 2-5, 2-9 proto.dress (d2fd4e0da); gen2 verdicts and drops (not hashed) on the same 40 stages. Line for line IDENTICAL to box 14's lock on 4cabd94d3 (lockall-s16-49fdc8cb6-vs-4cabd94d3.txt, diff empty): exactly box 15's named moves, NOTHING NEW. VERDICT: PASS (as expected).
+   Log: reference/qa-reports/BUILD-28/lock-check-s16-be5e9fc12.txt.
+3. FAST CHECKS at hand-over: roadmapcheck PASS; knowncheck (tools/perf/knowncheck.mjs) PASS; `node tools/timecheck.mjs --repo . --range
+   49fdc8cb6..HEAD`: FAIL (3), all REPORT.md:1 in box 13's commit 46cda5b2 (12:24:49 PM ET 11-27): its header rewrite re-added 11-26's
+   session start stamps '12:49 PM ET', '1:15 PM ET', '1:05 PM ET' (sessions 8-10). The same FAIL (3) on box 15's head 0b308457c: not
+   this box's; history is never rewritten here (no rebase, no force). SENT TO THE LEAD for a ruling; the successor does not touch
+   timecheck or its rule.
+NEXT, in order (ReadNotifications at every step boundary, at every push, and between waits on a long run):
+   (a) RE-FREEZE be5e9fc12 in a detached worktree (`git worktree add --detach <dir> be5e9fc12`, about 1.5 min on this 3 GB tree;
+       npm ci --legacy-peer-deps as a tracked background task, or a symlink to a checkout's node_modules with the same package.json).
+   (b) THE REST OF THE ONE GATE RUN on it by reference/qa-reports/BUILD-28/gates-s16.sh.txt (`bash gates-s16.sh.txt <worktree>
+       <scratch>`, one gate at a time; the lock is DONE above, never re-run it beside the script). Each gate's verdict word and counts
+       line; the suite's 6 shards with totals. EXPECTED RED, inherited and owned: riverRide.test.ts:278 = R-165.574 (INT-R6), in the
+       pingrep/ciline run: name it so, do not trace it; R-165.531, R-165.543 (artUse.allow.json untouched), R-165.550. Every other red:
+       file:line, then run it ALONE on main 49fdc8cb6 to prove yours or inherited. seedlist --check on EVERY list; the widened pin grep
+       if any list is rebuilt; `node tools/timecheck.mjs --repo . --range 49fdc8cb6..HEAD`.
+   (c) bots x40 on 2-8 both settings (`npx tsx tools/inspect/castBots.ts --stage 2-8 --seeds 1-40`); stills on the frozen head at
+       phone size (judge at 1x and 2x), upright and sideways, Normal and Easy: BOTH fish-trap placements (the jetty, beat 0; the parade
+       home, beat 14), the book's Hush Fern, the new w2_book hint on the real page (the locked find card), every new piece; the lead
+       judges the fish trap.
+   (d) LAND onto origin/t-build-28 (create it from the head if absent; no force, never rebase); `git ls-remote` equal; message the
+       lead the landed hash and every counts line. (e) the debrief (level.md): what 2-8 is; bot numbers both settings; the job's clock
+       across boxes 14-16+ (box 15 6:23:06-6:47:17 PM ET; box 16 above); Learned, with the rule below.
+LEARNED (proposed; the lead approves):
+   - A file the brief names is checked to exist before any diff on it: `git diff A B -- <missing path>` prints nothing, and nothing
+     reads as 'identical' (the brief's src/game/firsttimer.ts). Check: `git cat-file -e <rev>:<path>` before the diff.
+   - A merge red in a test that one parent re-planted (riverRide's C14 seeds) is first run on THAT parent plus ONLY the other parent's
+     mover (a cherry-pick of the named commit in a worktree): one run splits 'the merge lost something' from 'the two parents meet'.
+   - A toy's geometric measure is judged by his SUPPORT (body overlap of the piece he stands on), never by one edge: a 7 px move of a
+     landing by a later bot change flipped a claim the game never broke (lineBot :259).
+
+## BOX 15 (superseded by box 16 above; kept as history) (BUILD-28 box 15, BUILD-28-o, started 6:23 PM ET (from date); hand-over 6:47 PM ET (from date); CODE HEAD 4cabd94d3 on t-build-28-wip, unchanged this box)
 CLOCK (the 2-hour level clock's dry run): start 6:23:06 PM ET; stops: none mid-job (the first 1-stage lock waited about 1.5 min on two
    fresh worktree checkouts of the 3 GB tree: work, not a stop; later pairs reuse the two worktrees by `git checkout --detach`, seconds);
    handed over at the brief's report-by with the pre-freeze test run still running (it is finished and recorded below); hand-over 6:47:17 PM ET (box 15 of the job).
