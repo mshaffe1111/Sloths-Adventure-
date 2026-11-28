@@ -1,0 +1,25 @@
+BUILD-28 box 18 (BUILD-28-r): the rest of the ONE gate run on frozen be2ebe7d2 (detached worktree), gates-s17.sh.txt unchanged.
+SKIP list and where each is recorded: reference/qa-reports/BUILD-28/REPORT.md, box 18 step 1.
+STOP touched at the line 8:47:44 PM ET (timer); an early STOP touched 8:40:11 PM ET was removed 8:40:19 PM ET (suite3 running; nothing stopped).
+
+HEAD be2ebe7d2a155ba78f040fad1991c00387b4165e
+SKIP tsc (recorded by an earlier box)
+SKIP generality (recorded by an earlier box)
+SKIP ciline (recorded by an earlier box)
+SKIP tipwalk (recorded by an earlier box)
+SKIP storytips (recorded by an earlier box)
+SKIP teachfirst (recorded by an earlier box)
+SKIP registry (recorded by an earlier box)
+SKIP coverage (recorded by an earlier box)
+SKIP suite1 (recorded by an earlier box)
+PASS suite2 (509s)
+PASS suite3 (974s)
+PASS suite4 (382s)
+STOPPED before suite5 (hand-over)
+
+suite2: # tests 711 # pass 711 # fail 0 # todo 0 
+suite3: # tests 731 # pass 731 # fail 0 # todo 0 
+suite4: # tests 705 # pass 703 # fail 0 # todo 2 
+suite4 todos:
+not ok 353 - R-165.312: raw seed 1 keeps the roost boa on its roost (flag placer) # TODO R-165.312: the flag placer, an engine job after release 1
+not ok 650 - 4-3 in the real engine: everything picked up, the shrine reached, nowhere he is stranded # TODO the engine's wall check has no bottom, so a boulder on a ledge is a wall on the floor below

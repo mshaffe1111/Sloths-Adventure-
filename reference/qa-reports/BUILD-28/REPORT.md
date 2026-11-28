@@ -1,6 +1,65 @@
 # BUILD-28 REPORT (W2-LANE: 2-8 "Before the Water Rises"; R-165.430 (2), READY-28, BUILD-28). Session 1 (W2-LANE a), started 9:44 AM ET (from date). Session 2 (W2-LANE b), started 10:07 AM ET (from date). Session 3 (W2-LANE c), started 10:30 AM ET (from date). Session 4 (W2-LANE d), started 10:52 AM ET (from date). Session 5 (W2-LANE e), started 11:19 AM ET (from the session hook date) Session 6 (W2-LANE f), started 11:41 AM ET (from the session hook date) Session 7 (W2-LANE g), started 12:05 PM ET (from the session hook date) Session 8 (W2-LANE h), started 12:49 PM ET (from the session hook date) Session 9 (W2-LANE i), started 1:15 PM ET (from the session hook date) Session 10 (W2-LANE j), started 1:05 PM ET (from the session hook date) Session 12 (W2-LANE l), started 2:20 PM ET (from the session hook date) Session 13 (BUILD-28-j, box 10), started 10:43 AM ET (from the session hook date) Session 14 (BUILD-28-k, box 11), started 11:08 AM ET (from the session hook date) Session 15 (BUILD-28-l, box 12), started 11:35 AM ET (from the session hook date) Session 16 (BUILD-28-m, box 13), started 12:14 PM ET (from the session hook date) BUILD-28-p (box 16), started 6:58 PM ET (from date) BUILD-28-q (box 17), started 7:26 PM ET (from date)
 
-## EXACT NEXT STEP (BUILD-28 box 17, BUILD-28-q, started 7:26 PM ET (from date); hand-over 7:51 PM ET (from date); FROZEN HEAD be5e9fc12 on t-build-28-wip, unchanged)
+## EXACT NEXT STEP (BUILD-28 box 18, BUILD-28-r, started 8:19 PM ET (from date); hand-over 8:53 PM ET (from date); FROZEN CODE HEAD be2ebe7d2 = be5e9fc12 + ENG-METER-L's tools-only meter fix; src unchanged)
+CLOCK (the 2-hour level clock's dry run): start 8:19:44 PM ET; stops: none mid-job (the gate run is work; the box stopped it at a gate
+   boundary for the hand-over: STOP touched at the line 8:47:44 PM ET by a timer; suite4, started inside the box, finished and recorded 8:52:25 PM ET; the run stopped before suite5); hand-over 8:53 PM ET (box 18 of the job).
+DONE (log: reference/qa-reports/BUILD-28/gates-s18-box18.txt):
+0. `git ls-remote` at start: main 49fdc8cb6, t-eng-29 337ba7d0b (unmoved); t-build-28 does not exist yet; t-build-28-wip da0b9ea04.
+   `git diff --stat be2ebe7d2 da0b9ea04 -- src tools package.json package-lock.json` empty. FROZE be2ebe7d2 in a detached worktree
+   (node_modules a symlink to the checkout's; package-lock.json at be2ebe7d2 equal to the checkout's, byte for byte).
+1. THE REST OF THE ONE GATE RUN on frozen be2ebe7d2 by gates-s17.sh.txt (unchanged), SKIP= each gate already recorded on this code:
+   - recorded on be5e9fc12 by box 17 (gates-s17-box17.txt; src unchanged since, be2ebe7d2 changes tools/difficulty only): tipwalk PASS,
+     storytips PASS, teachfirst PASS, registry PASS, suite1 PASS (763/763).
+   - recorded on be2ebe7d2 by ENG-METER-L (reference/qa-reports/ENG-METER-L/gates-box1.txt, ci-tool-line.txt): tsc EXIT 0, generality
+     PASS (26 literals, 26 known), knowncheck PASS, roadmapcheck PASS (its first run 'shallow clone ... FAIL' EXIT 2 was re-run with the
+     full history at 08:04:17 PM: PASS, EXIT 0; checked in the log by this box), timecheck PASS, coverage PASS (18 built stages, 2-8
+     included), the CI tool line FAIL 470/472 with the ONE known red riverRide.test.ts:278 = R-165.574 (INT-R6 re-plants it).
+   Run by this box, in order (nothing else heavy beside it, PM.md:107 "at most one heavy job in your container at a time"):
+   - PASS suite2 (509 s): '# tests 711, # pass 711, # fail 0'.
+   - PASS suite3 (974 s): '# tests 731, # pass 731, # fail 0'.
+   - PASS suite4 (382 s): '# tests 705, # pass 703, # fail 0, # todo 2'. The two todos (each its own owned R-id, not reds): R-165.312 'raw
+     seed 1 keeps the roost boa on its roost (flag placer)'; '4-3 in the real engine: everything picked up ...' (the engine's wall
+     check has no bottom).
+   - STOPPED before suite5 (hand-over): STOP touched at the line 8:47:44 PM ET by a timer; suite4, started 8:46 PM ET inside the box,
+     finished and recorded 8:52:25 PM ET (the lead's standing rule: a gate started inside the box is finished past the line).
+   Shard times are 2-5x box 17's suite1 (197 s): this container, 4 cores, nothing beside the run (load average about 3).
+NEXT, in order (ReadNotifications at every step boundary, at every push, and between waits on a long run):
+   (a) RE-FREEZE be2ebe7d2 in a detached worktree (about 20 s), node_modules a symlink to the checkout's (npm ci --legacy-peer-deps as
+       a tracked background task first: about 1 min).
+   (b) THE REST OF THE ONE GATE RUN: `SKIP="tsc generality ciline tipwalk storytips teachfirst registry coverage suite1 suite2 suite3 suite4 knowncheck roadmapcheck timecheck" bash reference/qa-reports/BUILD-28/gates-s17.sh.txt <worktree> <scratch>`.
+       Left: suite5, suite6 (about 6-16 min each here), seedlists (EVERY list), pingrep, tierbots, vitebuild, chunkcheck, artcheck, drawcheck,
+       clipcheck, kbdcheck, buildcheck, buildcheck28, paint0-2 (about 18 min). Never the lock (95/102 stands: src is unchanged).
+       KNOWN REDS, named, not traced: riverRide.test.ts:278 = R-165.574 (pingrep carries it: name it); src/game/artUse.test.ts on cage-b
+       (w10alt.json#cage-b) = R-165.543 (the lead ran it on be5e9fc12: 44/45). Any OTHER red: file:line, run alone on main 49fdc8cb6,
+       then tell the lead.
+   (c) BOTS x40 on 2-8 (`npx tsx tools/inspect/castBots.ts --stage 2-8 --seeds 1-40 --par 6`: both settings, every bot by default),
+       ONLY after the gate run (one heavy job at a time); the table in this REPORT. THE LEAD'S QUESTION: the meter reads 2-8 Normal 1.818
+       against slot target 17 (World 2 band 9-21) and Easy 2.615 ABOVE Normal (DIFFICULTY.md section 4: Easy at most 0.6x Normal);
+       the meter is calibrated on World 1 only, so the BOTS judge. If the child on Easy clears less, or loses more lives, than the child
+       on Normal: a red (level.md rule 4: Easy never harder in any number); name the beat (ENG-METER-L: Easy's heaviest is a pad board,
+       ride-board 5.97 points, seed 1, t 26 s, x 13611, that Normal does not lay; reference/qa-reports/ENG-METER-L/meter-2-8.txt) and
+       send it to the lead BEFORE landing.
+   (d) STILLS of record (no gate running): `cp reference/qa-reports/BUILD-28/stillspots-s17.ts.txt <scratch>/stillspots.ts; (cd <frozen>
+       && npx tsx <scratch>/stillspots.ts <layout>)`, then vite in the background (`npx vite --port 5199 --strictPort`) and
+       `DIFF=normal|easy node tools/engine/runs/stills-at-setting.mjs 5199 <out> 28-<setting> 2-8 <layout> <x:low> ...`: both fish-trap
+       placements (a basket, never a cage), the book's Hush Fern, the w2_book hint on the real page (the locked find card), every new
+       piece; Normal and Easy, upright and sideways; each judged at phone size, cropped to the part judged.
+   (e) LAND onto origin/t-build-28 (create it from the head if absent; no force, never rebase); `git ls-remote` equal; message the lead.
+   (f) the debrief (level.md): 2-8's meter numbers beside their targets, the clock, "Learned".
+LEARNED (proposed; the lead approves):
+   - A gate a brief names as recorded is checked in its log before it is skipped, not taken from the brief: ENG-METER-L's roadmapcheck
+     reads FAIL (shallow clone) on its first line and PASS on a later one; only the log tells which counts. Check: every SKIP in the
+     run's file names the log line that records it (this section, step 1).
+   - MISS (this box's own, owned): the lead's standing rule ("hand over AT your line ... never before it because the next step won't
+     fit", queued 8:24 PM ET) reached this box while it sat in ONE 10-minute blocking wait on suite3, and was read 15 minutes late (8:40
+     PM ET). Meanwhile the box had touched STOP early (8:40:11 PM ET) to hand over before suite4 "would not fit": against that rule. It
+     took STOP back off 8 s later (8:40:19 PM ET, suite3 still running, so nothing stopped) and set STOP for the line instead (a
+     background timer at 8:47:44 PM ET). Root cause: a long wait was written as one blocking command, so ReadNotifications could not
+     run between. Countermeasure (proposed for content.md / dispatch-packet.md): a wait on a gate is a background `until` with a
+     2-minute cap per call, ReadNotifications between each; the STOP for a hand-over is a timer set to the line at the box's start,
+     never a judgement mid-run.
+
+## BOX 17 (superseded by box 18 above; kept as history) (BUILD-28 box 17, BUILD-28-q, started 7:26 PM ET (from date); hand-over 7:51 PM ET (from date); FROZEN HEAD be5e9fc12 on t-build-28-wip, unchanged)
 CLOCK (the 2-hour level clock's dry run): start 7:26:40 PM ET; stops: none mid-job (the gate run is work; the box stopped it at a gate
    boundary for the hand-over: STOP touched 7:46:28 PM ET, suite1 finished and recorded, the run stopped before suite2 at 7:47:51 PM ET);
    coverage alone on main 7:47:56-7:49:22 PM ET; hand-over 7:51 PM ET (box 17 of the job; boxes 14-17 of this phase: box 15 started 6:23:06 PM ET).
