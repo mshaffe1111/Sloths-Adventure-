@@ -1,8 +1,9 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 17, BUILD-29-q, DRAFT: stamped at the hand-over; branch t-build-29-q, NOT on t-build-29)
-BOX CLOCK (by `date`): start 9:05:46 PM ET; no stops (npm ci and the unshallow tracked in the background).
+## EXACT NEXT STEP (session 17, BUILD-29-q, hand-over 9:30:49 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-q, NOT on t-build-29)
+BOX CLOCK (by `date`): start 9:05:46 PM ET; stops (each with its cause): 9:16:25-9:27:54 PM the lock ALONE (nothing beside it, by the
+   brief); hand-over 9:30:49 PM ET Fri 11/27, the last 2-9 box tonight (the lead's word): NOTHING left running (no vite was started; every background run ended).
 WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed). The src head is now **496271e74** (on box 16's 09e29447: the dais
 rim, step 2 below). Box 16's counts (t-build-29-m 6a28dda8b, reference/ only) merged by hash: 267c392ab. PRE-FREEZE (D168, the step-2 files vs 49fdc8cb6:
    riverArt.ts + w2Arc29.test.ts; box 16's run covers the other 91): tsc CLEAN; generalitycheck PASS (26 literals, 26 known);
@@ -63,8 +64,15 @@ STEP 4, FROZEN: /home/user/frozen-q at **a2d3a384b** (src = 496271e74's), `chatt
   `chattr -R -i src/game/gen2/proven` (box 14's way). Lock base: gates/lock-base-49fdc8cb6.json.gz gunzipped, sha256 764b4dd982f2af88 verified.
 STEP 5, THE ONE GATE RUN (on a2d3a384b):
   - THE LOCK, ALONE (`lockall.ts --layouts 16 --out /home/user/lock-cand-a2d3a384b.json --check /home/user/lock-base-49fdc8cb6.json`:
-    one run gives the verdict AND the candidate's keys for the key-set diff), STARTED 9:16:25 PM inside the box: RESULT in the
-    line below (gates/lockcheck-a2d3a384b.txt, gates/keyset-a2d3a384b.txt).
+    one run gives the verdict AND the candidate's keys for the key-set diff), 9:16:25-9:27:54 PM ET (11m29s, nothing else running),
+    exit 1 (no --intended passed): **"lock: 98/102 stages unchanged"**. Moved: **2-9** (every part, proto.court29 and proto.dress
+    included); **2-5: proto.dress**; **2-1 and 2-4: the whole lay**; "gen2 gained verdicts and drops (not hashed)" on 40 stages
+    (verdict-only lines). NOTHING ELSE MOVED: the same four as box 15's run on ae5d22ce6. KEY-SET DIFF (R-165.577, /home/user/keyset-q.py
+    over both files): **base 3264 builds, candidate 3264; only in base 0, only in candidate 0; 102 stages each: EQUAL** (no build skipped
+    unseen). gates/lockcheck-a2d3a384b.txt, gates/keyset-a2d3a384b.txt. VERDICT: PASS (every move is one the brief names).
+  - 2-1 / 2-4 ACROSS 74d88d236 (recorded at 74d88d236 in /home/user/wt-74d, checked on a2d3a384b, `--layouts 16 --stages 2-1,2-4`),
+    9:28:21-9:30:38 PM: record "lock: wrote 64 builds of 2 stages" exit 0; check **"lock: 2/2 stages unchanged"**, exit 0 (verdict-only
+    line on both). So the head's 2-1 and 2-4 are exactly 74d88d236's lay. gates/lock-2-1-2-4-across-74d88d236-a2d3a384b.txt. VERDICT: PASS.
   - THE SUITE in 6 shards: NOT STARTED, by the lead's word tonight ("the LAST 2-9 box tonight ... Do not start any gate that cannot
     finish within about 40 minutes ... nothing left running"): box 15's took 44 min. The runner is ready: copy /home/user/run-shards-q.sh's
     line (deploy.yml:38's own `--test-shard=i/6` and globs, 3 at a time; art-director and art-raw-2026-11-07 fetched first as CI does).
@@ -75,8 +83,7 @@ LEFT (a FRESH box tomorrow, in order, on the FROZEN head a2d3a384b; src = 496271
    src/game/gen2/proven`; the lock base: `gunzip -k -c reference/qa-reports/BUILD-29/gates/lock-base-49fdc8cb6.json.gz`, sha256 764b4dd982f2af88):
 a. ReadNotifications. `git ls-remote`: main 49fdc8cb6, t-build-29 f4e77273 (moved: stop, tell the lead).
 b. The bots stand (09e29447's table above; the only src change after it is render-only, STEP 2). The lock is DONE (STEP 5: do not
-   re-run it unless src moves). If 2-1/2-4 moved in it, the 1-stage lock across 74d88d236 (`--stages 2-1,2-4`, recorded at 74d88d236,
-   checked on the frozen head) as box 15 did. THEN THE SUITE in 6 shards (above), 0 fail expected (box 16's 8 importer-run reds are all
+   re-run it unless src moves; the 2-1/2-4 lock across 74d88d236 is recorded in STEP 5). THEN THE SUITE in 6 shards (above), 0 fail expected (box 16's 8 importer-run reds are all
    outside deploy.yml:38's globs: mixer/ x2, tools/validate, tools/inspect/riverRide); any red: file:line, run alone on main 49fdc8cb6.
 c. Then, each with its verdict word and counts line, on the frozen head: the CI tool line (gates.yml:157, the whole list; riverRide:278
    = R-165.574 named: green on main, red on f4e77273, STEP 3b); seedlist --check for EVERY list (`registrycheck.ts --lists`, all

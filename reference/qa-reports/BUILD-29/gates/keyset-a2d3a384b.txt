@@ -1,0 +1,7 @@
+keyset: base 3264 builds, candidate 3264 builds; only in base 0, only in candidate 0
+stages: base 102 candidate 102
+  moved 2-1: checkpoints, collectibles, exitTotemX, exitTotemY, gen2, platforms, proto.beats, proto.decor, proto.dress, proto.gen2, proto.hints, rivers, size, spawnY, vines, waterY
+  moved 2-4: checkpoints, collectibles, exitTotemX, exitTotemY, gen2, platforms, proto.beats, proto.decor, proto.dress, proto.gen2, proto.hints, rivers, size, spawnY, vines, waterY
+  moved 2-5: proto.dress
+  moved 2-9: checkpoints, clocks, collectibles, easyGoal, easyToday, enemies, exitTotemX, exitTotemY, gen2, kit, normalGoal, platforms, proto.beats, proto.cast, proto.court29, proto.decor, proto.dress, proto.findSpot, proto.gen2, proto.hints, proto.movedPickups, rivers, size, spawnY, tempo, vines, waterSigns, wa
+VERDICT keyset: EQUAL
