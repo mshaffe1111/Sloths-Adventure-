@@ -1,0 +1,20 @@
+not ok 55 - every packed piece and art file is drawn, or on the reasoned allow-list (which only shrinks)
+  location: '/home/user/frozen-n/src/game/artUse.test.ts:20:1'
+  error: |-
+    W2 src/game/w2PropsData.ts#dais
+    W2 src/game/w2PropsData.ts#lilyCarpet
+    W2 src/game/w2PropsData.ts#throne
+  actual:
+not ok 265 - the table: a stage is judged where it has a row; Easy is easy-any; a stage with no row is not judged
+  location: '/home/user/frozen-n/src/game/gen2/judgedTable.test.ts:25:1'
+  error: |-
+    +   '2-9': 'normal-2-9'
+  actual:
+not ok 267 - any stage: one table line and the fixture stage is judged (a planted 300 px gap refused band.out); without the line it is notJudged
+  location: '/home/user/frozen-n/src/game/gen2/judgedTable.test.ts:74:1'
+  error: |-
+    +   '2-9': 'normal-2-9'
+  actual:
+  location: '/home/user/frozen-n/src/game/w4RealReach.test.ts:26:3'
+  error: |-
+  actual:

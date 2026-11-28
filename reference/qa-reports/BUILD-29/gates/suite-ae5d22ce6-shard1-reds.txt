@@ -1,0 +1,8 @@
+not ok 320 - the verdict path holds no closed-form figure: reach.ts and verdicts.ts name none, and 1-1's envelope reads the bands
+  location: '/home/user/frozen-n/src/game/gen2/verdicts.test.ts:191:1'
+  error: 'single-hold'
+  actual: 'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: single-hold 123 / 113, gap 134 / 217 / 243"'
+not ok 387 - goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on Normal (small counts round as near as they can)
+  location: '/home/user/frozen-n/src/game/groundwork.test.ts:71:1'
+  error: '5 stages checked'
+  actual: false

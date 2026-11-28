@@ -1,0 +1,6 @@
+== shard 1: # tests 761 # pass 759 # fail 2 # cancelled 0 # skipped 0 # todo 0  shard 1 EXIT 1 end 19:30:13
+== shard 2: # tests 669 # pass 669 # fail 0 # cancelled 0 # skipped 0 # todo 0  shard 2 EXIT 0 end 19:27:26
+== shard 3: # tests 659 # pass 659 # fail 0 # cancelled 0 # skipped 0 # todo 0  shard 3 EXIT 0 end 19:34:37
+== shard 4: # tests 778 # pass 774 # fail 3 # cancelled 0 # skipped 0 # todo 1  shard 4 EXIT 1 end 19:48:45
+== shard 5: # tests 733 # pass 732 # fail 0 # cancelled 0 # skipped 0 # todo 1  shard 5 EXIT 0 end 19:49:29
+== shard 6: # tests 664 # pass 663 # fail 0 # cancelled 0 # skipped 0 # todo 1  shard 6 EXIT 0 end 19:50:25

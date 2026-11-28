@@ -29,10 +29,23 @@ DONE:
    - **timecheck** `node tools/timecheck.mjs --repo . --range 49fdc8cb6..HEAD` on ae5d22ce6: **"183 commits, 8 files, 2052 lines they
      wrote, 47 stamps: PASS"**. gates/timecheck-ae5d22ce6.txt.
    - **THE SUITE in 6 shards** (deploy.yml:38's own `--test-shard=i/6`, the CLAUDE.md glob) on ae5d22ce6, three at a time: STARTED
-     7:06 PM, RUNNING at the hand-over: its totals are added by the next commit on this branch ("BUILD-29-n: the suite's 6 shard totals") once it ends; a box that does not find that commit runs the 6 shards first (LEFT b).
+     7:06 PM, FINISHED 7:50:25 PM (after the hand-over; finished and recorded, nothing new started): **tests 4264, pass 4256,
+     FAIL 5, todo 3** (shard 1: 761 / 759 / 2 fail; 2: 669 / 669; 3: 659 / 659; 4: 778 / 774 / 3 fail / 1 todo; 5: 733 / 732 / 1 todo;
+     6: 664 / 663 / 1 todo). gates/suite-ae5d22ce6.txt and the reds' text in gates/suite-ae5d22ce6-shard{1,4}-reds.txt. VERDICT: RED.
+     THE FIVE REDS, NOT YET PROVEN OURS OR INHERITED (none run on main yet; the next box does that FIRST, each ALONE on 49fdc8cb6):
+     (r1) src/game/gen2/verdicts.test.ts:191 (assert :196) "the verdict path holds no closed-form figure": actual
+          'reference/qa-reports/BUILD-29/flown/flight-2-9-j.txt "2-9: single-hold 123 / 113, gap 134 / 217 / 243"' (a BUILD-29 file).
+     (r2) src/game/groundwork.test.ts:71 (assert :90) "goals: every hand-built stage of Worlds 1-4 with a count lands in Matt's band on
+          Normal": '5 stages checked' expected true, got false (the hand-built 2-9 was deleted: likely a count of stages it expected).
+     (r3) src/game/artUse.test.ts:20 "every packed piece and art file is drawn, or on the reasoned allow-list": unused W2
+          src/game/w2PropsData.ts#dais, #lilyCarpet, #throne (the old court's props).
+     (r4) src/game/gen2/judgedTable.test.ts:25 and (r5) :74: the judged table holds '2-9': 'normal-2-9', which the tests' expected table lacks.
+     All five read as 2-9's own (its row, its old props, its flown file), but that is a READING, not a proof: run each on main 49fdc8cb6
+     ALONE; one that passes on main is ours, traced and fixed at its cause (no test weakened, no allow-list grown: LAWS 5, 22); one
+     inside ENG-LATE's files is bisected between its commits and box 13's before it is named.
 LEFT (the next box, in order, on ae5d22ce6 frozen):
 a. ReadNotifications. `git ls-remote`: main 49fdc8cb6, t-build-29 f4e77273 (if either moved, stop and tell the lead). Re-freeze ae5d22ce6.
-b. If the suite's 6 shard totals are not in item 2 above, run them FIRST (`--test-shard=i/6`, the frozen tree). Then, each with its verdict
+b. THE FIVE SUITE REDS FIRST (item 2: r1-r5): each on main 49fdc8cb6 ALONE, then fixed where ours, then the 6 shards again on the new frozen head. Then, each with its verdict
    and counts line: the CI tool line (gates.yml:157, the whole list); seedlist --check for EVERY list (`registrycheck.ts --lists`, all
    shards); tierBots (`npx tsx --test tools/inspect/tierBots.test.ts`); `registrycheck.ts --stage 2-9`; drawcheck; `castBots.ts --stage
    2-9 --seeds 1-40` both settings; storyTipScan --check; `tipwalk.ts --layouts 4`; `teachFirstScan.ts --check --seeds 20`. (storyTipScan
