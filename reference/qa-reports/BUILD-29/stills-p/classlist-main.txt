@@ -1,0 +1,5 @@
+easy seed undefined court lilyCarpet@18835.79833124508 lilyCarpet@19005.79833124508 lilyCarpet@19175.79833124508 dais@19345.79833124508 throne@19345.79833124508
+  st.collectibles.70 {"id":84,"type":"exit_totem","x":19465.79833124508,"y":550,"collected":false,"bobPhase":0,"isLocked":true,"missing":8}
+  st.collectibles.73 {"id":87,"type":"flower","x":18939,"y":540,"collected":false,"bobPhase":3.733589240395281,"botanicalVariant":"hibiscus"}
+easy seed undefined court lilyCarpet@18835.79833124508 lilyCarpet@19005.79833124508 lilyCarpet@19175.79833124508 dais@19345.79833124508 throne@19345.79833124508
+easy seed undefined court lilyCarpet@18835.79833124508 lilyCarpet@19005.79833124508 lilyCarpet@19175.79833124508 dais@19345.79833124508 throne@19345.79833124508

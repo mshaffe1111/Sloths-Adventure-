@@ -249,7 +249,14 @@ export const draft29Row = (seeds: number[] = [], id: string = STAGE_29): ListedS
 
 /** the court's dress before the shrine (the hand-built court's look and sizes, w2Sections.ts on main 49fdc8cb6: three lily carpets
  *  200 px at 170 apart, then the dais 250 px with the empty throne on it, 200 px; the shrine 340 px past the throne, never in front of it) */
-export const COURT_29 = { carpetW: 200, carpetStep: 170, carpets: 3, daisW: 250, throneW: 200, throneToShrine: 340, edge: 20 } as const;
+export const COURT_29 = {
+  carpetStep: 170, carpets: 3, daisW: 250, throneW: 200, throneToShrine: 340, edge: 20,
+  // (BUILD-29-p, the lead's still: the old court's 200 px carpet, a stepped heap of pads 1.4x Pokey's height in the play plane, read as
+  // stairs to climb. Each carpet is now a LOW CLUMP he walks through: two of the picture's pads, scaled whole (never squashed), 64 px
+  // wide = 40 px tall, under half his drawn height (89.1, the inventory's pokey_units), set mirrored so their high ends meet in a soft
+  // mound, never a stair; sunk 4 px into the grass)
+  clumpW: 64, clumpApart: 48, carpetSink: 4, daisSink: 14, throneLift: 30,
+} as const;
 type Finish29 = { platforms: Platform[]; exitTotemX: number; proto?: { decor?: W2Decor[]; court29?: boolean } };
 /**
  * 2-9's own finish (listed.ts FINISH 'w2-29', after World 2's): the River King's Court before the shrine, decor only (nothing he stands
@@ -275,12 +282,14 @@ export function finish29<T extends Finish29>(st: T): T {
   const C = COURT_29, G = bank.y;
   const throneX = st.exitTotemX - C.throneToShrine;
   if (throneX - C.daisW / 2 < x0 + C.edge) return st;
+  // (every court piece is `clear`: the dressing sets keep off it, protoStage.ts dressClear: Easy's quay frog sat in a carpet, BUILD-29-p)
   for (let i = 0; i < C.carpets; i++) {
     const cx = throneX - C.carpetStep * (C.carpets - i);
-    if (cx - C.carpetW / 2 < x0 + C.edge) continue;
-    decor.push({ n: 'lilyCarpet', x: cx, b: G + 16, w: C.carpetW });
+    if (cx - C.clumpApart / 2 - C.clumpW / 2 < x0 + C.edge) continue;
+    decor.push({ n: 'lilyCarpet', x: cx - C.clumpApart / 2, b: G + C.carpetSink, w: C.clumpW, clear: true });
+    decor.push({ n: 'lilyCarpet', x: cx + C.clumpApart / 2, b: G + C.carpetSink, w: C.clumpW, flip: true, clear: true });
   }
-  decor.push({ n: 'dais', x: throneX, b: G + 14, w: C.daisW });
-  decor.push({ n: 'throne', x: throneX, b: G - 30, w: C.throneW });
+  decor.push({ n: 'dais', x: throneX, b: G + C.daisSink, w: C.daisW, clear: true });
+  decor.push({ n: 'throne', x: throneX, b: G - C.throneLift, w: C.throneW, clear: true });
   return st;
 }

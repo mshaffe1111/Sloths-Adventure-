@@ -424,8 +424,17 @@ export function dressClear(d: { n: string; x: number; b: number }, st: { spawnX:
     const mw = w1DressWidth(m.n) || 60;
     if (x1 > m.x - mw / 2 && x0 < m.x + mw / 2 && Math.abs(d.b - m.b) < 80) return false;
   }
+  // (a stage's own set piece its finish marked `clear` (2-9's court): nothing dresses it, with a margin (BUILD-29-p: Easy's quay frog sat
+  // in a lily carpet, its crab on the dais's edge))
+  for (const m of st.proto?.decor ?? []) {
+    if (!m.clear) continue;
+    const mw = (m.w ?? 100) / 2 + DECOR_CLEAR;
+    if (x1 > m.x - mw && x0 < m.x + mw && Math.abs(d.b - m.b) < 80) return false;
+  }
   return true;
 }
+/** px a dressing piece keeps from a `clear` set piece's side (dressClear) */
+export const DECOR_CLEAR = 24;
 
 /** a screen's width (px, sideways): the farthest a dressing piece is moved to clear the start */
 const DRESS_MOVE_MAX = 1400;
@@ -475,7 +484,7 @@ export function addDress(st: GeneratedStage & { proto?: ProtoExtras; kit?: { roo
   // builds from its spec; the shipped stages' 60 start pieces (hollows, logs, cages at some worlds' starts) wait on the designer's ruling,
   // as some may be designed start scenes)
   // (moved clear, never deleted: the designer's 1:02 ruling, placeDress; what finds no spot is listed on the stage, proto.dressDropped)
-  if (specFor(c.id)) {
+  if (specFor(c.id) || st.proto?.decor?.some((m) => m.clear)) {
     const { kept, dropped } = placeDress(ds, st);
     ds = kept;
     if (dropped.length && st.proto) st.proto.dressDropped = dropped.map((d) => ({ n: d.n, x: d.x, b: d.b }));

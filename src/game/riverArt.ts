@@ -53,16 +53,66 @@ export function w2Sheet(): HTMLImageElement | null {
 }
 
 /** piece `n` filling the box (x, y, w, h); `flip` mirrors it */
+/**
+ * Pieces whose cut kept the generator's ground shadow as opaque PALE paint (a light grey oval painted on the sheet's white; BUILD-29-p:
+ * the court's dais showed a near-white band under the throne that read as a hole at phone size; the throne's foot has the same strip).
+ * From this share of the way down the picture, each pale, colourless pixel is re-tinted a dark shadow (shadowRetint), once, into its
+ * own canvas; the painted piece above is untouched. Not a keying fringe: the band is opaque (alpha about 250), so no key removes it.
+ */
+export const W2_SHADOW_RETINT: Partial<Record<W2Piece, number>> = { dais: 0.58, throne: 0.84 };
+/** the re-tint's pixel rule: a pale (mean over 185), colourless (spread under 35) pixel -> a dark brown shadow, as see-through as it
+ *  was pale; anything else is kept (null) */
+export function shadowRetint(r: number, g: number, b: number, a: number): [number, number, number, number] | null {
+  const lum = (r + g + b) / 3;
+  if (a < 20 || lum <= 185 || Math.max(r, g, b) - Math.min(r, g, b) >= 35) return null;
+  return [34, 27, 20, Math.round(a * Math.min(0.5, ((255 - lum) / 255) * 2.4))];
+}
+const retinted = new Map<W2Piece, HTMLCanvasElement>();
+let retintedFor: HTMLImageElement | null = null;
+function retintedPiece(n: W2Piece): HTMLCanvasElement | null {
+  const from = W2_SHADOW_RETINT[n];
+  if (from === undefined || !img || typeof document === 'undefined') return null;
+  if (retintedFor !== img) {
+    retinted.clear();
+    retintedFor = img;
+  }
+  const had = retinted.get(n);
+  if (had) return had;
+  const f = W2_FRAMES[n];
+  const cv = document.createElement('canvas');
+  cv.width = f.w;
+  cv.height = f.h;
+  const g = cv.getContext('2d', { willReadFrequently: true });
+  if (!g) return null;
+  g.drawImage(img, f.x, f.y, f.w, f.h, 0, 0, f.w, f.h);
+  try {
+    const d = g.getImageData(0, 0, f.w, f.h);
+    const px = d.data;
+    for (let i = Math.floor(f.h * from) * f.w * 4; i < px.length; i += 4) {
+      const t = shadowRetint(px[i], px[i + 1], px[i + 2], px[i + 3]);
+      if (t) [px[i], px[i + 1], px[i + 2], px[i + 3]] = t;
+    }
+    g.putImageData(d, 0, 0);
+  } catch {
+    return null;
+  }
+  retinted.set(n, cv);
+  return cv;
+}
+
 function blit(ctx: CanvasRenderingContext2D, n: W2Piece, x: number, y: number, w: number, h: number, flip = false) {
   const f = W2_FRAMES[n];
+  const rt = retintedPiece(n);
   if (!flip) {
-    ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
+    if (rt) ctx.drawImage(rt, x, y, w, h);
+    else ctx.drawImage(img!, f.x, f.y, f.w, f.h, x, y, w, h);
     return;
   }
   ctx.save();
   ctx.translate(x + w, y);
   ctx.scale(-1, 1);
-  ctx.drawImage(img!, f.x, f.y, f.w, f.h, 0, 0, w, h);
+  if (rt) ctx.drawImage(rt, 0, 0, w, h);
+  else ctx.drawImage(img!, f.x, f.y, f.w, f.h, 0, 0, w, h);
   ctx.restore();
 }
 
@@ -556,6 +606,8 @@ export interface W2Decor {
   k?: number;
   flip?: boolean;
   front?: boolean;
+  /** a stage's own set piece (a finish's court): the dressing sets keep clear of it (protoStage.ts dressClear) */
+  clear?: boolean;
   text?: string[];
   walk?: [number, number, number];
   /** a swing frame (2-7): the height of its beam (the posts run from there down to `b`) */

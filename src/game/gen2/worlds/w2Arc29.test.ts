@@ -15,6 +15,10 @@ import { generateAllLevels } from '../../worldsData.ts';
 import { W2_STAGES } from '../../w2Stages.ts';
 import { STAGE_LINES } from '../../pokeyJournal.ts';
 import { countWord, goalLine, sealedLine } from '../../stagePlan.ts';
+import { generateStage, setLayoutVariant } from '../../stageGenerator.ts';
+import { DECOR_CLEAR, dressClear } from '../../protoStage.ts';
+import { shadowRetint } from '../../riverArt.ts';
+import { W2_FRAMES } from '../../w2PropsData.ts';
 import { COURT_29, DRUM_CARD_29, KICK_29, LINES_29, MISSION_29, STAGE_29 } from './w2Arc29.ts';
 import { DOT_LINES } from '../../dotLinesData.ts';
 /** the kick line's words as the kit says them (its row's old words; dotLines.ts swaps the new look's in where it is said) */
@@ -196,7 +200,9 @@ test("2-9: the King's Court is dressed before the shrine on EVERY listed seed, b
     assert.equal(st.exitTotemX - throne.x, COURT_29.throneToShrine, `${d} seed ${s}: the shrine past the throne`);
     for (const q of court) {
       // (each piece whole on solid ground at the shrine's height: never over the barge's river)
-      const G = q.b - (q.n === 'throne' ? -30 : q.n === 'dais' ? 14 : 16);
+      const G = q.b - (q.n === 'throne' ? -COURT_29.throneLift : q.n === 'dais' ? COURT_29.daisSink : COURT_29.carpetSink);
+      // (a carpet is a LOW clump he walks through: drawn under half his height, never a stepped heap to climb, BUILD-29-p)
+      if (q.n === 'lilyCarpet') assert.ok(!tooTall(q), `${d} seed ${s}: a carpet ${carpetH(q).toFixed(1)} px tall, over half Pokey's ${POKEY_UNITS}`);
       const L = q.x - q.w / 2, R = q.x + q.w / 2;
       const under = st.platforms.filter((p: Any) => p.type === 'solid' && Math.abs(p.y - G) <= 2 && p.x < R && p.x + p.width > L);
       const covered = under.reduce((a: number, p: Any) => a + Math.min(R, p.x + p.width) - Math.max(L, p.x), 0);
@@ -205,4 +211,64 @@ test("2-9: the King's Court is dressed before the shrine on EVERY listed seed, b
     laid++;
   }
   assert.equal(laid, 2 * LISTED.length);
+});
+
+// ---- BUILD-29-p: the court's polish (the lead's stills-o judgement): low carpets, the dais's pale shadow, and nothing laid in the court ----
+const POKEY_UNITS: number = JSON.parse(fs.readFileSync(path.join(root, 'src/game/art/inventory/w2.json'), 'utf8')).pokey_units;
+const carpetH = (q: { w: number }) => (q.w * W2_FRAMES.lilyCarpet.h) / W2_FRAMES.lilyCarpet.w;
+const tooTall = (q: { w: number }) => carpetH(q) > POKEY_UNITS / 2;
+const COURT_N = ['lilyCarpet', 'dais', 'throne'];
+
+test('2-9 court, the bar: a carpet under half Pokey\'s height passes; the old court\'s 200 px heap (1.4x him) is named (plant)', () => {
+  assert.ok(!tooTall({ w: COURT_29.clumpW }), `the clump ${carpetH({ w: COURT_29.clumpW }).toFixed(1)} px`);
+  assert.ok(tooTall({ w: 200 }), 'PLANT: the old 200 px carpet must be named too tall');
+  assert.ok(carpetH({ w: 200 }) / POKEY_UNITS > 1.3, 'the old heap was over 1.3x his height');
+});
+
+test('2-9 court: the dais\'s and throne\'s pale painted ground shadow is re-tinted dark, the painted piece kept (plant: a pale grey kept)', () => {
+  const t = shadowRetint(210, 200, 190, 250)!;
+  assert.ok(t && t[0] < 60 && t[1] < 60 && t[2] < 60 && t[3] > 0 && t[3] < 250, `the pale band ${t}`);
+  assert.equal(shadowRetint(130, 145, 95, 255), null, 'a green pad is kept');
+  assert.equal(shadowRetint(150, 125, 95, 255), null, 'the bamboo is kept');
+  assert.equal(shadowRetint(240, 240, 240, 10), null, 'an empty pixel is kept');
+  assert.notDeepEqual(shadowRetint(226, 219, 211, 237), [226, 219, 211, 237], 'PLANT: the band\'s own mean colour (measured) is changed');
+});
+
+/** every piece laid in the court on a stage as Play builds it: dressing within DECOR_CLEAR of a court piece's side, a creature's box over it */
+function courtFaults(st: Any): string[] {
+  const court = (st.proto?.decor ?? []).filter((q: Any) => COURT_N.includes(q.n));
+  const out: string[] = [];
+  for (const q of court) {
+    const L = q.x - q.w / 2 - DECOR_CLEAR, R = q.x + q.w / 2 + DECOR_CLEAR;
+    for (const d of [...(st.proto?.dress ?? []), ...(st.dress ?? [])]) if (d.x > L && d.x < R && Math.abs(d.b - q.b) < 80) out.push(`dress ${d.n}@${Math.round(d.x)} in ${q.n}@${q.x}`);
+    for (const e of st.enemies ?? []) if (e.x + (e.width ?? 0) > L && e.x < R && Math.abs(e.y + (e.height ?? 0) - q.b) < 120) out.push(`${e.type}@${Math.round(e.x)} in ${q.n}@${q.x}`);
+  }
+  return out;
+}
+
+test('2-9 court: nothing is laid in it, on EVERY listed seed, both settings, as Play builds it (dressing and creatures clear by a margin; plants: a frog on the dais, the court unmarked)', () => {
+  const c = { ...cfg, unlocked: true };
+  let built = 0, withCourt = 0;
+  for (const d of BOTH) for (let v = 0; v < LISTED.length; v++) {
+    setLayoutVariant(v);
+    let st: Any;
+    try { st = generateStage(c, d); } finally { setLayoutVariant(null); }
+    built++;
+    const court = (st.proto?.decor ?? []).filter((q: Any) => COURT_N.includes(q.n));
+    if (!court.length) continue;
+    withCourt++;
+    assert.deepEqual(courtFaults(st), [], `${d} layout ${v} (seed ${st.seed ?? '?'})`);
+    if (built === 1) {
+      // (PLANTS, on the first: a frog set on the dais is named; dressClear refuses it while the court is marked, and lets it be unmarked)
+      const dais = court.find((q: Any) => q.n === 'dais');
+      const frog = { n: 'w2Frog', x: dais.x, b: dais.b };
+      assert.ok(courtFaults({ ...st, proto: { ...st.proto, dress: [frog] } }).length > 0, 'PLANT: a frog on the dais is named');
+      assert.equal(dressClear(frog, st), false, 'the marked dais refuses dressing');
+      const bare = { ...st, proto: { ...st.proto, decor: st.proto.decor.map((q: Any) => ({ ...q, clear: false })) } };
+      assert.equal(dressClear(frog, bare), true, 'PLANT: with the court unmarked, the frog would be laid (the rule is what clears it)');
+    }
+  }
+  console.log(`  court clearance: ${built} stages built as Play builds them, the court on ${withCourt}, nothing laid in it on any`);
+  assert.equal(built, 2 * LISTED.length);
+  assert.ok(withCourt >= built * 0.9, `the court on ${withCourt} of ${built}`);
 });
