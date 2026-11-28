@@ -634,7 +634,19 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     if (!added) break;
   }
   if (flow === 'down') { reLay(); mend(); }
-  return mergeSeams(out, laid, all, seams, sealed);
+  // (A MERGE IS LAID LIKE ANY CATCH: kept only where the merged catch passes every check the lay runs on a catch (fair's, each by name)
+  //  and, going down, leaves no miss of the down tower's invariant the lay as laid does not have; else the seam stays, named by the check
+  //  it fails. A catch merged across a climb vine's top at the seam ran on under the vine, so the vine stood off no face (climbX) and the
+  //  wood 126 px over it became a roof over its top (draft 3-1 adult Normal roll 1: 542-964 @6946, the vine at x 848), ENG-CATCH-n)
+  const unfair = (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>): string | undefined => {
+    rooms = undefined;
+    return cramped(x0, x1, y, but) ? 'cramped' : slotted(x0, x1, y, but) ? 'slotted' : byGate(x0, x1, y) ? 'byGate' : passes(x0, x1, y) ? 'passes'
+      : lidded(x0, x1, y) ? 'lidded' : storeyAt(x0, x1, y, L, but) < 0 ? 'storeyAt (it climbs a storey)' : undefined;
+  };
+  const held = (cs: readonly Catch[]): string[] => flow !== 'down' ? [] : downInvariant([...withoutMerged(platforms, cs), ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], vines, turns, floorY, width).map((m) => m.line);
+  const merged = mergeSeams(out, laid, all, seams, sealed, unfair, held);
+  rooms = undefined;
+  return merged;
 
   /**
    * Going down, THE DOWN TOWER'S INVARIANT kept on the tower's own lay (downInvariant, ENG-CATCH-c): once the lay and reLay are done, each
@@ -913,9 +925,13 @@ const kindOf = (q: Platform): string => {
  * landing on such a 100 px remnant stopped dead at the seam (Easy 11 at 717-817 @8255, Normal 6 at 766-866 @5626, Normal 15 at 930-1030
  * @7422; ENG-CATCH-f box 7). Read as finally laid (the mend may have moved or trimmed either piece since), every seam still flush at one
  * top whose piece is a catch's kind is merged: the pieces it joins become ONE catch spanning them all, which takes the place of the
- * stage's own pieces among them (`into`). A seam with wood of another kind or another top stays, named (trimSeams).
+ * stage's own pieces among them (`into`). A seam with wood of another kind or another top stays, named (trimSeams). A MERGE IS LAID LIKE
+ * ANY CATCH (ENG-CATCH-n): each group is kept, in turn, only where its merged catch passes `unfair` (the lay's own checks on a catch, by
+ * name) and the lay as held with it (`held`: the down tower's invariant, going down) names no miss the lay without it does not; else
+ * its seams stay, named by the check the merge fails.
  */
-function mergeSeams(out: ReadonlyArray<{ x: number; y: number; w: number; level: number }>, laid: readonly Platform[], all: readonly Platform[], seams: ReadonlyArray<{ p: Platform; q: Platform }>, sealed: (p: Platform) => boolean): Catch[] {
+function mergeSeams(out: ReadonlyArray<{ x: number; y: number; w: number; level: number }>, laid: readonly Platform[], all: readonly Platform[], seams: ReadonlyArray<{ p: Platform; q: Platform }>, sealed: (p: Platform) => boolean,
+  unfair: (x0: number, x1: number, y: number, L: number, but: ReadonlyArray<Platform>) => string | undefined, held: (cs: readonly Catch[]) => string[]): Catch[] {
   const at = (q: Platform) => { const j = laid.indexOf(q); return j >= 0 ? { x: out[j].x, y: out[j].y, w: out[j].w } : all.includes(q) ? { x: q.x, y: q.y, w: q.width } : undefined; };
   const up = new Map<Platform, Platform>();
   const root = (q: Platform): Platform => { let r = q; while (up.get(r) && up.get(r) !== r) r = up.get(r)!; return r; };
@@ -928,18 +944,42 @@ function mergeSeams(out: ReadonlyArray<{ x: number; y: number; w: number; level:
   }
   const groups = new Map<Platform, Platform[]>();
   for (const q of up.keys()) { const r = root(q); groups.set(r, [...(groups.get(r) ?? [r]).filter((z) => z !== q), q]); }
-  const done = new Set<Platform>(), res: Catch[] = [];
-  laid.forEach((p, j) => {
-    if (done.has(p)) return;
-    const g = groups.get(root(p));
-    if (!g) { res.push({ ...out[j] }); return; }
-    for (const q of g) done.add(q);
+  /** a group's merged catch, laid at its first laid piece's height and storey */
+  const mergedOf = (g: readonly Platform[]): Catch => {
+    const j = laid.findIndex((q) => g.includes(q));
     const spans = g.map((q) => at(q)!);
     const x0 = Math.min(...spans.map((s) => s.x)), x1 = Math.max(...spans.map((s) => s.x + s.w));
     const into = g.filter((q) => !laid.includes(q)).map((q) => q.id);
-    res.push({ x: x0, y: out[j].y, w: x1 - x0, level: out[j].level, ...(into.length ? { into } : {}) });
-  });
-  return res;
+    return { x: x0, y: out[j].y, w: x1 - x0, level: out[j].level, ...(into.length ? { into } : {}) };
+  };
+  /** the lay with the groups kept so far merged (each at its first laid piece's place in the lay) */
+  const kept = new Set<Platform>();
+  const lay = (): Catch[] => {
+    const done = new Set<Platform>(), res: Catch[] = [];
+    laid.forEach((p, j) => {
+      if (done.has(p)) return;
+      const r = root(p), g = kept.has(r) ? groups.get(r) : undefined;
+      if (!g) { res.push({ ...out[j] }); return; }
+      for (const q of g) done.add(q);
+      res.push(mergedOf(g));
+    });
+    return res;
+  };
+  let base = held(lay());
+  for (const [r, g] of groups) {
+    const c = mergedOf(g);
+    let why = unfair(c.x, c.x + c.w, c.y, c.level, g);
+    if (!why) {
+      kept.add(r);
+      const now = held(lay()), fresh = now.filter((l) => !base.includes(l));
+      if (fresh.length) { kept.delete(r); why = `the down invariant (${fresh[0]})`; } else base = now;
+    }
+    if (why) {
+      const pieces = g.map((q) => at(q)!).sort((u, v) => u.x - v.x).map((s) => `${s.x}-${s.x + s.w}`).join(' | ');
+      trimSeams.push(`seam: the trim's ${pieces} at y ${c.y}: merged ${c.x}-${c.x + c.w} fails ${why}`);
+    }
+  }
+  return lay();
 }
 /** the stage's own pieces less those a catch took the place of (Catch.into): the lay as the stage will hold it */
 export function withoutMerged<T extends { id: number }>(platforms: readonly T[], cs: readonly Catch[]): T[] {

@@ -977,3 +977,21 @@ test("THE TRIM LEAVES NO SEAM: a catch trimmed off wood of its own kind at its h
   assert.ok(trimSeams.some((l) => /^seam: the trim's 470-530 meets 530-830 at y 1200: another kind$/.test(l)), `its seam is named: ${JSON.stringify(trimSeams)}`);
 });
 
+
+test("A MERGE IS LAID LIKE ANY CATCH: the trim's seam is merged only where the merged catch passes every check the lay runs on a catch; a merge across a climb vine's top at the seam would make a roof over it, so the seam stays, named by the invariant it fails (draft 3-1 adult Normal roll 1: 542-964 @6946 over the vine at x 848, darkBots, ENG-CATCH-n, R-165.573)", () => {
+  const W = 1280, FLOOR = 1481;
+  // ENG-CATCH-b's toy (the storey 136-554 at y 1256, the climb vine's top at its end, x 554) with a shelf 470-550 at y 1130: 126 px over
+  // the vine's top. As laid, the vine stands off the storey's face (climbX: 580) and the shelf is out of its climb-off; merged with the
+  // trim's remnant 554-716 the storey runs on past the vine, no face is left there, the vine stands at 554 and the shelf lies in its room
+  const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const b = [solid(650, 1000, 269, 1), solid(136, 1256, 418, 2), solid(470, 1130, 80, 5), solid(0, FLOOR, W, 3)];
+  const c = towerCatches('down', b, [vine], FLOOR, W);
+  assert.ok(c.every((k) => !k.into?.length), `nothing is merged into the storey across the vine's top: ${JSON.stringify(c)}`);
+  assert.ok(c.some((k) => k.x === 554 && k.y === 1256 && k.x + k.w >= 626), `the trim's catch is laid at the storey's height, under the shelf's fall line: ${JSON.stringify(c)}`);
+  assert.ok(trimSeams.some((l) => l.startsWith("seam: the trim's 136-554 | 554-716 at y 1256: merged 136-716 fails the down invariant (tower: a roof over a vine's top: wood at x 470-550, y 1130")), `the seam is named by the invariant the merge fails: ${JSON.stringify(trimSeams)}`);
+  const lay = [...held(b, c), ...c.map((k, i) => solid(k.x, k.y, k.w, -1 - i))];
+  assert.deepEqual(downInvariant(lay, [vine], [], FLOOR, W).map((m) => m.line), [], 'the lay as the stage holds it keeps the down invariant');
+  // and a merge that passes every check is still made (the same toy without the shelf: box 8's toy 1)
+  const b0 = b.filter((p) => p.id !== 5);
+  assert.ok(towerCatches('down', b0, [vine], FLOOR, W).some((k) => k.x === 136 && k.y === 1256 && k.into?.includes(2)), 'with nothing over the vine, the storey and the catch are one piece');
+});
