@@ -49,7 +49,9 @@ DONE THIS BOX (head 1b289d86f = 4152a4a4e (the fix) + the merge of f7e76b765):
   frozen tree).
 NEXT, IN ORDER (a fresh box):
 1. NOTHING IS OWED FROM BOX 9's steps 1-2: the pre-freeze set's one red is inherited (R-165.576, owned elsewhere). The lead rules whether
-   1b289d86f is frozen with it (ENG-DROP's head was gated with the same red). Read first, in the order: this section; box 8's below.
+   1b289d86f is frozen with it (ENG-DROP's head was gated with the same red). **THE LEAD RULED (message after the hand-over): 1b289d86f
+   FREEZES with src/game/mixer/support.test.ts:27 red** (inherited, red alone on 7a580aefc, owned by R-165.576, outside the suite
+   globs: named, not traced). So tomorrow's box starts at step 2's frozen worktree and goes straight to step 3 (castBots 1-4 first).
 2. FREEZE 1b289d86f (or the fixed head) per dispatch-packet.md (D115: a frozen worktree, chattr).
 3. castBots 1-4 FIRST among the gates (D171/D170): seeds 1-16, both settings, on the candidate AND 7a580aefc, every moved row traced as
    box 7 did; message the lead the classes: (i) the fair route is gone = red; (ii) a fair route remains, the bot chose differently, named
