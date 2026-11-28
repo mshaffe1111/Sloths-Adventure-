@@ -1,0 +1,47 @@
+TAP version 13
+# Subtest: planted: a row with an id the inventory lacks fails by name; an out-of-scale row fails the scale gate; so does each other refusal
+ok 1 - planted: a row with an id the inventory lacks fails by name; an out-of-scale row fails the scale gate; so does each other refusal
+  ---
+  duration_ms: 3.139232
+  type: 'test'
+  ...
+# Subtest: the size is the inventory's own: pokey_scale x Pokey's drawn height (heroSprite.ts), its width by its picture's shape; a frame by its rect
+ok 2 - the size is the inventory's own: pokey_scale x Pokey's drawn height (heroSprite.ts), its width by its picture's shape; a frame by its rect
+  ---
+  duration_ms: 93.71985
+  type: 'test'
+  ...
+# Subtest: the real World 1 inventory: an out-of-scale piece the catalog has is refused by the scale gate, never drawn
+ok 3 - the real World 1 inventory: an out-of-scale piece the catalog has is refused by the scale gate, never drawn
+  ---
+  duration_ms: 0.371975
+  type: 'test'
+  ...
+#   out of scale: 228 rows (W1 file 50); Pokey 89.1 units
+# Subtest: scale: pokey_scale is drawn height / Pokey drawn standing height; out-of-scale pieces leave byWorld unless inScale: false
+ok 4 - scale: pokey_scale is drawn height / Pokey drawn standing height; out-of-scale pieces leave byWorld unless inScale: false
+  ---
+  duration_ms: 26.091753
+  type: 'test'
+  ...
+# Subtest: support (the lead 11-14, ART-678b): a pole that holds a bough up is a level row with no scale cap, never a platform
+ok 5 - support (the lead 11-14, ART-678b): a pole that holds a bough up is a level row with no scale cap, never a platform
+  ---
+  duration_ms: 1.560731
+  type: 'test'
+  ...
+# Subtest: the kit: every World 2 art row it names is in the World 2 inventory, usable and in scale with Pokey (R-165.107)
+ok 6 - the kit: every World 2 art row it names is in the World 2 inventory, usable and in scale with Pokey (R-165.107)
+  ---
+  duration_ms: 4.626516
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1718.442526

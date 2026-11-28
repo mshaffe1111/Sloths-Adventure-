@@ -1,0 +1,545 @@
+TAP version 13
+# Subtest: UI-16: every guardian card checks dotPresent: Dot speaks where she is with Pokey, Pokey himself where she is away
+ok 1 - UI-16: every guardian card checks dotPresent: Dot speaks where she is with Pokey, Pokey himself where she is away
+  ---
+  duration_ms: 7.134824
+  type: 'test'
+  ...
+# Subtest: UI-16: World 7's guardian card is Pokey's
+ok 2 - UI-16: World 7's guardian card is Pokey's
+  ---
+  duration_ms: 1.571673
+  type: 'test'
+  ...
+# Subtest: every objective type has a glyph that exists and a one-word label
+ok 3 - every objective type has a glyph that exists and a one-word label
+  ---
+  duration_ms: 0.949899
+  type: 'test'
+  ...
+# Subtest: the nine stage types each read as their own glyph; the boss lair is the crest glyph
+ok 4 - the nine stage types each read as their own glyph; the boss lair is the crest glyph
+  ---
+  duration_ms: 0.275691
+  type: 'test'
+  ...
+# Subtest: an unknown stage type still gets a glyph
+ok 5 - an unknown stage type still gets a glyph
+  ---
+  duration_ms: 0.087022
+  type: 'test'
+  ...
+# Subtest: the icon set has the full list the menus, badges and stage types ask for
+ok 6 - the icon set has the full list the menus, badges and stage types ask for
+  ---
+  duration_ms: 0.096609
+  type: 'test'
+  ...
+# Subtest: every world has a painted crest of its own guardian, framed inside its sheet
+ok 7 - every world has a painted crest of its own guardian, framed inside its sheet
+  ---
+  duration_ms: 0.429842
+  type: 'test'
+  ...
+# Subtest: the secret guardian has a crest too, and nothing unknown does
+ok 8 - the secret guardian has a crest too, and nothing unknown does
+  ---
+  duration_ms: 0.260994
+  type: 'test'
+  ...
+# Subtest: story speakers that are guardians map to their crest
+ok 9 - story speakers that are guardians map to their crest
+  ---
+  duration_ms: 0.161126
+  type: 'test'
+  ...
+# Subtest: every badge draws as an icon of the set, and the Thorn Heart badge is the thorn heart
+ok 10 - every badge draws as an icon of the set, and the Thorn Heart badge is the thorn heart
+  ---
+  duration_ms: 0.169421
+  type: 'test'
+  ...
+# Subtest: who stands beside a name in a story: Pokey a face, guardians a crest, the rest an icon
+ok 11 - who stands beside a name in a story: Pokey a face, guardians a crest, the rest an icon
+  ---
+  duration_ms: 0.902118
+  type: 'test'
+  ...
+# Subtest: control hints are cut into words and arrows
+ok 12 - control hints are cut into words and arrows
+  ---
+  duration_ms: 0.548361
+  type: 'test'
+  ...
+# Subtest: every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+ok 13 - every ascent layout the generator builds keeps all of it inside the strip the hero can walk
+  ---
+  duration_ms: 25056.88789
+  type: 'test'
+  ...
+# Subtest: the ascent a player is given (a random layout, checked) can be climbed
+ok 14 - the ascent a player is given (a random layout, checked) can be climbed
+  ---
+  duration_ms: 36433.251855
+  type: 'test'
+  ...
+# Subtest: the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+ok 15 - the layouts that used to have no way up are fixed (same seeds as the audit: 7-4/787875, 8-4/633784, 9-4/206527, 10-4/652245, 10-4/737943)
+  ---
+  duration_ms: 1251.963764
+  type: 'test'
+  ...
+# Subtest: the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+ok 16 - the validator knows the clamp: a platform beyond the world edge does not count, and a vine out there cannot be grabbed
+  ---
+  duration_ms: 272.00738
+  type: 'test'
+  ...
+# Subtest: walking through a watching boa takes a heart, Normal and Easy (its rear starts as he comes in: he runs through the coil inside it)
+ok 17 - walking through a watching boa takes a heart, Normal and Easy (its rear starts as he comes in: he runs through the coil inside it)
+  ---
+  duration_ms: 931.57682
+  type: 'test'
+  ...
+# Subtest: PLANTED: the coil off, the same walk through costs nothing (the strike aims where he was): the coil is what hurts
+ok 18 - PLANTED: the coil off, the same walk through costs nothing (the strike aims where he was): the coil is what hurts
+  ---
+  duration_ms: 387.792906
+  type: 'test'
+  ...
+# Subtest: never through a beaten boa: dazed (stunned), fleeing or gone, he walks through unhurt
+ok 19 - never through a beaten boa: dazed (stunned), fleeing or gone, he walks through unhurt
+  ---
+  duration_ms: 563.412173
+  type: 'test'
+  ...
+# Subtest: the kit's hurt box by phase: its coil while it watches or rears, its strike's box while it strikes, none with its head out or beaten
+ok 20 - the kit's hurt box by phase: its coil while it watches or rears, its strike's box while it strikes, none with its head out or beaten
+  ---
+  duration_ms: 0.386626
+  type: 'test'
+  ...
+# Subtest: align: at the given moment the beat has just come out of its on (a pad just risen), on both settings and with a stagger
+ok 21 - align: at the given moment the beat has just come out of its on (a pad just risen), on both settings and with a stagger
+  ---
+  duration_ms: 2.259994
+  type: 'test'
+  ...
+# Subtest: breathsAhead / aimBreaths / noteArrivals: the nearest beat pad of each row ahead within reach; aimed at the soonest, then at his own pace
+ok 22 - breathsAhead / aimBreaths / noteArrivals: the nearest beat pad of each row ahead within reach; aimed at the soonest, then at his own pace
+  ---
+  duration_ms: 0.912863
+  type: 'test'
+  ...
+# Subtest: a SNAP STONE row is no breathing row: a put-back never aims its bar (INT-13b: ENG-25b snap stones x FIX-284 breath aim)
+ok 23 - a SNAP STONE row is no breathing row: a put-back never aims its bar (INT-13b: ENG-25b snap stones x FIX-284 breath aim)
+  ---
+  duration_ms: 0.351667
+  type: 'test'
+  ...
+# Subtest: on one long ground the sapling stands, under 265 units tall, its trunk clear of the handle, the load hung at its height
+ok 24 - on one long ground the sapling stands, under 265 units tall, its trunk clear of the handle, the load hung at its height
+  ---
+  duration_ms: 12.246608
+  type: 'test'
+  ...
+# Subtest: the foot never stands over a gap: with no ground where it would go, a bough end holds the load
+ok 25 - the foot never stands over a gap: with no ground where it would go, a bough end holds the load
+  ---
+  duration_ms: 0.255402
+  type: 'test'
+  ...
+# Subtest: a vine's tree (Rope.look 'vine'): its arm holds the vine at the tie, its foot on the ground, at about its usual size at a rope's height
+ok 26 - a vine's tree (Rope.look 'vine'): its arm holds the vine at the tie, its foot on the ground, at about its usual size at a rope's height
+  ---
+  duration_ms: 0.169217
+  type: 'test'
+  ...
+# Subtest: the vine's tile and the tinted rope tile are baked again when the phone takes their canvas back (LESSONS D6: a lost copy draws nothing)
+ok 27 - the vine's tile and the tinted rope tile are baked again when the phone takes their canvas back (LESSONS D6: a lost copy draws nothing)
+  ---
+  duration_ms: 0.504676
+  type: 'test'
+  ...
+#   Normal 390x844: seen 1.03 s before it reached him (view 416 px of world, him at 13% across)
+#   Normal 412x915: seen 1.00 s before it reached him (view 405 px of world, him at 13% across)
+#   Normal 844x390: seen 1.03 s before it reached him (view 1169 px of world, him at 31% across)
+#   Normal 915x412: seen 1.03 s before it reached him (view 1199 px of world, him at 31% across)
+#   Easy 390x844: seen 1.07 s before it reached him (view 416 px of world, him at 13% across)
+#   Easy 412x915: seen 1.03 s before it reached him (view 405 px of world, him at 13% across)
+#   Easy 844x390: seen 1.13 s before it reached him (view 1169 px of world, him at 31% across)
+#   Easy 915x412: seen 1.13 s before it reached him (view 1199 px of world, him at 31% across)
+#   Normal 360x800 (narrow): seen 1.00 s, view 405 px, him at 13% across
+#   Normal 320x782 (narrow): seen 0.90 s, view 368 px, him at 13% across
+#   390x844 Normal: with the lead 1.03 s, plain framing 0.83 s
+# Subtest: chase camera: on a laid stretch a dropping nut is seen 1 s+ before it reaches him at a full run, upright and sideways, Normal and Easy
+ok 28 - chase camera: on a laid stretch a dropping nut is seen 1 s+ before it reaches him at a full run, upright and sideways, Normal and Easy
+  ---
+  duration_ms: 2559.542994
+  type: 'test'
+  ...
+# Subtest: chase camera, PLANTED: with the span taken away (the plain framing) the same nut is seen later on an upright phone
+ok 29 - chase camera, PLANTED: with the span taken away (the plain framing) the same nut is seen later on an upright phone
+  ---
+  duration_ms: 214.954148
+  type: 'test'
+  ...
+# Subtest: chase camera: the span is the stage data (its stretches and hazards), and his place across never nearer the edge behind than backMin
+ok 30 - chase camera: the span is the stage data (its stretches and hazards), and his place across never nearer the edge behind than backMin
+  ---
+  duration_ms: 0.216276
+  type: 'test'
+  ...
+# Subtest: chase camera: a chase laid anew on the same stage is framed by its own span (never a stale one)
+ok 31 - chase camera: a chase laid anew on the same stage is framed by its own span (never a stale one)
+  ---
+  duration_ms: 108.498837
+  type: 'test'
+  ...
+# Subtest: ik2 reaches a target in range and clamps one out of range
+ok 32 - ik2 reaches a target in range and clamps one out of range
+  ---
+  duration_ms: 0.989725
+  type: 'test'
+  ...
+# Subtest: gait stroll: planted feet never slide, one group swings at a time, reach is respected
+ok 33 - gait stroll: planted feet never slide, one group swings at a time, reach is respected
+  ---
+  duration_ms: 13.020415
+  type: 'test'
+  ...
+# Subtest: gait gallop: planted feet never slide, one group swings at a time, reach is respected
+ok 34 - gait gallop: planted feet never slide, one group swings at a time, reach is respected
+  ---
+  duration_ms: 5.697629
+  type: 'test'
+  ...
+# Subtest: gait stand: planted feet never slide, one group swings at a time, reach is respected
+ok 35 - gait stand: planted feet never slide, one group swings at a time, reach is respected
+  ---
+  duration_ms: 1.75584
+  type: 'test'
+  ...
+# Subtest: bodyFor measures speed from position, ignores teleports, and keeps bosses apart from enemies
+ok 36 - bodyFor measures speed from position, ignores teleports, and keeps bosses apart from enemies
+  ---
+  duration_ms: 0.680747
+  type: 'test'
+  ...
+# Subtest: follow chain keeps its spacing
+ok 37 - follow chain keeps its spacing
+  ---
+  duration_ms: 13.235147
+  type: 'test'
+  ...
+# Subtest: spider gait at 0px/s: eight legs, no sliding, no over-stretch
+ok 38 - spider gait at 0px/s: eight legs, no sliding, no over-stretch
+  ---
+  duration_ms: 8.640601
+  type: 'test'
+  ...
+# Subtest: spider gait at 45px/s: eight legs, no sliding, no over-stretch
+ok 39 - spider gait at 45px/s: eight legs, no sliding, no over-stretch
+  ---
+  duration_ms: 9.021789
+  type: 'test'
+  ...
+# Subtest: spider gait at 95px/s: eight legs, no sliding, no over-stretch
+ok 40 - spider gait at 95px/s: eight legs, no sliding, no over-stretch
+  ---
+  duration_ms: 1.156414
+  type: 'test'
+  ...
+# Subtest: bodies from an old stage are pruned after the next stage restarts the clock
+ok 41 - bodies from an old stage are pruned after the next stage restarts the clock
+  ---
+  duration_ms: 0.752999
+  type: 'test'
+  ...
+# Subtest: C-07: starting 1-1 does not mark the coach and the gap lesson as taught before anything was said
+ok 42 - C-07: starting 1-1 does not mark the coach and the gap lesson as taught before anything was said
+  ---
+  duration_ms: 669.075602
+  type: 'test'
+  ...
+# Subtest: C-07: the coach is taught, and the gap lesson with it, once its jump line has been up its minimum time (not before, not by the run line)
+ok 43 - C-07: the coach is taught, and the gap lesson with it, once its jump line has been up its minimum time (not before, not by the run line)
+  ---
+  duration_ms: 1.936878
+  type: 'test'
+  ...
+# Subtest: waiting: the stage teach line goes before stock lessons queued ahead of it
+ok 44 - waiting: the stage teach line goes before stock lessons queued ahead of it
+  ---
+  duration_ms: 22.607837
+  type: 'test'
+  ...
+# Subtest: up: a stock lesson's move tip, once read, steps aside for the stage teach line, and comes back once after it
+ok 45 - up: a stock lesson's move tip, once read, steps aside for the stage teach line, and comes back once after it
+  ---
+  duration_ms: 11.678928
+  type: 'test'
+  ...
+# Subtest: a stage teach line never makes a lesson give way before it has been read its reading time
+ok 46 - a stage teach line never makes a lesson give way before it has been read its reading time
+  ---
+  duration_ms: 0.83202
+  type: 'test'
+  ...
+# Subtest: the engine plays the court's drum on its tempo row: every step on game time, the hold as a life is lost, game time standing through the down
+ok 47 - the engine plays the court's drum on its tempo row: every step on game time, the hold as a life is lost, game time standing through the down
+  ---
+  duration_ms: 1921.637812
+  type: 'test'
+  ...
+# Subtest: a stage with no tempo never touches the drum: no drumTick, no drumHold (1-1)
+ok 48 - a stage with no tempo never touches the drum: no drumTick, no drumHold (1-1)
+  ---
+  duration_ms: 545.442265
+  type: 'test'
+  ...
+# Subtest: standing still past the end of a ledge, he is drawn back until about a quarter of him is over the air, and teeters there
+ok 49 - standing still past the end of a ledge, he is drawn back until about a quarter of him is over the air, and teeters there
+  ---
+  duration_ms: 886.32494
+  type: 'test'
+  ...
+# Subtest: moving off the spot, the picture rejoins his footing within a few frames
+ok 50 - moving off the spot, the picture rejoins his footing within a few frames
+  ---
+  duration_ms: 124.819111
+  type: 'test'
+  ...
+# Subtest: the end of a ledge that carries on at the same height is no edge: he stays where he stopped
+ok 51 - the end of a ledge that carries on at the same height is no edge: he stays where he stopped
+  ---
+  duration_ms: 140.213816
+  type: 'test'
+  ...
+# Subtest: walking off a ledge happens where it always did (the footing is unchanged), and a held steer is never pulled back
+ok 52 - walking off a ledge happens where it always did (the footing is unchanged), and a held steer is never pulled back
+  ---
+  duration_ms: 123.96525
+  type: 'test'
+  ...
+# Subtest: a ledge too narrow to step back on is left alone
+ok 53 - a ledge too narrow to step back on is left alone
+  ---
+  duration_ms: 139.311934
+  type: 'test'
+  ...
+# Subtest: every move has a wind-up, a strike and a follow-through, in that order
+ok 54 - every move has a wind-up, a strike and a follow-through, in that order
+  ---
+  duration_ms: 0.939382
+  type: 'test'
+  ...
+# Subtest: nothing can be hit during the wind-up or follow-through, only during the strike
+ok 55 - nothing can be hit during the wind-up or follow-through, only during the strike
+  ---
+  duration_ms: 0.219647
+  type: 'test'
+  ...
+# Subtest: the strike zone mirrors when he faces left
+ok 56 - the strike zone mirrors when he faces left
+  ---
+  duration_ms: 0.09619
+  type: 'test'
+  ...
+# Subtest: a slow frame rate can never skip over an enemy the claw passed through
+ok 57 - a slow frame rate can never skip over an enemy the claw passed through
+  ---
+  duration_ms: 0.659456
+  type: 'test'
+  ...
+# Subtest: strikes reach what is in front of him and nothing behind or far away
+ok 58 - strikes reach what is in front of him and nothing behind or far away
+  ---
+  duration_ms: 0.161426
+  type: 'test'
+  ...
+# Subtest: punches chain jab, cross, hook; a swing that missed must be played out in full
+ok 59 - punches chain jab, cross, hook; a swing that missed must be played out in full
+  ---
+  duration_ms: 0.122977
+  type: 'test'
+  ...
+# Subtest: the pose pulls back, thrusts out and settles
+ok 60 - the pose pulls back, thrusts out and settles
+  ---
+  duration_ms: 0.12405
+  type: 'test'
+  ...
+# Subtest: big animals take two or three hits, small ones one or two
+ok 61 - big animals take two or three hits, small ones one or two
+  ---
+  duration_ms: 0.077801
+  type: 'test'
+  ...
+# Subtest: a leaping jaguar shrugs off a jab but a heavy hit stops it; killing blows always land
+ok 62 - a leaping jaguar shrugs off a jab but a heavy hit stops it; killing blows always land
+  ---
+  duration_ms: 0.301069
+  type: 'test'
+  ...
+# Subtest: applying a hit changes hp, flinch, stagger and shove; a kill does not stagger
+ok 63 - applying a hit changes hp, flinch, stagger and shove; a kill does not stagger
+  ---
+  duration_ms: 12.491555
+  type: 'test'
+  ...
+# Subtest: stomps: from above only, never against the stomp-proof, and armor bounces
+ok 64 - stomps: from above only, never against the stomp-proof, and armor bounces
+  ---
+  duration_ms: 0.801009
+  type: 'test'
+  ...
+# Subtest: every kind of enemy has traits, and the big ones are armored
+ok 65 - every kind of enemy has traits, and the big ones are armored
+  ---
+  duration_ms: 0.113742
+  type: 'test'
+  ...
+# Subtest: predator bodies sit on their feet and the player hurt box shrinks when ducking
+ok 66 - predator bodies sit on their feet and the player hurt box shrinks when ducking
+  ---
+  duration_ms: 0.119455
+  type: 'test'
+  ...
+# Subtest: a stagger interrupts a leap, and the animal gets back to patrolling with a breather
+ok 67 - a stagger interrupts a leap, and the animal gets back to patrolling with a breather
+  ---
+  duration_ms: 0.117248
+  type: 'test'
+  ...
+# Subtest: defeated animals leave in their own way
+ok 68 - defeated animals leave in their own way
+  ---
+  duration_ms: 0.091302
+  type: 'test'
+  ...
+# Subtest: a liana flight asked on Easy after Normal (and back) lands as it does asked alone
+ok 69 - a liana flight asked on Easy after Normal (and back) lands as it does asked alone
+  ---
+  duration_ms: 1479.413378
+  type: 'test'
+  ...
+# Subtest: terrainLook decides as the draw chain did, on a stage of every world
+ok 70 - terrainLook decides as the draw chain did, on a stage of every world
+  ---
+  duration_ms: 10467.082412
+  type: 'test'
+  ...
+# Subtest: footingOf follows engine-render's four rules
+ok 71 - footingOf follows engine-render's four rules
+  ---
+  duration_ms: 0.502353
+  type: 'test'
+  ...
+# Subtest: footingsFor gives every platform of a built stage a footing
+ok 72 - footingsFor gives every platform of a built stage a footing
+  ---
+  duration_ms: 614.237865
+  type: 'test'
+  ...
+# 1-1's pool fills 4 slots: "landing/platforms bouncy moss_stone" (W1 0, W2 0 pieces); "landing/platforms solid branch" (W1 0, W2 0 pieces); "landing/platforms solid log" (W1 7, W2 15 pieces); "landing/platforms solid moss_stone" (W1 26, W2 21 pieces)
+# no row: World 1 ["landing/platforms bouncy moss_stone","landing/platforms solid branch"], World 2 ["landing/platforms bouncy moss_stone","landing/platforms solid branch"]; 36 of 61 1-1 sections are bricks both worlds can dress
+# "landing/platforms solid moss_stone": World 1 laid HF1-P-02-a, HF1-stump-short, HF1-stump-tall, N-02-a (+22); World 2 laid HF1-P-02-c, HF1-P-02-d, N-03-b, N-03-c (+17)
+# "landing/platforms solid log": World 1 laid N-06-b, W1-17-a, W1-26-b, W1-27-a (+3); World 2 laid M-14-a, M-14-b, W1-17-b, W1-19-a (+11)
+# 61 bricks laid over 8 proven 1-1 plans, twice each
+# Subtest: the inventory has what the proof needs: slots both worlds dress, with different art, and bricks to lay
+ok 73 - the inventory has what the proof needs: slots both worlds dress, with different art, and bricks to lay
+  ---
+  duration_ms: 8.729028
+  type: 'test'
+  ...
+# Subtest: one brick, two worlds' art: 1-1's own sections on proven plans, the same pieces where they stood, each in its own world's inventory row
+ok 74 - one brick, two worlds' art: 1-1's own sections on proven plans, the same pieces where they stood, each in its own world's inventory row
+  ---
+  duration_ms: 476.74129
+  type: 'test'
+  ...
+# Subtest: a world that gives the slot its own style lays the brick in that style (the row decides, not the section)
+ok 75 - a world that gives the slot its own style lays the brick in that style (the row decides, not the section)
+  ---
+  duration_ms: 18.305957
+  type: 'test'
+  ...
+# Subtest: a brick that asks a slot the world has no row for fails by name (never a silent stand-in)
+ok 76 - a brick that asks a slot the world has no row for fails by name (never a silent stand-in)
+  ---
+  duration_ms: 21.419365
+  type: 'test'
+  ...
+# Subtest: a section with no slot lays as it does today, whatever rows the world carries (nothing shipped moves)
+ok 77 - a section with no slot lays as it does today, whatever rows the world carries (nothing shipped moves)
+  ---
+  duration_ms: 74.145147
+  type: 'test'
+  ...
+# Subtest: a floor mushroom stood on its bank (cap 30 px up) is a walk-on mount; caps after it in the chain are not mounts
+ok 78 - a floor mushroom stood on its bank (cap 30 px up) is a walk-on mount; caps after it in the chain are not mounts
+  ---
+  duration_ms: 1.383537
+  type: 'test'
+  ...
+# Subtest: planted: the first cap on a tall stem (180 px over its bank) is refused by name; at the band top it passes
+ok 79 - planted: the first cap on a tall stem (180 px over its bank) is refused by name; at the band top it passes
+  ---
+  duration_ms: 0.396175
+  type: 'test'
+  ...
+# Subtest: planted: a first cap with no ground within reach (a pole sticking out of a pit) is refused
+ok 80 - planted: a first cap with no ground within reach (a pole sticking out of a pit) is refused
+  ---
+  duration_ms: 8.307279
+  type: 'test'
+  ...
+# Subtest: chain.mount is a registered promise on every judged stage, both settings, and a listed name
+ok 81 - chain.mount is a registered promise on every judged stage, both settings, and a listed name
+  ---
+  duration_ms: 0.236642
+  type: 'test'
+  ...
+# Subtest: 1-2's library chains are walk-on mounts on 12 rolls, both settings (none refused chain.mount)
+ok 82 - 1-2's library chains are walk-on mounts on 12 rolls, both settings (none refused chain.mount)
+  ---
+  duration_ms: 9617.978375
+  type: 'test'
+  ...
+# Subtest: every W1 section whose lay moves with the bounce + air jump declares it (needs bounce-air)
+ok 83 - every W1 section whose lay moves with the bounce + air jump declares it (needs bounce-air)
+  ---
+  duration_ms: 283.111951
+  type: 'test'
+  ...
+# Subtest: no World 1 stage holds the combo while no stage teaches it: its budget lacks bounce-air, so no combo section is in its pool or its built plan
+ok 84 - no World 1 stage holds the combo while no stage teaches it: its budget lacks bounce-air, so no combo section is in its pool or its built plan
+  ---
+  duration_ms: 10.567177
+  type: 'test'
+  ...
+# Subtest: World 1's still table lays a watched stretch as one kit eagle over it: cut to its hides, its own cool, free where taught
+ok 85 - World 1's still table lays a watched stretch as one kit eagle over it: cut to its hides, its own cool, free where taught
+  ---
+  duration_ms: 2.372481
+  type: 'test'
+  ...
+# Subtest: the laid eagle plays: still in a laid bush he is never dived on and it gives up; still in the open, spared once, then taken
+ok 86 - the laid eagle plays: still in a laid bush he is never dived on and it gives up; still in the open, spared once, then taken
+  ---
+  duration_ms: 31.687163
+  type: 'test'
+  ...
+# Subtest: the first water is the first river he MEETS on a stacked out-and-back (the way out's), not the least x (the way home's last): Dot's line is asked of it, and a judged stage reads its built stage's route; RED on the x pick
+ok 87 - the first water is the first river he MEETS on a stacked out-and-back (the way out's), not the least x (the way home's last): Dot's line is asked of it, and a judged stage reads its built stage's route; RED on the x pick
+  ---
+  duration_ms: 3311.674891
+  type: 'test'
+  ...
+# Subtest: a stage with no route reads x order exactly as before: firstMet / lastMet / inMetOrder are the x sort's [0] / at(-1) / order (ties kept), and the first water is the least x0
+ok 88 - a stage with no route reads x order exactly as before: firstMet / lastMet / inMetOrder are the x sort's [0] / at(-1) / order (ties kept), and the first water is the least x0
+  ---
+  duration_ms: 8.909482
+  type: 'test'
+  ...

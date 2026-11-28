@@ -1,7 +1,76 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 15, BUILD-29-o, hand-over 8:10 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+## EXACT NEXT STEP (session 16, BUILD-29-p, hand-over NOT YET (a safe-keeping commit inside the box; the stamp from `date` follows at the line); head = this commit, on branch t-build-29-m, NOT on t-build-29)
+BOX CLOCK (by `date`): start 8:13:27 PM ET; no stops (npm ci tracked in the background, 1 min; vite tracked; the importer run started
+8:27:02 PM inside the box and is finished and recorded past the line, the lead's standing rule); hand-over at the time above.
+WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed). The src head is **09e29447** (on 3e3ca0ee: the court's four polish fixes);
+this hand-over commit adds only reference/. Pushed to **t-build-29-m**. `git ls-remote` at 8:26 PM: main 49fdc8cb6, t-build-29 f4e77273.
+DONE, the brief's step 1 (all four, src changed, so all BEFORE the freeze):
+(a) THE CARPETS: each was a 200 px heap = 125 px tall = **1.40x** Pokey (frame 460x287, pokey_units 89.1), stepped, in the play plane.
+   Now each carpet is TWO clumps of the same picture, scaled whole (never squashed), **64 px = 40 px tall = 0.45x**, mirrored so their high
+   ends meet in a soft mound (no stair face), sunk 4 px (w2Arc29.ts COURT_29 clumpW/clumpApart/carpetSink). The still decided: it reads
+   as low lily clumps at his knee he walks through, beside the ferns (stills-p/p-2-9-*-court-*.jpg); back layer NOT needed.
+   THE SCALE GATE, why it did not flag 1.3x: **RED, named (not fixed: a rule change is the lead's)**: (1) the gate judges CATALOG ROWS, never
+   a placement: tools/art/catalog_master.py:617-627 SCALE_RANGE sets each row's scale_ok from the catalog's own on-screen size;
+   src/game/art/inventory.ts:128 and src/game/art/invDress.ts:58 refuse a row by that verdict; a proto.decor piece is sized by its stage
+   (`w`, e.g. the old w2Arc29.ts:281 `w: C.carpetW` = 200) and NOTHING compares a placed decor's drawn height with any range: the gate is
+   blind to decor. (2) Even if it read placements, 'decor near' is (0.2, 2.0) (catalog_master.py:624), which admits 1.4x: the failure is
+   SHAPE (a stepped top in the step band, 0.5-1.0 of his height, on his walking line), which no height range for decor encodes.
+   THE GATE RUN on 2-9 (stills-p/scalegate-run.txt): w2.test "the kit ... in scale with Pokey (R-165.107)" + inventory.test and
+   invDress.test scale tests: **6/6 PASS**, and they PASS the old 1.4x court too: the lilyCarpet ROW is in scale (pokey_scale 0.91,
+   scale_ok true) and the court's pieces are not in World 2's kit at all (w2.ts names none of lilyCarpet/dais/throne): a placement is
+   never read. Blind to decor: RED as named above.
+   PROPOSED CHECK (for the lead): a placement gate over every stage's proto.decor/dress: a decor-near piece on his walk line drawn in the
+   'step' band (0.5-1.0 Pokey) is named unless it is standable. The 2-9 test is its first instance (below).
+(b) THE DAIS: NOT a keying fringe. The band is a PAINTED light-grey ground shadow (opaque: alpha ~250, rgb ~210,200,190, the frame's
+   bottom ~35%, measured on w2-props.webp#dais 0,1552 420x255; the throne's foot has the same strip, rows 360-420 of 420). The atlas is
+   lossy VP8 + ALPH (re-encoding it would degrade every frame), so it is re-tinted at load: riverArt.ts W2_SHADOW_RETINT {dais 0.58,
+   throne 0.84} + shadowRetint (pale, colourless -> dark brown, as see-through as it was pale), cached per piece, one drawImage as before.
+   Crops before/after at 1:1: stills-p/p-dais-before-after.jpg (left: the white oval; right: a soft dark shadow). ROUGH, NAMED: at 2x a
+   hairline light rim stays on the left pad's lower edge (anti-aliased edge pixels darker than 185); not visible at 1x.
+(c) THE OVERLAPS: the frog and crab were proto.dress `w2Frog`/`w2Crab`, laid at RUNTIME by addDress (protoStage.ts), AFTER finish29, so
+   finish29 could not see them. Fix at the cause: every court piece is marked `clear` (W2Decor.clear, riverArt.ts); protoStage.ts
+   dressClear keeps DECOR_CLEAR = 24 px off a `clear` piece and addDress runs placeDress (moved clear, never deleted: the designer's
+   ruling) on a stage that has one. Opt-in: only 2-9 carries `clear`. TEST w2Arc29.test "nothing is laid in it": all 100 listed seeds x
+   both settings AS PLAY BUILDS THEM (generateStage + layout): **200 built, the court on 200, nothing in it** (dressing within 24 px,
+   creature boxes). PLANTS: (1) a frog set on the dais is named; dressClear refuses it marked, allows it unmarked; (2) the REAL plant,
+   clear marks removed from finish29: **RED on Normal layout 2: w2Crab@28389 in lilyCarpet@28353/28401, w2Frog@28496 in lilyCarpet@28523**
+   (stills-p/plant-clear-off-seeds.txt). Restored after. MOVED, NOT DELETED: on all 200, 0 dressing pieces dropped (proto.dressDropped);
+   Easy layout 1's frog and crab moved along their bank to x 30394/30456, just past the shrine (30038) (stills-p/dress-moved.txt).
+(d) "classList of null": index.html:64, the boot slab's `<image onload>` called document.getElementById('boot').classList with no guard;
+   the splash's done() removes #boot 900 ms after the game is ready (index.html:95-99), so a slab that finishes later throws. A GAME
+   error (on a slow phone too), fixed at its cause: the handler checks #boot. index.html is IDENTICAL on main 49fdc8cb6, f4e77273 and
+   3e3ca0ee. Runs: on OUR tree 5 of 5 loads threw (stills-o x4, a probe x1); on MAIN (worktree /home/user/wt-main, vite 5200) 0 of 3
+   (stills-p/classlist-main.txt): the race is the same code, our branch only shifts its timing; WHICH src change shifts it is NOT traced.
+   After the fix: 0 errors on 5 loads of our tree (the 4 stills, a probe). f4e77273 not run (same index.html; named).
+TESTS on 09e29447: tsc CLEAN; generalitycheck PASS (26 literals, 26 known); w2Arc29.test whole file **12/12** (stills-p/w2Arc29-whole.txt).
+STEP 2 (pre-freeze), STARTED 8:27:02 PM: `git diff --name-only 49fdc8cb6 HEAD -- src tools` = 91 files (prefreeze-p/changed.txt);
+   their own tests + every test importing one directly = **470 test files** (prefreeze-p/tests.txt; 50 under tools/), 6 shards, 3 at a time
+   (4 cores). RESULT: see "STEP 2 RESULT" below (recorded when it finished, past the line).
+LEFT (the next box, in order):
+a. ReadNotifications. `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`; ls-remote main 49fdc8cb6,
+   t-build-29 f4e77273 (moved: stop, tell the lead).
+b. Read STEP 2 RESULT below; any red: run that file ALONE on main 49fdc8cb6 (worktree /home/user/wt-main exists) and on this head, name
+   file:line. Then FREEZE in a detached worktree (dispatch-packet.md:81).
+c. STEP 3 on the frozen head: the lock --check half against main base sha256 764b4dd982f2af88 + key-set diff (R-165.577). EXPECTED MOVES:
+   2-9 (decor AND proto.dress now: the court's dressing moved clear); 2-5 proto.dress; 2-1/2-4 = 74d88d236; verdict-only lines. Anything
+   else red. Then the suite in 6 shards, 0 fail; box 14's LEFT list (CI line, riverRide:278 = R-165.574 named; seedlist every list;
+   tierBots; registrycheck 2-9; drawcheck 2-9 (the court is now 6 clumps + dais + throne = 8 decor draws, was 5: watch the per-frame
+   limits; the re-tint is one drawImage per piece as before); castBots x40 both settings; the three tip scans; timecheck after
+   `git fetch --unshallow origin`; stills of record (the court, the roar on the page, the frog crops) looked at first.
+d. LAND: fast-forward f4e77273 (no force); ls-remote equal; the debrief (level.md).
+LEARNED (p): (1) A finish that dresses a stage cannot see what the RUNTIME lays after it (addDress): test a new set piece as Play builds
+   the stage (generateStage), never only as the pipeline does: the headless probe on all 200 found NOTHING, the page found the frog.
+(2) A pale band in a cut is measured before it is called a fringe: alpha ~250 meant painted, and a lossy atlas means fix it at draw.
+(3) A page error that shows on one tree and not another with the same file is a RACE: name the unguarded line, not the branch.
+PROPOSED RULE CHANGES (for the lead, level.md): (i) "a set piece a finish adds is marked `clear` and tested as Play builds the stage:
+   nothing laid in it, every listed seed, both settings" (the check: w2Arc29.test's court test). (ii) the placement scale check in (a).
+LESSONS APPLIED: D7/D24 (the value read on both trees: the page probe on main and ours); law 3 (each fact checked before acting: the
+   frog's source, the band's alpha, the error's line); law 22 (no test bar loosened: the court test's sinks moved WITH the code, from
+   COURT_29); ReadNotifications at the push (one: the lead's NOT A STOP, hand over at the line); time from `date`.
+
+## (superseded) EXACT NEXT STEP (session 15, BUILD-29-o, hand-over 8:10 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 7:57:00 PM ET (`TZ=America/New_York date` 19:57:00); no stops (npm ci tracked in the background, 1 min);
 hand-over at the time above, inside the 28-minute box. Nothing left running (vite stopped).
 WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed: the gates are not run on the new head). The new src head is **889835c7**

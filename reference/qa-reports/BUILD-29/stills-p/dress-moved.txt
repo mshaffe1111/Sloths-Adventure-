@@ -1,0 +1,3 @@
+easy L1 frog/crab now: w2Frog@6598 w2Crab@464 w2Frog@316 w2Frog@30394 w2Crab@30456 shrine 30038
+stages 200, dressing dropped (no clear spot within a screen) 0
+

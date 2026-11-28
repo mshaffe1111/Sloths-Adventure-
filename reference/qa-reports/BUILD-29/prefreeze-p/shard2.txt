@@ -1,0 +1,655 @@
+TAP version 13
+# Subtest: the conductor's drum: every hit on its own bus to the effects, at its beat on the audio clock, ONE the boom; the hold fades and lets the bus go
+ok 1 - the conductor's drum: every hit on its own bus to the effects, at its beat on the audio clock, ONE the boom; the hold fades and lets the bus go
+  ---
+  duration_ms: 2.425569
+  type: 'test'
+  ...
+# Subtest: the conductor's drum: headless (no core), muted, or the context not running: nothing scheduled, nothing thrown
+ok 2 - the conductor's drum: headless (no core), muted, or the context not running: nothing scheduled, nothing thrown
+  ---
+  duration_ms: 0.175748
+  type: 'test'
+  ...
+# Subtest: the layering: nothing in src/audio imports the game (the drum takes the engine's beat; never tempo.ts)
+ok 3 - the layering: nothing in src/audio imports the game (the drum takes the engine's beat; never tempo.ts)
+  ---
+  duration_ms: 11.071298
+  type: 'test'
+  ...
+# Subtest: ctest survey: every World 1 section has plain words (or is marked walking-only), and the table names no section that is gone
+ok 4 - ctest survey: every World 1 section has plain words (or is marked walking-only), and the table names no section that is gone
+  ---
+  duration_ms: 1.901514
+  type: 'test'
+  ...
+# Subtest: ctest survey: the words are plain (no ids, no codes) and short enough for one chip
+ok 5 - ctest survey: the words are plain (no ids, no codes) and short enough for one chip
+  ---
+  duration_ms: 0.233181
+  type: 'test'
+  ...
+# Subtest: ctest survey: a run's stretches become its choices in order, each once; unknown gen2 ids never show; the old course passes through
+ok 6 - ctest survey: a run's stretches become its choices in order, each once; unknown gen2 ids never show; the old course passes through
+  ---
+  duration_ms: 0.473627
+  type: 'test'
+  ...
+# Subtest: ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at least four of their own stretches, all in plain words
+ok 7 - ctest survey: real gen2 1-1 runs (proven seeds, both settings) list at least four of their own stretches, all in plain words
+  ---
+  duration_ms: 1376.894746
+  type: 'test'
+  ...
+# Subtest: ctest survey: only what the log cannot tell, the three required first, no hand, held or age
+ok 8 - ctest survey: only what the log cannot tell, the three required first, no hand, held or age
+  ---
+  duration_ms: 0.527956
+  type: 'test'
+  ...
+# Subtest: ctest survey: Send waits for the three required answers, and only those
+ok 9 - ctest survey: Send waits for the three required answers, and only those
+  ---
+  duration_ms: 0.150294
+  type: 'test'
+  ...
+# Subtest: ctest survey: the front page shows the moves of the stage picked (every World 1 stage has a page; 1-5's creaky limbs, 1-4's climb and 1-3's traps kept), each a real pose of Pokey's sheet
+ok 10 - ctest survey: the front page shows the moves of the stage picked (every World 1 stage has a page; 1-5's creaky limbs, 1-4's climb and 1-3's traps kept), each a real pose of Pokey's sheet
+  ---
+  duration_ms: 5.479739
+  type: 'test'
+  ...
+# Subtest: ctest survey: the row keeps the old keys in their old shape, adds the new ones, and leaves a skipped one out
+ok 11 - ctest survey: the row keeps the old keys in their old shape, adds the new ones, and leaves a skipped one out
+  ---
+  duration_ms: 0.403392
+  type: 'test'
+  ...
+# Subtest: the notes hold 600 (looked wrong) and 1000 (anything else) characters, cut there, and a fullest row still fits a sheet cell
+ok 12 - the notes hold 600 (looked wrong) and 1000 (anything else) characters, cut there, and a fullest row still fits a sheet cell
+  ---
+  duration_ms: 0.997343
+  type: 'test'
+  ...
+# Subtest: a key typed into a text box is the text, never the game (the notes ate P, R and Space: Matt 11-06)
+ok 13 - a key typed into a text box is the text, never the game (the notes ate P, R and Space: Matt 11-06)
+  ---
+  duration_ms: 0.86349
+  type: 'test'
+  ...
+# Subtest: 1-3's chips are the story keeper's words (11-12; trimmed to six, KEEPER-PICK 11-21: the awake snakes one chip, the punch one chip)
+ok 14 - 1-3's chips are the story keeper's words (11-12; trimmed to six, KEEPER-PICK 11-21: the awake snakes one chip, the punch one chip)
+  ---
+  duration_ms: 0.144875
+  type: 'test'
+  ...
+# Subtest: Matt's freeze: Menu → Satchel → watch a memory → Back → Back keeps the paused stage (the Library moved into the satchel)
+ok 15 - Matt's freeze: Menu → Satchel → watch a memory → Back → Back keeps the paused stage (the Library moved into the satchel)
+  ---
+  duration_ms: 0.681639
+  type: 'test'
+  ...
+# Subtest: a memory from the title or the map, or after a guardian falls, still frees the stage
+ok 16 - a memory from the title or the map, or after a guardian falls, still frees the stage
+  ---
+  duration_ms: 0.129913
+  type: 'test'
+  ...
+# Subtest: Resume with the stage let go of starts it again instead of freezing
+ok 17 - Resume with the stage let go of starts it again instead of freezing
+  ---
+  duration_ms: 0.075332
+  type: 'test'
+  ...
+# Subtest: muting lets go of the audio focus, and unmuting asks for it again
+ok 18 - muting lets go of the audio focus, and unmuting asks for it again
+  ---
+  duration_ms: 1.991376
+  type: 'test'
+  ...
+# Subtest: after the focus is lost for good, the next tap on the game asks for it again (a key press too); muted, it does not
+ok 19 - after the focus is lost for good, the next tap on the game asks for it again (a key press too); muted, it does not
+  ---
+  duration_ms: 0.320415
+  type: 'test'
+  ...
+# Subtest: the native side asks for the focus on resume only when the page wants sound, and says "lost" when a request is refused
+ok 20 - the native side asks for the focus on resume only when the page wants sound, and says "lost" when a request is refused
+  ---
+  duration_ms: 0.353267
+  type: 'test'
+  ...
+# Subtest: there is a boss definition for every world, each with moves that make sense
+ok 21 - there is a boss definition for every world, each with moves that make sense
+  ---
+  duration_ms: 1.268438
+  type: 'test'
+  ...
+# Subtest: boss hit points grow with the world and phases fall at 70% and 35%
+ok 22 - boss hit points grow with the world and phases fall at 70% and 35%
+  ---
+  duration_ms: 0.175711
+  type: 'test'
+  ...
+# Subtest: a boss roars, walks, winds up, attacks, then gives you an opening
+ok 23 - a boss roars, walks, winds up, attacks, then gives you an opening
+  ---
+  duration_ms: 4.600744
+  type: 'test'
+  ...
+# Subtest: light hits bounce off an attacking boss; heavy ones break the attack; openings are open
+ok 24 - light hits bounce off an attacking boss; heavy ones break the attack; openings are open
+  ---
+  duration_ms: 0.332559
+  type: 'test'
+  ...
+# Subtest: the golem cannot be interrupted out of its fist slam
+ok 25 - the golem cannot be interrupted out of its fist slam
+  ---
+  duration_ms: 0.109537
+  type: 'test'
+  ...
+# Subtest: dropping hp across a threshold makes the boss roar and enter the next phase
+ok 26 - dropping hp across a threshold makes the boss roar and enter the next phase
+  ---
+  duration_ms: 31.021805
+  type: 'test'
+  ...
+# Subtest: the croc crashes into the wall at the end of its death roll and is left stunned
+ok 27 - the croc crashes into the wall at the end of its death roll and is left stunned
+  ---
+  duration_ms: 0.499057
+  type: 'test'
+  ...
+# Subtest: warnings come first: a column or a drop cannot hurt until its warning is over
+ok 28 - warnings come first: a column or a drop cannot hurt until its warning is over
+  ---
+  duration_ms: 0.424668
+  type: 'test'
+  ...
+# Subtest: spit lands as a puddle that slows but does not hurt
+ok 29 - spit lands as a puddle that slows but does not hurt
+  ---
+  duration_ms: 0.388616
+  type: 'test'
+  ...
+# Subtest: an hour of fighting every boss never breaks anything
+ok 30 - an hour of fighting every boss never breaks anything
+  ---
+  duration_ms: 572.518395
+  type: 'test'
+  ...
+# Subtest: hazards that leave the arena or run out are removed
+ok 31 - hazards that leave the arena or run out are removed
+  ---
+  duration_ms: 0.556459
+  type: 'test'
+  ...
+# Subtest: Thornbark has his own tougher move set, and the secret level picks him
+ok 32 - Thornbark has his own tougher move set, and the secret level picks him
+  ---
+  duration_ms: 4.23764
+  type: 'test'
+  ...
+# Subtest: the secret level builds an arena fight with Thornbark and no Daisy
+ok 33 - the secret level builds an arena fight with Thornbark and no Daisy
+  ---
+  duration_ms: 161.697674
+  type: 'test'
+  ...
+# Subtest: stage 7-7 hides a reachable Thorn Gate, and no other stage does
+ok 34 - stage 7-7 hides a reachable Thorn Gate, and no other stage does
+  ---
+  duration_ms: 2414.321548
+  type: 'test'
+  ...
+# Subtest: hearts: five to start, six with the Thorn Heart
+ok 35 - hearts: five to start, six with the Thorn Heart
+  ---
+  duration_ms: 0.208716
+  type: 'test'
+  ...
+# Subtest: 1-1 first run sideways, the bounce by the seed-perch log: no frame moves the view more than 11 px, and the view follows him up
+ok 36 - 1-1 first run sideways, the bounce by the seed-perch log: no frame moves the view more than 11 px, and the view follows him up
+  ---
+  duration_ms: 1022.124448
+  type: 'test'
+  ...
+# Subtest: 1-1 first run sideways, the same bounce at 15 fps (67 ms frames, the real loop): 11 px per 1/30 s step, his head no deeper under the HUD
+ok 37 - 1-1 first run sideways, the same bounce at 15 fps (67 ms frames, the real loop): 11 px per 1/30 s step, his head no deeper under the HUD
+  ---
+  duration_ms: 726.080556
+  type: 'test'
+  ...
+# Subtest: the cast reports a freeze: beaten by his stillness in its rear, him inside its strike (128 px), once; frozen outside its reach, beaten but no moment; never stopping, struck
+ok 38 - the cast reports a freeze: beaten by his stillness in its rear, him inside its strike (128 px), once; frozen outside its reach, beaten but no moment; never stopping, struck
+  ---
+  duration_ms: 10.69056
+  type: 'test'
+  ...
+# Subtest: a stage that teaches the freeze (CastData.teachStill, from its brief): its FIRST freeze is the moment wherever he stands; later ones only inside the reach (1-9 beat 2)
+ok 39 - a stage that teaches the freeze (CastData.teachStill, from its brief): its FIRST freeze is the moment wherever he stands; later ones only inside the reach (1-9 beat 2)
+  ---
+  duration_ms: 7.225602
+  type: 'test'
+  ...
+# Subtest: the brief says it: a cast stage whose brief teaches 'still' carries teachStill; any other brief, none (so no stage moves)
+ok 40 - the brief says it: a cast stage whose brief teaches 'still' carries teachStill; any other brief, none (so no stage moves)
+  ---
+  duration_ms: 0.161507
+  type: 'test'
+  ...
+# Subtest: the cast says when a sweeper's eye is out: its pass, its dive and its climb back; never perched between passes
+ok 41 - the cast says when a sweeper's eye is out: its pass, its dive and its climb back; never perched between passes
+  ---
+  duration_ms: 0.491077
+  type: 'test'
+  ...
+# Subtest: in the real engine: frozen in a boa's rear inside its reach, 0.6 s of slow motion, the view kept (no push-in); he is not hurt
+ok 42 - in the real engine: frozen in a boa's rear inside its reach, 0.6 s of slow motion, the view kept (no push-in); he is not hurt
+  ---
+  duration_ms: 780.206988
+  type: 'test'
+  ...
+# Subtest: in the real engine: never while the eagle's eye is out, and cut short the step one comes out
+ok 43 - in the real engine: never while the eagle's eye is out, and cut short the step one comes out
+  ---
+  duration_ms: 533.913835
+  type: 'test'
+  ...
+# Subtest: chase piece 1-2 Normal: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+ok 44 - chase piece 1-2 Normal: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+  ---
+  duration_ms: 1080.602298
+  type: 'test'
+  ...
+# Subtest: chase piece 1-2 Normal: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+ok 45 - chase piece 1-2 Normal: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+  ---
+  duration_ms: 299.410547
+  type: 'test'
+  ...
+# Subtest: chase piece 1-2 Normal: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+ok 46 - chase piece 1-2 Normal: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+  ---
+  duration_ms: 307.646237
+  type: 'test'
+  ...
+# Subtest: chase piece 1-2 Easy: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+ok 47 - chase piece 1-2 Easy: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+  ---
+  duration_ms: 383.556023
+  type: 'test'
+  ...
+# Subtest: chase piece 1-2 Easy: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+ok 48 - chase piece 1-2 Easy: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+  ---
+  duration_ms: 245.97039
+  type: 'test'
+  ...
+# Subtest: chase piece 1-2 Easy: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+ok 49 - chase piece 1-2 Easy: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+  ---
+  duration_ms: 240.118327
+  type: 'test'
+  ...
+# Subtest: chase piece 2-1 Normal: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+ok 50 - chase piece 2-1 Normal: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+  ---
+  duration_ms: 4529.090881
+  type: 'test'
+  ...
+# Subtest: chase piece 2-1 Normal: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+ok 51 - chase piece 2-1 Normal: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+  ---
+  duration_ms: 239.557086
+  type: 'test'
+  ...
+# Subtest: chase piece 2-1 Normal: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+ok 52 - chase piece 2-1 Normal: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+  ---
+  duration_ms: 202.728077
+  type: 'test'
+  ...
+# Subtest: chase piece 2-1 Easy: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+ok 53 - chase piece 2-1 Easy: in stride he is never caught; the branch falls behind him; each front stops at its fork, which stays whole
+  ---
+  duration_ms: 6313.64756
+  type: 'test'
+  ...
+# Subtest: chase piece 2-1 Easy: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+ok 54 - chase piece 2-1 Easy: he stops on a stretch: caught within the stop budget, a heart (not a life), back at his flag, the branch whole
+  ---
+  duration_ms: 173.418013
+  type: 'test'
+  ...
+# Subtest: chase piece 2-1 Easy: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+ok 55 - chase piece 2-1 Easy: still on a living fork for 20 s he is never caught, even at its very edge; a fall off the branch is a heart and the flag
+  ---
+  duration_ms: 249.52277
+  type: 'test'
+  ...
+# Subtest: chase piece: a stage that lays no chase starts none; every stage that lays one starts exactly one, and nothing else collapses beside it
+ok 56 - chase piece: a stage that lays no chase starts none; every stage that lays one starts exactly one, and nothing else collapses beside it
+  ---
+  duration_ms: 16917.00715
+  type: 'test'
+  ...
+# Subtest: chase piece: a lay that cannot run is refused by name, never run
+ok 57 - chase piece: a lay that cannot run is refused by name, never run
+  ---
+  duration_ms: 423.986104
+  type: 'test'
+  ...
+# Subtest: piece hook on 1-2: a piece's toFlag hurt is a heart and back to his flag (no knock, safe time or not), every piece put back
+ok 58 - piece hook on 1-2: a piece's toFlag hurt is a heart and back to his flag (no knock, safe time or not), every piece put back
+  ---
+  duration_ms: 508.236555
+  type: 'test'
+  ...
+# Subtest: piece hook on 3-3: a piece's toFlag hurt is a heart and back to his flag (no knock, safe time or not), every piece put back
+ok 59 - piece hook on 3-3: a piece's toFlag hurt is a heart and back to his flag (no knock, safe time or not), every piece put back
+  ---
+  duration_ms: 225.085397
+  type: 'test'
+  ...
+# Subtest: a chase section is never painted as ground: paintedPlatforms leaves it to its chase drawer, even laid thin with a branch style
+ok 60 - a chase section is never painted as ground: paintedPlatforms leaves it to its chase drawer, even laid thin with a branch style
+  ---
+  duration_ms: 0.164602
+  type: 'test'
+  ...
+# Subtest: a chase section is never in the plain draw list (the list drawn before the painted art is ready), on any stage that has one
+ok 61 - a chase section is never in the plain draw list (the list drawn before the painted art is ready), on any stage that has one
+  ---
+  duration_ms: 253.949501
+  type: 'test'
+  ...
+# Subtest: the trailing edge (C4): baked once per screen size, ONE drawImage a frame and no gradient, at the break (or the edge) at his feet, alpha by gap; baked again on a new size or a lost canvas (D6)
+ok 62 - the trailing edge (C4): baked once per screen size, ONE drawImage a frame and no gradient, at the break (or the edge) at his feet, alpha by gap; baked again on a new size or a lost canvas (D6)
+  ---
+  duration_ms: 1.92028
+  type: 'test'
+  ...
+# Subtest: \#ctest's 1-2 is the real 1-2, the same stage as without \#ctest (normal, layouts 1-3)
+ok 63 - \#ctest's 1-2 is the real 1-2, the same stage as without \#ctest (normal, layouts 1-3)
+  ---
+  duration_ms: 1808.536729
+  type: 'test'
+  ...
+# Subtest: \#ctest's 1-2 is the real 1-2, the same stage as without \#ctest (easy, layouts 1-3)
+ok 64 - \#ctest's 1-2 is the real 1-2, the same stage as without \#ctest (easy, layouts 1-3)
+  ---
+  duration_ms: 989.063398
+  type: 'test'
+  ...
+# Subtest: \#ctest asks for 1-2's own sheets, nothing of the control course's (World 2's river, its four creatures)
+ok 65 - \#ctest asks for 1-2's own sheets, nothing of the control course's (World 2's river, its four creatures)
+  ---
+  duration_ms: 5.60703
+  type: 'test'
+  ...
+# Subtest: hovering, Dot keeps off Pokey and his punch reach, even with his back to the screen edge (QA v189, 1-3 at 320x782)
+ok 66 - hovering, Dot keeps off Pokey and his punch reach, even with his back to the screen edge (QA v189, 1-3 at 320x782)
+  ---
+  duration_ms: 1.613947
+  type: 'test'
+  ...
+# Subtest: hovering, she rises off a score pop-up ("+100 FLOWER!")
+ok 67 - hovering, she rises off a score pop-up ("+100 FLOWER!")
+  ---
+  duration_ms: 0.183995
+  type: 'test'
+  ...
+# Subtest: her bubble keeps off the landing ahead of him (QA v189: the mossy block in 1-3)
+ok 68 - her bubble keeps off the landing ahead of him (QA v189: the mossy block in 1-3)
+  ---
+  duration_ms: 0.533558
+  type: 'test'
+  ...
+# Subtest: in a boss fight her bubble never covers the open weak spot (its NOW! marker sits on it), and its lines go within 6 s
+ok 69 - in a boss fight her bubble never covers the open weak spot (its NOW! marker sits on it), and its lines go within 6 s
+  ---
+  duration_ms: 9.231623
+  type: 'test'
+  ...
+# Subtest: a mushroom tip waits for a bounce, not any jump (QA v189: 1-2 closed on a slide and a hop)
+ok 70 - a mushroom tip waits for a bounce, not any jump (QA v189: 1-2 closed on a slide and a hop)
+  ---
+  duration_ms: 0.431669
+  type: 'test'
+  ...
+# Subtest: perched, she talks while she says her line, then points the way to the thing
+ok 71 - perched, she talks while she says her line, then points the way to the thing
+  ---
+  duration_ms: 0.164279
+  type: 'test'
+  ...
+# Subtest: Skip tips: offered once per device, never on 1-1 or the coach (DOT-5); tapping it turns tips off (Quiet) but keeps the locked-exit lines
+ok 72 - Skip tips: offered once per device, never on 1-1 or the coach (DOT-5); tapping it turns tips off (Quiet) but keeps the locked-exit lines
+  ---
+  duration_ms: 0.340202
+  type: 'test'
+  ...
+# Subtest: Skip tips needs a deliberate tap: not in its first moments (a tap meant for the game), and only a touch that began on it
+ok 73 - Skip tips needs a deliberate tap: not in its first moments (a tap meant for the game), and only a touch that began on it
+  ---
+  duration_ms: 0.085483
+  type: 'test'
+  ...
+# Subtest: turning tips off takes the line down at once (no 1.5 s wait), and what Quiet would not say goes with it
+ok 74 - turning tips off takes the line down at once (no 1.5 s wait), and what Quiet would not say goes with it
+  ---
+  duration_ms: 0.61413
+  type: 'test'
+  ...
+# Subtest: in a boss fight her bubble sits in a corner band away from the boss, off Pokey and the weak spot, with Dot beside it, not on him (QA v189, 1-10)
+ok 75 - in a boss fight her bubble sits in a corner band away from the boss, off Pokey and the weak spot, with Dot beside it, not on him (QA v189, 1-10)
+  ---
+  duration_ms: 3.184185
+  type: 'test'
+  ...
+# Subtest: no line starts while the stage-start goal card is up, not even a must-know one: Dot's first line waits until it has gone (QA v189, 640x320)
+ok 76 - no line starts while the stage-start goal card is up, not even a must-know one: Dot's first line waits until it has gone (QA v189, 640x320)
+  ---
+  duration_ms: 0.388916
+  type: 'test'
+  ...
+# Subtest: a move tip for a move already done this stage is not said; one that arrives late closes as soon as the move is done (QA v189)
+ok 77 - a move tip for a move already done this stage is not said; one that arrives late closes as soon as the move is done (QA v189)
+  ---
+  duration_ms: 0.241706
+  type: 'test'
+  ...
+# Subtest: upright, with every side of her blocked by a carving and by Pokey, her bubble goes clear of both, name tag and his feet included (QA v194, 5-1)
+ok 78 - upright, with every side of her blocked by a carving and by Pokey, her bubble goes clear of both, name tag and his feet included (QA v194, 5-1)
+  ---
+  duration_ms: 0.41263
+  type: 'test'
+  ...
+# Subtest: 1-1's grown steps are keep-outs for her bubble (INT-1-1, the Critic's delta 3): on screen, each step with the air he stands in over it
+ok 79 - 1-1's grown steps are keep-outs for her bubble (INT-1-1, the Critic's delta 3): on screen, each step with the air he stands in over it
+  ---
+  duration_ms: 1.009074
+  type: 'test'
+  ...
+# Subtest: vGradient: one gradient per (ends, stops) and context, not one a frame
+ok 80 - vGradient: one gradient per (ends, stops) and context, not one a frame
+  ---
+  duration_ms: 1.375443
+  type: 'test'
+  ...
+# Subtest: cropToBox: a picture wholly inside is drawn whole; one across the box keeps exactly the part inside, at the same scale
+ok 81 - cropToBox: a picture wholly inside is drawn whole; one across the box keeps exactly the part inside, at the same scale
+  ---
+  duration_ms: 0.188961
+  type: 'test'
+  ...
+# Subtest: polygonInBox: one clip to the cut outline is the box and the outline in turn (a river under two painted banks, and a concave one)
+ok 82 - polygonInBox: one clip to the cut outline is the box and the outline in turn (a river under two painted banks, and a concave one)
+  ---
+  duration_ms: 159.684175
+  type: 'test'
+  ...
+# Subtest: aboveLinesPath: the outline clipAboveLines clips to, point for point
+ok 83 - aboveLinesPath: the outline clipAboveLines clips to, point for point
+  ---
+  duration_ms: 0.676755
+  type: 'test'
+  ...
+# Subtest: its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+ok 84 - its pass starts from the end of its stretch farther from him: its eye crosses toward him, from either side
+  ---
+  duration_ms: 2.108642
+  type: 'test'
+  ...
+# Subtest: the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+ok 85 - the glance: seeded (every run of a post the same), uneven, every turn told for its whole tell, a share of fake-outs
+  ---
+  duration_ms: 148.67132
+  type: 'test'
+  ...
+# Subtest: Easy glances slower, tells longer, never fakes (Easy is never harder)
+ok 86 - Easy glances slower, tells longer, never fakes (Easy is never harder)
+  ---
+  duration_ms: 29.991316
+  type: 'test'
+  ...
+# Subtest: in its look: moving in its view starts its dive's tell; still, out of reach, or in its head-cock, nothing
+ok 87 - in its look: moving in its view starts its dive's tell; still, out of reach, or in its head-cock, nothing
+  ---
+  duration_ms: 6.686048
+  type: 'test'
+  ...
+# Subtest: the fairness check holds a glance to its dials; one act, one heart
+ok 88 - the fairness check holds a glance to its dials; one act, one heart
+  ---
+  duration_ms: 0.553374
+  type: 'test'
+  ...
+# Subtest: 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+ok 89 - 1-7 on the real engine: walking forward through every stretch past the lesson costs hearts (Normal)
+  ---
+  duration_ms: 5713.117433
+  type: 'test'
+  ...
+# Subtest: 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first (seeds 1-8)
+ok 90 - 1-7 on the real engine: out of cover the moment its look ends, he is caught by its glance, told first (seeds 1-8)
+  ---
+  duration_ms: 21315.026392
+  type: 'test'
+  ...
+# Subtest: the re-check: after a look that saw nobody, and after a pass, its head comes round quickly, always a real look; then a full away
+ok 91 - the re-check: after a look that saw nobody, and after a pass, its head comes round quickly, always a real look; then a full away
+  ---
+  duration_ms: 66.49268
+  type: 'test'
+  ...
+# Subtest: the tier bots freeze on the glance's tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle's
+ok 92 - the tier bots freeze on the glance's tell: without the freeze the same bot loses more to the eagle (the toy), and a dive is counted as the eagle's
+  ---
+  duration_ms: 27438.882322
+  type: 'test'
+  ...
+# Subtest: every hunter that walks goes after a player standing still, then its attack lands on him
+ok 93 - every hunter that walks goes after a player standing still, then its attack lands on him
+  ---
+  duration_ms: 44.959395
+  type: 'test'
+  ...
+# Subtest: hunters actually close the distance (the old AI patrolled back and forth and ignored the player)
+ok 94 - hunters actually close the distance (the old AI patrolled back and forth and ignored the player)
+  ---
+  duration_ms: 6.926178
+  type: 'test'
+  ...
+# Subtest: personalities differ: jaguar and tayra run, the caiman crawls
+ok 95 - personalities differ: jaguar and tayra run, the caiman crawls
+  ---
+  duration_ms: 0.795939
+  type: 'test'
+  ...
+# Subtest: a hunter stays on its own ground, however far away the player is
+ok 96 - a hunter stays on its own ground, however far away the player is
+  ---
+  duration_ms: 48.61229
+  type: 'test'
+  ...
+# Subtest: the snake is shy: it backs away while you are not close, and strikes when you are
+ok 97 - the snake is shy: it backs away while you are not close, and strikes when you are
+  ---
+  duration_ms: 10.305585
+  type: 'test'
+  ...
+# Subtest: a cornered shy snake holds its ground at the edge of its patch instead of backing off the ledge
+ok 98 - a cornered shy snake holds its ground at the edge of its patch instead of backing off the ledge
+  ---
+  duration_ms: 0.659064
+  type: 'test'
+  ...
+# Subtest: the snake warns with a visible rear before it strikes
+ok 99 - the snake warns with a visible rear before it strikes
+  ---
+  duration_ms: 0.295153
+  type: 'test'
+  ...
+# Subtest: an animal loses interest once the player is gone; the tayra holds on longer than the caiman
+ok 100 - an animal loses interest once the player is gone; the tayra holds on longer than the caiman
+  ---
+  duration_ms: 0.757732
+  type: 'test'
+  ...
+# Subtest: a ducking sloth is harder to notice
+ok 101 - a ducking sloth is harder to notice
+  ---
+  duration_ms: 0.499305
+  type: 'test'
+  ...
+# Subtest: an ocelot creeps up when your back is turned and slows when you face it
+ok 102 - an ocelot creeps up when your back is turned and slows when you face it
+  ---
+  duration_ms: 0.583813
+  type: 'test'
+  ...
+# Subtest: the boa never slithers, but its head follows you once it has noticed
+ok 103 - the boa never slithers, but its head follows you once it has noticed
+  ---
+  duration_ms: 20.898131
+  type: 'test'
+  ...
+# Subtest: spiders wait until they sense you, then rush in bursts with a pause between
+ok 104 - spiders wait until they sense you, then rush in bursts with a pause between
+  ---
+  duration_ms: 0.751365
+  type: 'test'
+  ...
+# Subtest: groundRun joins touching platforms at the same height and stops at a pit
+ok 105 - groundRun joins touching platforms at the same height and stops at a pit
+  ---
+  duration_ms: 1.270514
+  type: 'test'
+  ...
+# Subtest: a hunter may chase past its patch but never past the end of the ground, and a shy snake stays home
+ok 106 - a hunter may chase past its patch but never past the end of the ground, and a shy snake stays home
+  ---
+  duration_ms: 0.406991
+  type: 'test'
+  ...
+# Subtest: a hunter really does leave its patch to catch a player who stands in its hunting ground
+ok 107 - a hunter really does leave its patch to catch a player who stands in its hunting ground
+  ---
+  duration_ms: 9.525184
+  type: 'test'
+  ...
+# Subtest: two hunters at the same spot ease apart instead of standing inside each other
+ok 108 - two hunters at the same spot ease apart instead of standing inside each other
+  ---
+  duration_ms: 0.635513
+  type: 'test'
+  ...
+# Subtest: no animal can ever stand past the edge of its ground, even with a bad patrol range, a knockback or a shy retreat
+ok 109 - no animal can ever stand past the edge of its ground, even with a bad patrol range, a knockback or a shy retreat
+  ---
+  duration_ms: 53.707618
+  type: 'test'
+  ...
