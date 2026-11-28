@@ -44,6 +44,36 @@ DONE (all in reference/qa-reports/BUILD-28/bots-s19/):
        sideways re-rolled to seed 38036 (rerolls 2). Judged at phone size, the parade pit (layout 28, x 2850): a gap between two grassy
        banks whose bottom shows as a dirt floor a short way down. It reads as a trench he could stand in, not as a drop that kills
        (the content bar: "a drop that kills must look like it kills before the player ever falls"). The other two are shot, not judged.
+THE LEAD'S RULING (read after the 9:10:56 PM ET push): the TOOL GAP goes first, to an ENGINE box as this job's successor (the bot's
+   goal hunt made general: at a sealed exit with the goal unmet it turns back for the unmet goal items, cast or not, firsttimer.ts:5807/
+   :5915; a toy, a plant, rule 28 on every listed stage's castBots; then 2-8 re-measured). This box writes no bot code (rule 22). The
+   lead's level questions, read-only, answered at 9:12 PM ET (stamp):
+   (a) THE CAGE COUNT: the design lays FOUR. w2Arc28.ts has four cage sockets: cage1 (duck, :166), cage2 (otter, :176), cage3 (capy,
+       :189), cage4 (duck, :205); every roll lays 4 on both settings. CAGES_28 = { normal: 7, easy: 5 } at w2Arc28.ts:99 is read by
+       NOTHING in src or tools (grep -rn CAGES_28 src tools: its definition only): a stale constant, not a lay that drops 3. Its comment
+       (":98 the goal: Normal 7, Easy 5; READY-28 beat 14") is wrong against the lay. The goal asks 4 of 4 on Normal (no slack), 3 of 4
+       on Easy. Where need 4 comes from: not traced in this box; the level config's targetCount reads 3 (spawn28.mts printed it) while the engine's
+       progress callback reports need 4 on Normal and 3 on Easy on every row (firsttimer.ts:1908, onProgressUpdate).
+   (b) THE CHILD'S PIT DEATHS on Normal, top three by section: parade 92 (x 2500-2899), rise|reed-bank 8 water (x ~11100, seed 2),
+       rise 1 water (x 11626). Stills (upright): parade at x 2850 (layout 28, BUILT seed 29) and x 2550 (layout 21), reed-bank x 11130
+       (layout 2, BUILT seed 3), in bots-s19/stills/. Only the first is judged (above). Not shot: rise x 11626.
+   (c) THE PARADE GAP (the lead's second question): it is a MARSH, not a pit. On layouts 1, 13, 21, 28 the parade row is river x
+       2354-3154 (dir -1, way -1, marsh floor y 1639, lip 1564, flood 'rise', safe: backX 3224 backY 1564): four 200-px log floors with
+       TWO 100-px dips between them (2554-2654, 2854-2954), rise 0 either way. A 100-px dip with no rise is well inside the child's
+       reach (fly-2-8.txt: maxGap(0) single 143.3 px), and mirrored to run right it is the same flat 100-px hop. So the jump is fair;
+       the deaths are not the jump: the child dies at y ~2080-2104, about 450 px BELOW the marsh floor, in a row whose data says SAFE (a
+       fall splashes him back to x 3224). Either the safe splash-back does not catch a fall through a dip on this LEFT-running row, or the
+       dip opens onto a drop. That is an engine question (riverLay / the marsh catch), first suspect the same family as R-165.574
+       (riverRide.test.ts:278, 'an open drop ahead, water ahead'); NOT traced. Easy: the child loses 0 lives in pits (18, all water).
+   (d) WHAT A FIRST-TIMER SEES AT SPAWN: NOT answered. The still bots-s19/stills/spawn-L1-2-8-L1-normal-x6989-{upright,sideways}.jpg
+       is layout 1, which BUILT seed 2 (spawn x 6449), so x 6989 stands ~540 px right of the real spawn; and the stills tool places
+       Pokey, so the opening goal line is not on it (the line shown is the flood line). What it does show, sideways: Pokey facing right
+       on an open grassy bank running right; at the bank's left end the ground stops at a tall earth column over rocks and water. ROUGH
+       SPOT seen: a hard vertical seam in the backdrop at that column (the far waterfall scene cut off by a different rock layer), and a
+       dark blank band under it, bottom left. Needs a real spawn shot (the page's own start, no placement) at the built seed's spawn.
+   DOT AT THE SEALED DOOR (w2Arc28.ts:75-78, LINES_28): missingCage "A little one's still caged! Back we go!" (said when the exit is
+       locked and a cage is still shut); missingBank "One's waiting by the low road! Back we go!" (no cage shut, a little one waits at the
+       low road's near bank). The goal line (GOAL_LINES_28, :85): "Bring {n} little ones home to open the sanctuary".
 NEXT, in order (ReadNotifications at every step boundary; waits as background untils capped at 2 minutes):
    (a) READ THE LEAD'S RULING on the trace (three messages: the red, the diagnosis, the three answers; the last before the 9:06:53 PM ET stamp). The likely forks: a bot fix (an engine member: level.md rule
        22, builders do not touch tools/inspect), a lay fix (cage count/slack, the open road home, the parade pit's look), or both. Any src

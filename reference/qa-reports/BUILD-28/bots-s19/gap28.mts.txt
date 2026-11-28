@@ -1,0 +1,13 @@
+const ROOT = process.cwd();
+await import(`${ROOT}/src/game/headlessDom.ts`);
+const { generateAllLevels } = await import(`${ROOT}/src/game/worldsData.ts`);
+const { generateStage, setLayoutVariant } = await import(`${ROOT}/src/game/stageGenerator.ts`);
+const { loadSeedList } = await import(`${ROOT}/src/game/gen2/seedList.ts`);
+await loadSeedList('2-8');
+const cfg: any = generateAllLevels().find((c: any) => c.id === '2-8' && !c.secret)!;
+for (const seed of [28, 21, 13, 1]) { setLayoutVariant(seed); const st: any = generateStage(cfg, 'normal');
+  const ps = st.platforms.filter((p: any) => p.x + p.width > 2300 && p.x < 3100 && p.y > 1500).sort((a: any, b: any) => a.x - b.x);
+  console.log(`seed(layout) ${seed}:`, ps.map((p: any) => `[${Math.round(p.x)}..${Math.round(p.x + p.width)} y${Math.round(p.y)} ${p.type ?? ''}${p.style ? '/' + p.style : ''}${p.crumble ? ' crumble' : ''}]`).join(' '));
+  const gaps = []; for (let i = 1; i < ps.length; i++) { const a = ps[i - 1], b = ps[i]; const g = Math.round(b.x - (a.x + a.width)); if (g > 20) gaps.push(`gap ${g} px between ${Math.round(a.x + a.width)} and ${Math.round(b.x)}; right lip y${Math.round(b.y)} left lip y${Math.round(a.y)} (going LEFT: rise ${Math.round(b.y - a.y)})`); }
+  console.log('   ', gaps.join('; '));
+  const rv = (st.rivers ?? []).filter((r: any) => r.x1 > 2300 && r.x0 < 3100); if (rv.length) console.log('    rivers', JSON.stringify(rv).slice(0, 200)); }
