@@ -1,0 +1,7 @@
+castBots 2-3, seeds 1-10; the floor 120 s (STAGE-RULES.md:77)
+child  normal PASS 10/10; under the floor 0; time median 407.4 s (min 375.8); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+child  easy   PASS 10/10; under the floor 0; time median 294.1 s (min 272.9); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+middle normal PASS 10/10; under the floor 0; time median 238.3 s (min 230.8); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+middle easy   PASS 10/10; under the floor 0; time median 225.8 s (min 219); hits 0 lives 0 (none); cleared none; told of traps 0/10; first trap sprung 0/10; traps sprung 0/0; turned back 0; left 0
+exit 0
+Fri Nov 27 21:16:05 EST 2026

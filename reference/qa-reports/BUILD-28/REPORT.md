@@ -84,6 +84,10 @@ THE LEAD'S RULING (read after the 9:10:56 PM ET push): the TOOL GAP goes first, 
        (The page's layout n BUILT seed n+1 on layouts 1, 2, 5, 28. The headless setLayoutVariant(2) gave spawn x 6449, the page's
        BUILT seed 2's spawn. CHECKED: the bot's firstTimer('2-8', n) builds its stage by new RealPlay(id, seed) (firsttimer.ts:1891), whose
        constructor calls setLayoutVariant(seed) (src/game/realPlay.ts:153-154), the same path the trace's positions came from.)
+   (e) THE CONTROL (for the engine box): 2-3, the same cage form (w2Arc23.ts cage(), its exit AHEAD of the spawn), castBots --stage
+       2-3 --seeds 1-10 --bots child,middle --par 6 on frozen be2ebe7d2: child Normal 10/10, Easy 10/10; middle Normal 10/10, Easy 10/10;
+       0 lives (bots-s19/castBots-2-3-x10-child-middle-be2ebe7d2.txt, finished 9:16:05 PM ET by its stamp). So the bot opens cages that
+       lie on its way to the exit; the gap is the exit BEHIND the spawn (2-8's out-and-back), as (1) says.
    DOT AT THE SEALED DOOR (w2Arc28.ts:75-78, LINES_28): missingCage "A little one's still caged! Back we go!" (said when the exit is
        locked and a cage is still shut); missingBank "One's waiting by the low road! Back we go!" (no cage shut, a little one waits at the
        low road's near bank). The goal line (GOAL_LINES_28, :85): "Bring {n} little ones home to open the sanctuary".
