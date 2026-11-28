@@ -40,8 +40,13 @@ NEXT, IN ORDER:
    lay had no miss), this tree `down true 143` (the COVER lay, `again`: call 2's first lay, read through withoutMerged, now HAS a miss).
    So the merge makes the down invariant name a miss the trimmed lay did not have, and the seed search goes another way. Likely suspect
    (unproven): a catch merged into a storey's own piece reads to towerHandOns as a catch run on over ALL of its storey, or a turn's
-   storey piece (by id) is gone. NEXT: print `before.map(m => m.line)` on that call (this tree) and name the miss; it is an ENGINE red
-   of this fix until shown otherwise (the merge must not make a miss: fix the read, or keep that seam and name it). Then class it: the draft's pinned fixture moved (the test is
+   storey piece (by id) is gone. THE MISS, PRINTED (`before` lines on that call, this tree): "tower: a roof over a vine's top: wood at
+   x 670-850, y 6820, lies 126 px over the top of the vine at x 848 (y 6946), in his climb-off (180 px)", on a lay whose catch
+   542-964 @6946 merged into stage piece 37. So the merged piece now runs under the vine at x 848 whose top is read at y 6946 there
+   (before the merge a piece ENDED near that x: a vine at a piece's end, or past it, reads differently from one mid-piece). **AN ENGINE
+   RED OF THIS FIX**: a merge may not join across a vine's foot/top x (the seam was the vine's end). NEXT: print the two pieces and the
+   vine at that spot on both trees; the likely fix is that a seam within a climb vine's room (vineTop.ts climbX, CLIMB_CLEAR) is not
+   merged and is named in trimSeams as "a vine's end"; then a planted toy (a vine hung at the trim's cut) red without it. Then class it: the draft's pinned fixture moved (the test is
    rebuilt as a hand-built toy like lipToy, a REPLACEMENT the lead rules on) or an engine red. Do not re-pin a roll. Run the test alone on
    7a580aefc and 049a20abc (both green per box 7).
 2. RUN ONCE THIS BOX (proof-m/fix-14.txt; compare seam POSITIONS, setting + layout + x@y, not piece names, which the merge renames):
