@@ -556,32 +556,96 @@ test("every ledge over him read as a step up (noLevelRead, the plant): the SHAPE
   assert.equal(read, 'double', 'the bough 188 px over his floor read as a step up');
 });
 
-/** the lip (ENG-DARK box 22, 7 of the 9 unlit crossings of c15's x40): the child on Easy, roll 8, comes onto 251-515 (y 4375) toward its
- *  dark right rim; his stop starts at 102.67 s, his slide carries his middle past the end (to x 524) while the engine still stands him on
- *  the piece (standingOnId), and the stop read the piece's span alone: it dropped and he walked over the rim at 103.37 s, its landing
- *  dark. The stop is held while the engine stands him on the rim's piece. The run to 110 s: the frames of a stop held at that rim with
- *  his middle past its end, and the rim's crossings */
-async function lip8(noLipHold: boolean) {
+/** the lip, hand-built (ENG-DARK box 22's lip; the lead's ruling A, ENG-CATCH-k, R-165.561). It REPLACES the pinned real row (child Easy
+ *  roll 8, the rim at x 515, y 4375): a test pins properties, never a roll's x (ENGINE.md traps), and the tower's catch trims
+ *  (R-165.573) moved roll 8 off its lay; no child Easy roll 1-96 on the tower's lay holds an own-light lip the plant bites (proof-k).
+ *  The lip as box 22 found it: the child on Easy runs along a piece toward its dark rim, his stop starts (glowWait, within its reach of
+ *  the rim), his slide carries his middle past the piece's end while the engine still stands him on it (standingOnId), and the stop read
+ *  by the piece's span alone dropped there: he walked over the rim dark. On the draft's own engine, his ground and his dark are set
+ *  aside for the toy's: a floor, its right end a dark rim over a landing below and past it; the rim's light sleeps (an id no stage
+ *  light has) and wakes the frame his stop is taken. Every number is the toy's own pieces' (a floor his run-up long, the landing
+ *  his height under it; his run in at full speed, from the engine's physics). The run's frames of a stop held at the toy rim with his middle past its end, and the run's dark verdict
+ *  (FTRun.dark.unlit: litAhead over the toy rim's crossings) */
+async function lipToy(noLipHold: boolean, inset: (tall: number, width: number) => number) {
   if (readied !== DRAFT) readyDraft(DRAFT);
   const { firstTimer } = await import('../../../tools/inspect/firsttimer.ts');
   const { CAST_BOTS } = await import('../../../tools/inspect/castBots.ts');
-  let past = 0;
-  const r = firstTimer(DRAFT, 8, { ...CAST_BOTS.child.easy!, noLipHold }, { cap: 110, dotSetting: true, onFrame(sim, b) {
-    const g = (b as unknown as { glowStop: { rim: { x: number; y: number } } | null }).glowStop;
-    if (g && g.rim.x === 515 && Math.round(g.rim.y) === 4375 && sim.p.grounded && sim.p.x > 515) past++;
+  const { RimWatch } = await import('./dark.ts');
+  const { PHYS, STAND_SIDE } = await import('../physics.ts');
+  type Piece = { id: number; x: number; y: number; width: number };
+  type Rim = { piece: Piece; dir: 1; x: number; y: number; light: { id: number; sleep: boolean } };
+  type Bot = {
+    e: { gameTime: number; glowWake: Map<number, number>; standingOnId: number };
+    glowStop: { rim: unknown } | null; glowRims: unknown; rimWatch: unknown;
+    prog: { pts: Array<{ x: number; y: number }>; cur: number }; placeAt(x: number, y: number): void; watchRims(): void;
+  };
+  let rim: Rim | undefined, past = 0, held = 0, woke: number | undefined, start = 0, stopped: number | undefined, side = 0;
+  const r = firstTimer(DRAFT, 1, { ...CAST_BOTS.child.easy!, noLipHold }, { cap: 30, dotSetting: true, onFrame(sim, b) {
+    const bot = b as unknown as Bot, p = sim.p;
+    if (!rim) {
+      // (the toy's pieces, under where he stands: a floor four of his heights of run-up long, and a landing his height under its rim,
+      //  as long, a body's width past it; ids past every stage piece's)
+      side = STAND_SIDE * p.width;
+      const like = sim.platforms[0], tall = p.height, Y = p.y, id = Math.max(...sim.platforms.map((q) => q.id)) + 1;
+      const floor = { ...like, id, x: p.x - tall, y: Y, width: tall * 5, type: 'solid' as const, broken: false };
+      const end = floor.x + floor.width;
+      const land = { ...like, id: id + 1, x: end + p.width, y: Y + tall, width: tall * 4, type: 'solid' as const, broken: false };
+      sim.platforms.length = 0;
+      sim.platforms.push(floor, land);
+      const light = { x: land.x + land.width / 2, y: land.y - tall, r: tall * 2, sleep: true, id: Math.max(0, ...lightIds(sim.stage)) + 1 };
+      rim = { piece: floor, dir: 1, x: end, y: Y, land: { x: land.x + p.width, y: land.y }, light, onto: land, drop: true } as unknown as Rim;
+      bot.glowRims = [rim];
+      bot.rimWatch = new RimWatch([rim as never]);
+      // (he comes in at a full run, `inset` inside the rim: his stop is taken there, on the piece within its reach)
+      start = end - inset(tall, p.width);
+      bot.placeAt(start, Y);
+      Object.assign(p, { vx: PHYS.maxRun * rim.dir, facing: rim.dir });
+      // (the harness's own watch, for the frame he is put on the piece: this frame's step ran before the toy's pieces were laid)
+      bot.watchRims();
+      const pts = bot.prog.pts, way = [floor.x, end - tall, end, land.x + p.width, land.x + land.width / 2]
+        .map((x) => ({ ...pts[0], x, y: x > end ? land.y : Y }));
+      pts.splice(0, pts.length, ...way);
+      bot.prog.cur = 2;
+      return;
+    }
+    const stop = bot.glowStop;
+    if (stop && stop.rim === rim) {
+      held++;
+      if (woke === undefined) bot.e.glowWake.set(rim.light.id, woke = bot.e.gameTime);
+      if (p.grounded && bot.e.standingOnId === rim.piece.id && (p.x - rim.x) * rim.dir > 0) past++;
+      if (stopped === undefined && p.grounded && p.vx === 0) stopped = (p.x - start) * rim.dir;
+    }
   } });
-  return { past, unlit: (r.dark?.unlit ?? []).filter((u) => u.includes('the rim at x 515, y 4375')) };
+  return { past, held, woke, stopped, side, unlit: r.dark?.unlit ?? [], crossed: r.dark?.crossed ?? 0, rim: rim && `the rim at x ${rim.x}, y ${Math.round(rim.y)}` };
+}
+/** every light id the stage's zones carry (the toy's light takes one none of them has) */
+function lightIds(stage: unknown): number[] {
+  const zones = (stage as { zones?: Array<{ lights?: Array<{ id?: number }> }> }).zones ?? [];
+  return zones.flatMap((z) => (z.lights ?? []).map((l) => l.id ?? 0));
 }
 
-test("a dark stop holds at the lip: his middle past the rim's end, the engine still standing him on its piece (child Easy roll 8, the rim at x 515, y 4375): he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)", async () => {
-  const { past, unlit } = await lip8(false);
-  assert.ok(past > 0, 'the stop was held with his middle past the end');
+/** his stopping distance at the toy's rim (the thumb's let-go after his release lag, then the slide): a first pass from one of his
+ *  heights inside the rim, where his stop stands him on the piece; the lip pass starts him that far in less half the engine's
+ *  stand-side (STAND_SIDE of his width), so the stop leaves his middle past the end, still stood on the piece */
+async function lipInset(noLipHold: boolean) {
+  const first = await lipToy(noLipHold, (tall) => tall);
+  assert.ok(first.stopped !== undefined, 'the first pass: his stop stood him still');
+  const reach = first.stopped!;
+  return lipToy(noLipHold, () => reach - first.side / 2);
+}
+
+test("a dark stop holds at the lip: the toy's child on Easy slides his middle past the dark rim's end while the engine still stands him on its piece; he stands there until its landing is lit, and does not go over it dark (GREEN; planted: noLipHold)", async () => {
+  const { past, held, woke, unlit, crossed } = await lipInset(false);
+  assert.ok(woke !== undefined && held > 0, 'his stop was taken at the toy rim (its light woke then)');
+  assert.ok(past > 0, `the stop was held with his middle past the end (${past} of ${held} frames)`);
+  assert.ok(crossed >= 1, `he went over the toy rim, its light lit (${crossed})`);
   assert.deepEqual(unlit, [], 'he did not go over that rim with its landing dark');
 });
 
-test("the stop read by the piece's span alone (noLipHold, the plant): at roll 8's lip he walks over the rim at x 515, y 4375 dark (RED)", async () => {
-  const { unlit } = await lip8(true);
+test("the stop read by the piece's span alone (noLipHold, the plant): the toy's lip: his middle past the rim's end, the stop drops and he walks over it before its landing is lit (RED)", async () => {
+  const { unlit, rim } = await lipInset(true);
   assert.equal(unlit.length, 1, `he went over that rim dark (${JSON.stringify(unlit)})`);
+  assert.ok(unlit[0].includes(rim!), `the toy rim (${unlit[0]})`);
 });
 
 test("the bot's own put-back (placeAt: a rescue, a room's put-back) starts the dark's rim watch again: a teleport is no crossing (dark.test's put-back toy; GREEN; planted: placeAt without RimWatch.put)", async () => {
