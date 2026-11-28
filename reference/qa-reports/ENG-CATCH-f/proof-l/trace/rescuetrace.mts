@@ -20,6 +20,10 @@ const r = firstTimer(stage, Number(seedS), who, { onFrame(sim: any, b: any) {
   plats = sim.platforms;
   const p = sim.p;
   if (p.grounded && sim.standingOn >= 0) lastOn = sim.standingOn;
+  if (process.env.STOOD && p.grounded && sim.standingOn >= 0) {
+    const q = sim.platforms.find((k: any) => k.id === sim.standingOn), Y = Number(process.env.STOOD);
+    if (q && Math.abs(q.y - Y) <= 4) { const key = `${Math.round(q.x)}-${Math.round(q.x + q.width)}@${Math.round(q.y)}`; const seen = (globalThis as any).__seen ??= new Map(); const v = seen.get(key); if (!v) seen.set(key, { t0: b.t, t1: b.t, x0: p.x, x1: p.x }); else { v.t1 = b.t; v.x0 = Math.min(v.x0, p.x); v.x1 = Math.max(v.x1, p.x); } }
+  }
   if (b.rescues !== prevR) {
     prevR = b.rescues;
     const piece = plats.find((q) => q.id === last.on);
@@ -34,3 +38,4 @@ for (const s of spots) {
   const near = plats.filter((q) => q.type === 'solid' && Math.abs(q.y - s.y) < 400 && q.x < s.x + 400 && q.x + q.width > s.x - 400).sort((a, b) => a.y - b.y || a.x - b.x);
   console.log(`  wood near x ${Math.round(s.x)}, y ${Math.round(s.y)}: ` + near.map((q) => `${Math.round(q.x)}-${Math.round(q.x + q.width)}@${Math.round(q.y)}`).join(' '));
 }
+if ((globalThis as any).__seen) for (const [k, v] of (globalThis as any).__seen) console.log(`  stood on ${k}: ${v.t0.toFixed(2)}-${v.t1.toFixed(2)} s, his x ${Math.round(v.x0)}-${Math.round(v.x1)}`);

@@ -1,7 +1,7 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
-(box 7, ENG-CATCH-l, engine, written 8:46 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
+(box 7, ENG-CATCH-l, engine, written 8:47 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
 this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
 NOT LANDED (the lead ruled A: 1-4 is SHIPPED; trace the castBots 1-4 PASS->FAIL rows, sort them into classes, land only after the
 lead reads them). Candidate 049a20abc is frozen and every gate but the rows is green below (shard 1/6 752/753 + 1 todo, 0 fail).
@@ -19,11 +19,13 @@ lead reads them). Candidate 049a20abc is frozen and every gate but the rows is g
      down") -> put 386, 6668; 157.80 s from x 99, y 6668 (on 0-112@6668) -> 849, 4644; 163.93 s and 177.03 s from x 1260, y 5907 (on
      1232-1280@5907; "fell back down from here 8 times" x 872/846/712) -> 264, 3943 and 712, 3662. THE TOWER MOVED WOOD HERE (x 0-1300,
      y 5550-7050, 25 pieces each): base 0-866@5626 + 166-766@5626 (overlapping) -> cand 166-766@5626 + 766-866@5626 (the 0-166 stretch
-     at y 5626 is GONE); base 104-284@6227 -> cand 104-226@6227 (trimmed where it lay under 226-446@6228). The CLASS (i) CANDIDATE: check
-     whether 0-166@5626 was a catch his climb from 1232-1280@5907 or 764-924@6228 used on base (the base run's frames near y 5626).
-     If it was, the overlap trim removed a needed catch: a red in the tower fix (keep a route or refuse the roll by name; fix at the
-     root, never a re-pin).
-   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
+     at y 5626 is GONE); base 104-284@6227 -> cand 104-226@6227 (trimmed where it lay under 226-446@6228).
+     NEITHER TRIM IS ON THE BASE ROUTE (rescuetrace STOOD=<y>, proof-l/trace/stood*): at y 5626 base stood on 0-866 one frame at x 792
+     (110.30 s: the 766-866 part the candidate keeps) then 166-766 (110.57-110.97 s); the candidate the same, 766-866 (110.30-111.07 s)
+     then 166-766 (111.10-111.47 s); neither ever stood on 104-284/104-226@6227. Both runs stood on 226-446@6228 from 79.10 s; base left
+     it at 105.23 s, the candidate was back there and on 446-764 / 764-924@6228 at 133-152.63 s (fell back down), rescue 1 at 152.67 s.
+     So NOT an obvious class (i). Next: the first frame after 111.47 s the two runs part (diff x,y by time), and what is under him there
+     on each tree; then the class.   - Two runs per cause: castBots + the trace are two of each row; a different seed with the same cause is still to find.
    - Also say whether the 4 FAIL->PASS rows (child easy 5, child normal 10, expert normal 13, kid normal 16) share the cause family
      (trace each the same way).
    - Stills of each rescue spot, both trees, upright, looked at first (proof-j's shoot14.mjs, scratch-fixed in proof-l to wait for
