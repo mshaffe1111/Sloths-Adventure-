@@ -1,0 +1,6 @@
+db46ae3e8
+not ok 2 - a stone step seated on a deep bank stands; the same stone moved over air still FAILS (planted, on a real gen2 World 1 build)
+  error: 'no seated island-earth stone in gen2 1-1 seeds 1-24'
+# tests 2
+# pass 1
+# fail 1

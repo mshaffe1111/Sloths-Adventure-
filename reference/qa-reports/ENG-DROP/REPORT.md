@@ -1,5 +1,30 @@
 # ENG-DROP (R-165.562): the run lay lays a DESIGNED drop past its corridor, on a real World 3 row
 
+**Box 3 hand-over, stamped Fri Nov 27 7:48 PM ET (`TZ=America/New_York date`). Branch t-eng-drop at db46ae3e8 + this report commit (no code change in box 3). WIP,
+NOT gated, NOT landed. Box 3 started 7:22 PM ET (`date`: Fri Nov 27 19:22:33 EST 2026).**
+
+## EXACT NEXT STEP (box 4 starts here)
+1. DONE in box 3, PRE-FREEZE on db46ae3e8 (A is in it): tsc exit 0; `generality check: 68 engine files (216 exempt under the engine folders),
+   26 literals, 26 known PASS`; the 143 importer files WHOLE (`b2-importers-tests.txt`, which holds w3.test, w3Level.test, w3Noise.test and
+   tower.test): `# tests 1074 # pass 1072 # fail 1 # cancelled 0 # skipped 0 # todo 1` (1430 s, `b3-importers.txt.gz`; the todo is
+   `not ok 708 ... # TODO R-165.312`, the flag placer, not a fail).
+   The ONE red: src/game/mixer/support.test.ts:27 "a stone step seated on a deep bank stands; the same stone moved over air still FAILS":
+   `no seated island-earth stone in gen2 1-1 seeds 1-24`. **INHERITED:** run alone on 7a580aefc (a detached worktree) it is the same red,
+   `# tests 2 # pass 1 # fail 1` (`b3-support-base.txt`), and the same on db46ae3e8 (`b3-support-head.txt`). No workflow line names
+   src/game/mixer/ and CLAUDE.md's suite globs do not cover it (so CI likely never runs it: UNVERIFIED, for the lead). Not this packet's.
+2. NEXT (box 4): `git ls-remote origin refs/heads/t-eng-w3` (7a580aefc at box 3's hand-over, NOT moved). If it moved: merge BY HASH (no
+   rebase), re-run tsc + generality + tower.test + w3Noise + the importer files the merge touched, and record a NEW lock base with
+   `--out` on the NEW t-eng-w3 head ALONE. If not moved: the base is `lock-base-7a580aefc.json.gz` (gunzipped: 3264 builds, 102 stages,
+   0 errors, checked in box 3).
+3. FREEZE: `git worktree add --detach <wt> <head>`, link node_modules, `chattr -R +i <wt>/src <wt>/tools && chattr -i
+   <wt>/src/game/gen2/proven` (chattr works on this disk, tested in box 3). THE LOCK ALONE: `npx tsx tools/engine/lockall.ts --layouts 16
+   --out head.json --check base.json` (expected `lock: 102/102 stages unchanged`). Pass --out too: lockall's --check SKIPS a build key the
+   base lacks (`if (!w) continue`, lockall.ts:47), so diff the two files' key sets (expected equal, 3264) to prove nothing was skipped.
+4. THE GATES ONCE on the frozen head (the CI tool line, gates.yml:157; the suite in 6 shards `--test-shard=i/6`, run_in_background with
+   timeout 7200000; `npx tsx --test tools/inspect/tierBots.test.ts`), each with its counts line; every red run alone on the base.
+5. LAND on t-eng-w3 (fast-forward or merge, no force, never rebase); `git ls-remote` equal; message the lead the hash and every counts line.
+
+
 **Box 2 hand-over, stamped Fri Nov 27 7:20 PM ET (`TZ=America/New_York date`). Branch t-eng-drop: box 2's commits on 456a84e5f on 7a580aefc. WIP, NOT
 gated, NOT landed. Box 2 started 7:01 PM ET.**
 
