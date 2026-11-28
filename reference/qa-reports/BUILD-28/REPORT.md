@@ -61,7 +61,9 @@ LEARNED (proposed; the lead approves):
    - A still's layout number is not the bot's seed (layout 28 built seed 29). Shoot by built seed.
    - MISSES (owned): my first STOP timer had no sleep and fired at once (the real one, set a minute later, ran to the line); one wait was a
      2-minute FOREGROUND until, not background; the trace's 5 runners were started with a shell '&' (untracked; all 5 finished, checked
-     with ps, before hand-over).
+     with ps, before hand-over); commit f500fc7e2's Claude-Session trailer names the LEAD's session, not this one
+     (session_01FhBbYKGKi6tUr2t7tz8u3R, read from get_session after the push; pushed, so not rewritten: no force, never rebase).
+   CHECKS on this box's commits (docs and records only): timecheck PASS (305 commits, 119 stamps), roadmapcheck PASS, knowncheck PASS.
 
 ## BOX 18 (superseded by box 19 above; kept as history) (BUILD-28 box 18, BUILD-28-r, started 8:19 PM ET (from date); hand-over 8:53 PM ET (from date); FROZEN CODE HEAD be2ebe7d2 = be5e9fc12 + ENG-METER-L's tools-only meter fix; src unchanged)
 CLOCK (the 2-hour level clock's dry run): start 8:19:44 PM ET; stops: none mid-job (the gate run is work; the box stopped it at a gate
