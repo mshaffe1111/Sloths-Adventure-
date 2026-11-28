@@ -1,5 +1,42 @@
 # ENG-DROP (R-165.562): the run lay lays a DESIGNED drop past its corridor, on a real World 3 row
 
+**Box 4 hand-over, stamped Fri Nov 27 8:20 PM ET (`TZ=America/New_York date`). Branch t-eng-drop at 110d234f6 (code = db46ae3e8, unchanged in
+box 4) + this report commit. Lock PASSED; gates PARTLY run (below); NOT landed. Box 4 started 7:50 PM ET (`date`: Fri Nov 27 19:50:12 EST 2026).**
+
+## EXACT NEXT STEP (box 5 starts here)
+1. DONE in box 4, BASE: `git ls-remote origin refs/heads/t-eng-w3` = 7a580aefc51bc13b43102c70fffb6a6a45e24337 at box 4's start (NOT
+   moved), so the saved base `lock-base-7a580aefc.json.gz` stood.
+2. DONE in box 4, FREEZE: `git worktree add --detach <wt> 110d234f6`, node_modules linked, `chattr -R +i src tools && chattr -i
+   src/game/gen2/proven` (exit 0; `touch src/x` -> "Operation not permitted"). `git diff --stat db46ae3e8 110d234f6 -- src tools` empty.
+   `tools/engine/lockall.ts` unchanged since 7a580aefc (`git diff --stat` empty), so base and head were hashed by the same tool.
+3. DONE in box 4, THE LOCK ALONE (nothing else running; 6 m 59 s; `b4-lock.txt`, head file `b4-lock-head-110d234f6.json.gz`):
+   `lock: wrote 3264 builds of 102 stages` / `lock: 102/102 stages unchanged` / exit 0.
+   KEY-SET DIFF (R-165.577, the --check skip trap): `keyset: base 3264 head 3264 only-base 0 only-head 0 SAME`.
+4. GATES ONCE on the frozen 110d234f6, one at a time (a chain script, `b4-gates-summary.txt`; logs `b4-g-*.txt.gz`):
+   - `node tools/timecheck.mjs`: `time-stamp check over cdffdc627..HEAD: 320 commits, 12 files, 2883 lines they wrote, 61 stamps` PASS (exit 0, 2 s).
+   - `node tools/roadmapcheck.mjs`: PASS (exit 0, 5 s).
+   - `npx tsx --test tools/inspect/tierBots.test.ts`: `# tests 9 # pass 9 # fail 0 # cancelled 0 # skipped 0 # todo 0` (178 s).
+   - the CI tool line (gates.yml:157, verbatim): `# tests 355 # pass 354 # fail 0 # cancelled 0 # skipped 0 # todo 1` (266 s); the todo is
+     `not ok 170 - chase bots (OPEN, todo): the CHILD bot on Normal reaches the fork on 2 or more of 3 seeds # TODO` (a marked todo, not a fail).
+   - suite shard 1/6 (the deploy.yml:38 globs): `# tests 703 # pass 703 # fail 0 # cancelled 0 # skipped 0 # todo 0` (288 s).
+   - suite shard 2/6: `# tests 798 # pass 798 # fail 0 # cancelled 0 # skipped 0 # todo 0` (414 s; it was running at the hand-over, so it was finished and recorded).
+   - suite shards 3/6, 4/6, 5/6, 6/6: UNRUN (the box ended at 8:18 PM ET; the chain stopped after the running shard, no new gate started).
+5. NEXT (box 5): the gates box 4 did not reach, ONCE, on a fresh freeze of 110d234f6 (or reuse these counts: same hash, same code):
+   `npx tsx --test --test-shard=i/6 <the deploy.yml:38 globs>` for i = 3, 4, 5, 6, one at a time (each about 5 min here), each counts line.
+   Every red: file:line, run ALONE on 7a580aefc (R-165.550 ctestPicker:78 and R-165.576 mixer/support.test.ts:27 are inherited, owned).
+6. LAND (the lead's note, box 4): JUST before landing, `git ls-remote origin refs/heads/t-eng-w3`. Still 7a580aefc: fast-forward t-eng-w3
+   to the gated head (no force, never rebase), `git ls-remote` equal. MOVED (the tower, ENG-CATCH-k from t-eng-catch-f, may land
+   first): merge it BY HASH (no rebase, no force), name every conflict (pipeline.ts likely) and how both sides were kept; then on the
+   merged head: tsc; generality; the pre-freeze set vs 7a580aefc (the whole test file of every src/tools file changed vs 7a580aefc plus
+   every test that imports one, dispatch-packet.md D168 on the lead branch); re-freeze; the lock --check vs `lock-base-7a580aefc.json.gz`
+   with the key-set diff (expected moves: 1-4 from the tower, R-165.573, plus this packet's own named ones: none so far, 102/102);
+   all 6 shards; every red file:line and alone on 7a580aefc. Then message the lead the landed hash and every counts line.
+7. Lessons applied (box 4): the lock ran ALONE (D115 frozen, immutable tree); the --check skip trap closed by the key-set diff (R-165.577);
+   no gate left running at the hand-over (a running gate finished and recorded, the rest named UNRUN); times from `date` only (D42).
+   Method update: a one-gate-at-a-time chain script with a STOP file (`b4-gates-summary.txt`) lets a box hand over on the clock without
+   killing a running gate or starting a new one; worth putting in dispatch-packet.md's box rule (the lead's call).
+
+
 **Box 3 hand-over, stamped Fri Nov 27 7:48 PM ET (`TZ=America/New_York date`). Branch t-eng-drop at db46ae3e8 + this report commit (no code change in box 3). WIP,
 NOT gated, NOT landed. Box 3 started 7:22 PM ET (`date`: Fri Nov 27 19:22:33 EST 2026).**
 
