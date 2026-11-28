@@ -5,6 +5,11 @@ STATE: (A) FIXED, RED-first, pushed (e10e208f5). NEW: on the fix the top 'strand
    far turn (adult seed 18, NEXT 3a), not the bot. (B) CLOSED, no defect (the engine and the HUD both show the number that opens the
    door; the HUD waits for it, UI-22). (C) NOT STARTED (no bot code written). Nothing landed on t-build-28-wip. No freeze, no gates beyond tsc, generality and the
    river/flood suites. The lead has the step-4 table for (A) only (message sent with this hand-over).
+THE LEAD'S RULING (R-165.587, read at 9:38 PM ET (from date), after the hand-over; it comes BEFORE the list below): the LAY gives
+   2-8's far turn a way down the little ones' line can take, each drop within the follow step (90). Never a looser follow rule (it
+   serves every follow stage), never a Dot line alone. Add a GENERAL check: on every listed follow stage, the route after the rescue has
+   no drop deeper than the follow step, with a plant (2-8's 225-px drop at the far turn must FAIL it); and verify the regroup-on-splash
+   suspicion (NEXT 3a, seed 4). R-165.585 (the bot change, firsttimer.ts:5807) is HELD until then.
 NEXT, in order:
    1. READ THE LEAD'S REPLY to the (A) table. Then (C), RED first, per the packet: an out-and-back toy (the goal behind the spawn, an open
       road to a sealed exit, Dot's 'must' line at the door); RED on be2ebe7d2 AND on e10e208f5 (A does not touch the bot). The fix point:
