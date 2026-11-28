@@ -59,6 +59,8 @@ are REPLACED by a TOY in the real engine, like box 22's shape toy (`shapeRead`, 
   moments (proof-k/scan2-other-bots-1-32.txt, 128 runs).
 - The scratch tools (read only, run from the scratchpad on a repo root): proof-k/lipscan.mts, lipscan2.mts, lipplant.mts.
 - Not run this box: the toy, darkBots whole, the pre-freeze, the freeze, every gate, the landing. All are owed, on the toy's head.
+- Fast gates on this reference-only head: tsc 0, knowncheck PASS, generality PASS. timecheck and roadmapcheck COULD NOT RUN: the clone is
+  shallow, and `git fetch --unshallow` timed out at 100 s. The successor unshallows first (or CI runs both with fetch-depth 0).
 - Lessons applied: ENGINE.md:51 (no x pin; the property and then the toy); D59 (each read-only run finished and recorded); D30 (stamps
   from `date`); law 22 (no bar lowered: when the property's plant missed, I did not widen the plant or drop it, I asked); law 3 (each
   claim proven by a run, with its file).
