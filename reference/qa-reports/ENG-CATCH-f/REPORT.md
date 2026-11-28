@@ -1,6 +1,44 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
+(box 4, ENG-CATCH-i, a TAIL, handed over, written 7:04 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
+FROZEN CANDIDATE = code 9afeaf31c (frozen as 192a433ae: src/ and tools/ byte for byte 9afeaf31c's). The branch head after it
+(origin/t-eng-catch-f, the hash in the lead message) adds docs only: engine-core.md §0zr-CATCH, lockbase-7a580aefc.json.gz, proof-i/,
+this REPORT. So the gates' verdicts on 192a433ae carry to it (D118: no src/ or tools/ change). DONE: steps 1, 2, the LOCK (both runs)
+and the turnover note. NOT DONE: the suite, the CI tool line, tierBots and the landing.
+1. `git ls-remote origin refs/heads/t-eng-w3` must still be 7a580aefc; if it moved, stop and tell the lead.
+2. Freeze 192a433ae in a detached worktree (dispatch-packet.md D115: chattr, src/game/gen2/proven writable), node_modules symlinked.
+3. On the frozen tree, once each, with the verdict word and counts line: the CI tool line (gates.yml:157); the suite in 6 shards
+   (deploy.yml:38, `--test-shard=i/6`, each shard's totals); `npx tsx --test tools/inspect/tierBots.test.ts`. Also, because 1-4
+   moved and has a proven list (src/game/gen2/proven/seeds-1-4.ts): `npx tsx tools/engine/seedlist.ts 1-4 --check` (CI's
+   seedlists job runs it; the packet's list did not name it). Every red: file:line, run ALONE on 7a580aefc (R-165.550 ctestPicker:78
+   is inherited and owned: name it, do not fix it).
+4. THE LOCK IS DONE, do not re-run it. Base on 7a580aefc: 3264 builds of 102 stages, 0 errors (lockbase-7a580aefc.json.gz). Check on
+   the frozen tree: "lock: 101/102 stages unchanged"; 1-4 moved (platforms, collectibles, proto.dress), exit 1 without --intended.
+   PROVEN by the overlap scan (proof-i/lockscan.mts builds as lockall does): the 14 moved builds (proof-i/moved-builds.txt) are EXACTLY
+   the 14 of 32 whose old lay had same-height overlapping solid wood (55 pairs, 0 exact duplicates); the new lay: 0 pairs in 32.
+   Re-check with `--intended 1-4` against the gz if the lead wants the exit 0 line.
+5. Polish (box 2's ask; 1-4 is a shipped World 1 stage and its wood moved): one moved 1-4 build (e.g. normal 4: old 854-1054 over
+   996-1176 at y 10364) still on a phone-sized screen, upright and sideways, where the trimmed plank meets wood end to end.
+6. Land on t-eng-w3 by fast-forward (`git push origin <head>:refs/heads/t-eng-w3`, no force, no rebase), `git ls-remote` equal,
+   message the lead the landed hash and every counts line.
+
+## Box 4 (ENG-CATCH-i, a tail): freeze, the lock, the turnover note
+(started 6:38 PM ET Fri 11-27 by `date`, on 192a433ae; no code written)
+- t-eng-w3 = 7a580aefc (`git ls-remote`). Frozen worktree at 192a433ae: chattr on src/ and tools/, src/game/gen2/proven writable,
+  `touch src/x` -> "Operation not permitted"; `git diff --name-only 9afeaf31c 192a433ae` outside this REPORT folder: 0 files.
+- LOCK, two runs ALONE: base `lockall --layouts 16 --out` at 7a580aefc: "lock: wrote 3264 builds of 102 stages", 0 errors, 9m43s.
+  Check on the frozen tree: "lock: 101/102 stages unchanged", "1-4: platforms, collectibles, proto.dress", 9m33s (proof-i/lock-check.txt).
+  The move is box 2's rule at work on an up tower: old 55 overlap pairs in 14 of 32 builds, new 0 in 32; the moved set equals the
+  overlap set (diff empty). New lays sometimes hold more pieces (easy 5: 93 -> 94 solid): a covered catch trimmed, box 2's design.
+- Turnover note: reference/handoffs/engine-core.md §0zr-CATCH (the three invariants, downInvariant the one named check, TowerRefusal
+  by misses[0].line at tower.ts:351, the proof commands), commit 93e8cb25d.
+- Lessons applied: D115 (frozen tree, chattr), D118 (docs-only head carries the verdict), D119 (commits by -m), D30/D128 (stamps from
+  `date`); the lock ALONE (nothing beside either run); a move called intended only with the scan's proof.
+- Polish check (box 4): no screen judged; 1-4's wood moved, so the still in step 5 is owed before Matt sees it.
+- Learned: box 2's overlap rule reaches up towers too (1-4), not only the down tower; the lock found it, the scan proved it.
+
+## Box 3's EXACT NEXT STEP (superseded by the one above)
 (box 3, ENG-CATCH-h, handed over, written 6:34 PM ET Fri 11-27 by `date`; t-eng-w3 checked at 7a580aefc then)
 CANDIDATE = origin/t-eng-catch-f HEAD (the hash in the lead message). Its code is 9afeaf31c (box 3's named overlap check on box 2's
 8ab05d35c; the commits after it are this REPORT folder only: the REPORT and proof-h/). Box 3's steps 1-3 DONE (below: the check, its

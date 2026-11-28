@@ -1,0 +1,33 @@
+1-4 normal 1: solid 97, pairs 0
+1-4 normal 2: solid 94, pairs 0
+1-4 normal 3: solid 88, pairs 4 | 854-1054 over 996-1176 at y 10043; 650-1010 over 1002-1110 at y 9762; 534-954 over 434-1280 at y 2644; 954-1280 over 434-1280 at y 2644
+1-4 normal 4: solid 90, pairs 2 | 854-1054 over 996-1176 at y 10364; 630-1010 over 1002-1110 at y 10083
+1-4 normal 5: solid 88, pairs 0
+1-4 normal 6: solid 97, pairs 7 | 226-446 over 104-284 at y 6228; 166-766 over 0-866 at y 5626; 290-730 over 190-1280 at y 3943; 330-750 over 230-1280 at y 1979; 750-1210 over 230-1280 at y 1979; 1210-1280 over 230-1280 at y 1979; 230-324 over 230-1280 at y 1979
+1-4 normal 7: solid 90, pairs 0
+1-4 normal 8: solid 88, pairs 0
+1-4 normal 9: solid 77, pairs 0
+1-4 normal 10: solid 93, pairs 5 | 346-766 over 0-866 at y 6612; 70-346 over 0-866 at y 6612; 594-1194 over 494-1280 at y 5329; 0-70 over 0-866 at y 6612; 1194-1280 over 494-1280 at y 5329
+1-4 normal 11: solid 86, pairs 0
+1-4 normal 12: solid 93, pairs 0
+1-4 normal 13: solid 87, pairs 2 | 86-686 over 0-786 at y 5385; 0-86 over 0-786 at y 5385
+1-4 normal 14: solid 92, pairs 2 | 854-1054 over 996-1176 at y 10139; 630-1010 over 1002-1110 at y 9858
+1-4 normal 15: solid 89, pairs 3 | 470-930 over 0-1030 at y 7422; 834-1054 over 996-1176 at y 5699; 0-470 over 0-1030 at y 7422
+1-4 normal 16: solid 93, pairs 3 | 266-726 over 0-826 at y 6933; 70-266 over 0-826 at y 6933; 0-70 over 0-826 at y 6933
+1-4 easy 1: solid 84, pairs 0
+1-4 easy 2: solid 92, pairs 0
+1-4 easy 3: solid 82, pairs 0
+1-4 easy 4: solid 85, pairs 0
+1-4 easy 5: solid 93, pairs 5 | 77-677 over 0-777 at y 8536; 201-581 over 101-211 at y 7895; 269-669 over 169-1280 at y 6893; 669-1210 over 169-1280 at y 6893; 1210-1280 over 169-1280 at y 6893
+1-4 easy 6: solid 89, pairs 3 | 548-1148 over 448-1280 at y 5626; 536-976 over 0-1076 at y 3943; 1148-1280 over 448-1280 at y 5626
+1-4 easy 7: solid 91, pairs 0
+1-4 easy 8: solid 81, pairs 4 | 241-601 over 141-251 at y 7293; 309-769 over 209-1280 at y 6291; 769-1210 over 209-1280 at y 6291; 1210-1280 over 209-1280 at y 6291
+1-4 easy 9: solid 87, pairs 5 | 221-581 over 121-231 at y 7293; 289-749 over 189-1280 at y 6291; 749-1210 over 189-1280 at y 6291; 556-976 over 0-1076 at y 3606; 1210-1280 over 189-1280 at y 6291
+1-4 easy 10: solid 89, pairs 0
+1-4 easy 11: solid 86, pairs 6 | 117-717 over 0-817 at y 8255; 409-869 over 309-1280 at y 6612; 869-1210 over 309-1280 at y 6612; 132-732 over 0-832 at y 5289; 1210-1280 over 309-1280 at y 6612; 0-132 over 0-832 at y 5289
+1-4 easy 12: solid 91, pairs 0
+1-4 easy 13: solid 97, pairs 4 | 117-717 over 0-817 at y 8536; 409-809 over 309-1280 at y 6893; 809-1210 over 309-1280 at y 6893; 1210-1280 over 309-1280 at y 6893
+1-4 easy 14: solid 88, pairs 0
+1-4 easy 15: solid 77, pairs 0
+1-4 easy 16: solid 79, pairs 0
+lockscan: 55 pairs in 14 of 32 builds
