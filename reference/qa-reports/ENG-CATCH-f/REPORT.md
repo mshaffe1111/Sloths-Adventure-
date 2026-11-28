@@ -1,6 +1,45 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
-## EXACT NEXT STEP
+## EXACT NEXT STEP (box 8, ENG-CATCH-m: the trim's seam merged at its root; NOT frozen, NOT gated, NOT landed; R-165.561, R-165.573)
+(written 9:08 PM ET Fri 11-27 by `TZ=America/New_York date`, at the hand-over; started 8:52 PM ET on 5a9af1813. t-eng-w3 = 7a580aefc by
+`git ls-remote` at the start; **f7e76b765 at the hand-over: IT MOVED** (ENG-DROP's boxes 2-5: src/game/gen2/types.ts +6,
+worlds/stageTable.ts +4, worlds/w3Noise.test.ts, and pipeline.ts +65/-? (this branch edits pipeline.ts too: check the merge there), `git diff --stat 7a580aefc f7e76b765 -- src tools`).)
+DONE THIS BOX (on this branch's head, src diff vs 5a9af1813 = tower.ts, pipeline.ts, tower.test.ts only):
+- RED FIRST: tower.test.ts "THE TRIM LEAVES NO SEAM" (the last test): ENG-CATCH-b's toy (the mend's catch trimmed off the storey 136-554
+  at y 1256) and the 60 px gap (trimmed off 530-830 at y 1200): no two flush pieces (end meets start within 1 px), one top, one height,
+  one kind, a catch among them, AT THE TRIM'S OWN CUT; and a creaking limb (another kind) never merged, its seam named. **RED on
+  049a20abc's tower.ts** (worktree, the test with `trimSeams` stubbed): `'136-554 | 554-716 at y 1256'`, pass 0 fail 1. GREEN here.
+- THE FIX (tower.ts mergeSeams, by construction, general): fit records each trimmed end that meets the piece it was cut at (`seams`); at
+  the END of the lay, read as finally laid (the mend may move or trim either piece after the put), every seam still flush at one top
+  whose piece is a catch's kind (solid, 24 px, branch, no other field: creak, crumbleAfter, quiet, bare, thick, hollow...; tag and
+  drawX0/X1 ignored; a sealed piece never) is merged: the pieces become ONE catch spanning them, and `into` names the stage's own pieces
+  it takes the place of. Another kind or another top keeps its seam, named in `trimSeams`. towerCatches' invariant reads the lay through
+  `withoutMerged`. pipeline.ts: a catch with `into` GROWS the first stage piece in place (its id, section, storey kept) and takes any other
+  out of `platforms` and its section's seam (the joinPitFloors pattern, pipeline.ts:1982/3253).
+- THE PLANT: `return mergeSeams(...)` -> `return out` turns the new test RED (`'136-554 | 554-716 at y 1256'`, pass 0 fail 1).
+- tower.test.ts WHOLE: 50/50 pass (three old toys now read the lay as the stage holds it, `held()`: the catch takes the place of the
+  piece it merged with; the 60 px gap's pin changed from "470-530" to "470-830 into [3]", the trim's remnant merged; the lead should
+  read that edit: the old pin WAS the seam). towerMend.test.ts + darkBots.test.ts WHOLE: 43 pass, **1 FAIL**: darkBots "a RUN off a lit
+  edge in the dark whose touchdown lies within his slide of a sleeping rim ... (adult Normal roll 1: x 556, y 3672 onto x 673, y 3850)":
+  `the edge x 556, y 3672 is a run-off stop (runOffRims)` fails: the merge changed the draft 3-1 roll 1's lay at the test's pinned edge.
+  NOT TRACED. tsc 0. generality PASS (26 literals, 26 known).
+- FINDING FOR THE LEAD (proof-m/seams.mts, base-14.txt, cand-14.txt): shipped 1-4 already holds **1180** flush same-top same-kind pairs
+  over its 32 builds (layouts 1-16 x both settings, on 7a580aefc: the banks 0-640|640-1196 moss_stone, section branch runs, the tower's
+  no-slot flush catches), and the bots cross them. So the brief's literal test (no flush pair anywhere in the final lay) is red on the
+  base too and the trim's merge cannot green it; the test is scoped to THE TRIM'S OWN CUT. On 049a20abc 1-4 holds 1217: the trims ADD 40
+  seams (every one a 100 px remnant at its cut, e.g. 717-817|817-1157@8255, 930-1030|1030-1228@7422, 766-866|866-1118@5626) and drop 31.
+NEXT, IN ORDER:
+1. darkBots red: trace roll 1's spot (x 556, y 3672 onto x 673, y 3850) on 049a20abc vs this tree (the draft's wood in a box at the first
+   frame): did a merge grow a piece across that edge? Class it: the pinned fixture moved (the edge is no longer an edge: the toy is
+   hand-built like lipToy, a REPLACEMENT the lead rules on) or a lost route. Run the test alone on 7a580aefc and on 049a20abc (both green
+   per box 7). Do not re-pin a roll.
+2. Re-run proof-m/seams.mts on this tree (`ROOT=<tree> V=1 STAGES=1-4 npx --prefix <repo> tsx seams.mts`): the 40 trim seams must be gone.
+   Then the brief's count: trims leaving a flush remnant of ANOTHER kind or top (trimSeams is reset per towerCatches call: accumulate it
+   in the scan by wrapping towerCatches), every listed stage + draft 3-1 seeds 1-40 both settings; and how often `into` holds 2+ ids
+   (the second stage piece is taken out of platforms and seams only: if it is a section's own PIECE, `pieces` still holds it: a red).
+3. Merge t-eng-w3 f7e76b765 BY HASH (no rebase), name every conflict, then the brief's step 2 pre-freeze vs 7a580aefc, freeze, step 3.
+
+## EXACT NEXT STEP (box 7, superseded by box 8 above)
 (box 7, ENG-CATCH-l, engine, written 8:50 PM ET Fri 11-27 by `date`, at the hand-over; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (unchanged) at the hand-over;
 this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
 NOT LANDED (the lead ruled A: 1-4 is SHIPPED; trace the castBots 1-4 PASS->FAIL rows, sort them into classes, land only after the

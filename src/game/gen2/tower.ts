@@ -310,6 +310,13 @@ export function openEnds(platforms: readonly Platform[], floorY: number, most: n
 
 /** the pieces the last towerCatches refused, each by name, for lying over other wood at their height (fit, ENG-CATCH-g) */
 export const overlapRefused: string[] = [];
+/** the trims the last towerCatches left flush with wood it could not merge into (another kind, or another top), each by name: the seam
+ *  stays there (ENG-CATCH-m, R-165.573) */
+export const trimSeams: string[] = [];
+/** a catch bough as the tower returns it. `into`: the ids of the stage's own pieces it takes the place of, all wholly inside it (the pipeline
+ *  grows the first to the catch and takes the rest out): a trim's remnant flush with a piece of the same kind at its height is MERGED into
+ *  it, one piece, never two flush ones (ENG-CATCH-m) */
+export interface Catch { x: number; y: number; w: number; level: number; into?: number[] }
 /**
  * The catch boughs a tower's open ends are owed (each `[x, y, w]`, a plain bough): under every end whose fall is past the tower's
  * limit (going up TOWER.fall; going down TOWER.see, where the bough is the landing he can see). In this order:
@@ -328,8 +335,9 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   /** boxes no bough may lie in (a water wheel's sweep and its rider over it, ENG-26: a bough there knocks him out of his bucket) */
   keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }> = [],
   /** going down, the column's turn vines by id and the storeys each joins (pipeline.ts turns): the catch each hands on (downInvariant) */
-  turns: ReadonlyArray<{ id: number; from: number; to: number }> = []): Array<{ x: number; y: number; w: number; level: number }> {
+  turns: ReadonlyArray<{ id: number; from: number; to: number }> = []): Catch[] {
   overlapRefused.length = 0;
+  trimSeams.length = 0;
   const first = layCatches(false, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut, turns);
   if (flow !== 'down') return first;
   // (going down, a lay that leaves a blind drop is laid once more with every bridge reaching under the fall line it is laid for; a lay
@@ -337,7 +345,7 @@ export function towerCatches(flow: 'up' | 'down', platforms: readonly Platform[]
   //  lies in that hop the bridge caught nothing: the drafted 3-1's storey hole x 554-654 at y 7377, under a bounce brick's cap shelf
   //  (its far end x 650, the fall line 626), was bridged 654-716 on every pass and the walk off the shelf fell 481 px past the storey
   //  (Easy 2; Easy 4 the same, 477 px), ENG-CATCH-b. Kept only if it leaves fewer misses of the down tower's invariant, ENG-CATCH-c)
-  const left = (cs: ReadonlyArray<{ x: number; y: number; w: number }>) => downInvariant([...platforms, ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], vines, turns, floorY, width);
+  const left = (cs: readonly Catch[]) => downInvariant([...withoutMerged(platforms, cs), ...cs.map((c, k) => ({ id: -1 - k, x: c.x, y: c.y, width: c.w, height: 24, type: 'solid' }) as Platform)], vines, turns, floorY, width);
   const before = left(first);
   if (!before.length) return first;
   const again = layCatches(true, flow, platforms, vines, floorY, width, gaps, level, sealed, keepOut, turns);
@@ -364,7 +372,7 @@ export class TowerRefusal extends Error {
 
 /** towerCatches' lay. `cover`: a bridge is laid only where it reaches under the fall line of the end it is laid for */
 function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Platform[], vines: readonly Vine[], floorY: number, width: number, gaps: ReadonlyArray<{ x0: number; x1: number; y: number }>, level: (p: Platform) => number, sealed: (p: Platform) => boolean,
-  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }>, turns: ReadonlyArray<{ id: number; from: number; to: number }>): Array<{ x: number; y: number; w: number; level: number }> {
+  keepOut: ReadonlyArray<{ x0: number; x1: number; y0: number; y1: number }>, turns: ReadonlyArray<{ id: number; from: number; to: number }>): Catch[] {
   const most = flow === 'up' ? TOWER.fall : TOWER.see;
   const all: Platform[] = [...platforms];
   const lv = new Map<Platform, number>(platforms.map((p) => [p, level(p)]));
@@ -396,7 +404,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
   //  REFUSED by name (overlapRefused); a piece moved (the mend's remedy 1, reLay) never moves onto other wood. The mend's catch 536-716
   //  lay over the lay's bridge 654-716 and 18 px over the storey 136-554 (tower.test.ts, ENG-CATCH-b's toy), ENG-CATCH-g)
   const overlaps = (x0: number, x1: number, y: number, but?: Platform) => all.filter((q) => q !== but && q.type === 'solid' && Math.abs(q.y - Math.round(y)) <= 1 && q.x < Math.round(x1) && q.x + q.width > Math.round(x0));
-  const fit = (x0: number, x1: number, y: number, at: number): { a: number; b: number; take: Platform[] } | { why: string } => {
+  const fit = (x0: number, x1: number, y: number, at: number): { a: number; b: number; take: Platform[]; join?: Platform[] } | { why: string } => {
     const X0 = Math.round(x0), X1 = Math.round(x1), ov = overlaps(X0, X1, y);
     const inside = (q: Platform, u: number, v: number) => laid.includes(q) && q.x >= u && q.x + q.width <= v;
     const cut = ov.filter((q) => !inside(q, X0, X1));
@@ -405,8 +413,13 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     for (const q of cut) open = open.flatMap(([u, v]): Array<[number, number]> => [[u, Math.min(v, q.x)], [Math.max(u, q.x + q.width), v]].filter(([s, t]) => t > s) as Array<[number, number]>);
     const span = open.find(([u, v]) => u <= at && at <= v && v - u >= MEND.trim);
     if (!span) return { why: `overlap: ${X0}-${X1} at y ${Math.round(y)} lies over ${cut.map((q) => `${q.x}-${q.x + q.width}`).join(', ')} and no open span of ${MEND.trim} px is left under its fall line x ${Math.round(at)}` };
-    return { a: span[0], b: span[1], take: ov.filter((q) => inside(q, span[0], span[1])) };
+    // (the trim's seams: an end of the kept span that the trim cut at a piece's end meets that piece, at its height; merged at the end of
+    //  the lay, `seams`, ENG-CATCH-m)
+    const join = cut.filter((q) => (span[0] > X0 && Math.abs(q.x + q.width - span[0]) <= 1) || (span[1] < X1 && Math.abs(q.x - span[1]) <= 1));
+    return { a: span[0], b: span[1], take: ov.filter((q) => inside(q, span[0], span[1])), join };
   };
+  /** every trim's seam: the piece laid and the piece it was trimmed off, flush with it (read again, as finally laid, at the lay's end) */
+  const seams: Array<{ p: Platform; q: Platform }> = [];
   /** the pieces the last put took the place of, each with where it was (undone by the mend's keep) */
   let took: Array<{ q: Platform; j: number; c: { x: number; y: number; w: number; level: number }; s: { x: number; y: number }; i: number }> = [];
   const put = (x0: number, x1: number, y: number, L: number): boolean => {
@@ -427,6 +440,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     lv.set(p, L);
     laid.push(p);
     served.push(serving);
+    for (const q of f.join ?? []) seams.push({ p, q });
     rooms = undefined;
     return true;
   };
@@ -620,7 +634,7 @@ function layCatches(cover: boolean, flow: 'up' | 'down', platforms: readonly Pla
     if (!added) break;
   }
   if (flow === 'down') { reLay(); mend(); }
-  return out;
+  return mergeSeams(out, laid, all, seams, sealed);
 
   /**
    * Going down, THE DOWN TOWER'S INVARIANT kept on the tower's own lay (downInvariant, ENG-CATCH-c): once the lay and reLay are done, each
@@ -886,6 +900,52 @@ const SLIDE = { out: 60, back: 30 } as const;
  *  invariant, so it converges), the first `lines` fall lines of a miss read, and a new catch's widths, widest first (SLIDE keeps the least:
  *  out + back); remedy 4 trims at most `trimmed` of the tower's own pieces for one piece of wood, each to `trim` px at the least (a
  *  footing, as reLay keeps) */
+/** a catch bough's kind: solid wood his height's plank (24 px), drawn as a branch, nothing else on it; a sealed piece (a gate) is never one */
+const CATCH_KIND = JSON.stringify({ height: 24, style: 'branch', type: 'solid' });
+const kindOf = (q: Platform): string => {
+  const { id: _i, x: _x, y: _y, width: _w, tag: _t, drawX0: _a, drawX1: _b, ...rest } = q;
+  const k: Record<string, unknown> = { ...rest, style: rest.style ?? 'branch' };
+  return JSON.stringify(Object.fromEntries(Object.keys(k).sort().filter((n) => k[n] !== undefined).map((n) => [n, k[n]])));
+};
+/**
+ * THE TRIM'S SEAMS MERGED (ENG-CATCH-m, R-165.573): a catch trimmed off a piece of wood at its height (fit) keeps the open span under
+ * its fall line, and that span's trimmed end meets the piece it was trimmed off: one floor laid as two flush pieces. 1-4's middle bot
+ * landing on such a 100 px remnant stopped dead at the seam (Easy 11 at 717-817 @8255, Normal 6 at 766-866 @5626, Normal 15 at 930-1030
+ * @7422; ENG-CATCH-f box 7). Read as finally laid (the mend may have moved or trimmed either piece since), every seam still flush at one
+ * top whose piece is a catch's kind is merged: the pieces it joins become ONE catch spanning them all, which takes the place of the
+ * stage's own pieces among them (`into`). A seam with wood of another kind or another top stays, named (trimSeams).
+ */
+function mergeSeams(out: ReadonlyArray<{ x: number; y: number; w: number; level: number }>, laid: readonly Platform[], all: readonly Platform[], seams: ReadonlyArray<{ p: Platform; q: Platform }>, sealed: (p: Platform) => boolean): Catch[] {
+  const at = (q: Platform) => { const j = laid.indexOf(q); return j >= 0 ? { x: out[j].x, y: out[j].y, w: out[j].w } : all.includes(q) ? { x: q.x, y: q.y, w: q.width } : undefined; };
+  const up = new Map<Platform, Platform>();
+  const root = (q: Platform): Platform => { let r = q; while (up.get(r) && up.get(r) !== r) r = up.get(r)!; return r; };
+  for (const { p, q } of seams) {
+    const P = at(p), Q = at(q);
+    if (!P || !Q || !(Math.abs(P.x + P.w - Q.x) <= 1 || Math.abs(Q.x + Q.w - P.x) <= 1) || Math.abs(P.y - Q.y) > 1) continue;
+    if (P.y !== Q.y || sealed(q) || kindOf(q) !== CATCH_KIND) { trimSeams.push(`seam: the trim's ${P.x}-${P.x + P.w} meets ${Q.x}-${Q.x + Q.w} at y ${P.y}: ${P.y !== Q.y ? `another top (y ${Q.y})` : 'another kind'}`); continue; }
+    const a = root(p), b = root(q);
+    if (a !== b) up.set(b, a);
+  }
+  const groups = new Map<Platform, Platform[]>();
+  for (const q of up.keys()) { const r = root(q); groups.set(r, [...(groups.get(r) ?? [r]).filter((z) => z !== q), q]); }
+  const done = new Set<Platform>(), res: Catch[] = [];
+  laid.forEach((p, j) => {
+    if (done.has(p)) return;
+    const g = groups.get(root(p));
+    if (!g) { res.push({ ...out[j] }); return; }
+    for (const q of g) done.add(q);
+    const spans = g.map((q) => at(q)!);
+    const x0 = Math.min(...spans.map((s) => s.x)), x1 = Math.max(...spans.map((s) => s.x + s.w));
+    const into = g.filter((q) => !laid.includes(q)).map((q) => q.id);
+    res.push({ x: x0, y: out[j].y, w: x1 - x0, level: out[j].level, ...(into.length ? { into } : {}) });
+  });
+  return res;
+}
+/** the stage's own pieces less those a catch took the place of (Catch.into): the lay as the stage will hold it */
+export function withoutMerged<T extends { id: number }>(platforms: readonly T[], cs: readonly Catch[]): T[] {
+  const gone = new Set(cs.flatMap((c) => c.into ?? []));
+  return gone.size ? platforms.filter((q) => !gone.has(q.id)) : [...platforms];
+}
 const MEND = { steps: 16, checks: 400, lines: 6, widths: [180, 160, 140, 120, 100, 90], trim: 60, trimmed: 3 } as const;
 /** how far past a lip his middle is when he drops (offEnd's step: half his body and a margin) */
 const LIP = 24;

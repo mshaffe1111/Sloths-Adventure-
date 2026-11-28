@@ -2613,6 +2613,17 @@ export function layStage(budget: StageBudget, graph: MissionGraph, kit: WorldKit
     for (const c of towerCatches(flow as 'up' | 'down', P, V, floorY, TW, Gp, (q) => storeyOf.get(q.id) ?? 0, (q) => sealedIds.has(q.id), keepOut, T)) {
       storeyNow = c.level;
       const cx = c.x + fx;
+      // (a catch merged with the stage's own pieces at its height (tower.ts mergeSeams, ENG-CATCH-m): the first grows to the catch, one
+      //  piece and no seam, keeping its section, its storey and its id; any other is taken out of the stage and its section's seam)
+      if (c.into?.length) {
+        const [g, ...rest] = c.into.map((id) => platforms.find((q) => q.id === id)!);
+        g.x = R(cx); g.width = R(c.w);
+        for (const r of rest) {
+          platforms.splice(platforms.indexOf(r), 1);
+          for (const q of sections) { const k = q.seam.indexOf(r); if (k >= 0) q.seam.splice(k, 1); }
+        }
+        continue;
+      }
       const b = mk(cx, c.y, c.w, 'branch', 0);
       (mine.find((q) => q.pieces.some((pp) => pp.platform.x < cx + c.w && pp.platform.x + pp.platform.width > cx && pp.platform.y < c.y && pp.platform.y > c.y - TOWER.fall)) ?? sections[sections.length - 1])?.seam.push(b);
     }

@@ -16,7 +16,7 @@ import { applyVerdicts, buildGen2Stage, HARD_JOBS, keptFoes, layLocal, layStage,
 import { packPlan, stageParts, unpackPlan } from './seedList.ts';
 import { cfg as runCfg, kit as runKit } from './toyWorld.ts';
 import { ARC_CODE, arcKit, gateKit, hopsUp, towerCfg, upKit, upManifest } from './toyTower.ts';
-import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF, overlapRefused, downInvariant, TowerRefusal } from './tower.ts';
+import { fallSeconds, flagFurther, gapCatchY, LEAP, leaps, localExtent, HANG, offEnd, openEnds, walledEnd, reflectLocal, routeAt, routeOf, storeyLimit, TOWER, towerCatches, towerFalls, towerFlagBreaches, stopVines, towerHandOns, towerVineCuts, towerFlags, towerGates, towerSkips, towerVaults, vertical, towerLids, ROOF, overlapRefused, downInvariant, TowerRefusal, trimSeams } from './tower.ts';
 import { climbX, CLIMB_CLEAR, VAULT_GAP } from '../vineTop.ts';
 import type { Gen2Stage } from './types.ts';
 
@@ -32,6 +32,9 @@ const up = (seed: number, difficulty: 'normal' | 'easy' = 'normal'): Gen2Stage =
   return built.get(k)!;
 };
 const solid = (x: number, y: number, width: number, id = 1): Platform => ({ id, x, y, width, height: 24, type: 'solid' }) as Platform;
+/** the stage's own pieces as the stage holds them once the tower's catches are laid: less any a catch took the place of (its `into`,
+ *  tower.ts mergeSeams, ENG-CATCH-m; read here by hand so the test runs on a tree without it) */
+const held = (ps: readonly Platform[], cs: ReadonlyArray<{ into?: number[] }>): Platform[] => ps.filter((q) => !cs.some((c) => c.into?.includes(q.id)));
 
 test('an ascent has a graph and it is laid up; a run names no flow and is laid right, with nothing of a tower on it', () => {
   const b = planBudget(upCfg(), upManifest, 'normal');
@@ -876,18 +879,18 @@ test("going down, no two catches overlap at one height: a later, wider catch tak
   const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
   const base = [solid(650, 1000, 269, 1), solid(136, 1256, 418, 2), solid(0, FLOOR, W, 3)];
   const cs = towerCatches('down', base, [vine], FLOOR, W);
-  const wood = [...base.map((p) => ({ x: p.x, y: p.y, w: p.width })), ...cs];
+  const wood = [...held(base, cs).map((p) => ({ x: p.x, y: p.y, w: p.width })), ...cs];
   const over = cs.flatMap((c) => wood.filter((q) => q !== c && Math.abs(q.y - c.y) <= 1 && q.x < c.x + c.w && q.x + q.w > c.x).map((q) => `${c.x}-${c.x + c.w} over ${q.x}-${q.x + q.w} at y ${c.y}`));
   assert.deepEqual(over, [], `no catch lies over other wood at its height: ${JSON.stringify(cs)}`);
-  const all = [...base, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+  const all = [...held(base, cs), ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
   assert.ok(cs.some((c) => c.x <= 626 && c.x + c.w >= 626 && c.y > 1000 && c.y <= 1000 + TOWER.see), `the shelf's end is still caught under its fall line: ${JSON.stringify(cs)}`);
   assert.deepEqual(towerFalls('down', all, FLOOR, W), [], 'no blind drop is left');
 });
 
 test("going down, a catch that only partly overlaps wood at its height is trimmed to the open span under its fall line, or REFUSED by name when too little is left (ENG-CATCH-g)", () => {
   const W = 1280, FLOOR = 1481;
-  const over = (base: Platform[], cs: ReadonlyArray<{ x: number; y: number; w: number }>) => {
-    const wood = [...base.map((p) => ({ x: p.x, y: p.y, w: p.width })), ...cs];
+  const over = (base: Platform[], cs: ReadonlyArray<{ x: number; y: number; w: number; into?: number[] }>) => {
+    const wood = [...held(base, cs).map((p) => ({ x: p.x, y: p.y, w: p.width })), ...cs];
     return cs.flatMap((c) => wood.filter((q) => q !== c && Math.abs(q.y - c.y) <= 1 && q.x < c.x + c.w && q.x + q.w > c.x).map((q) => `${c.x}-${c.x + c.w} over ${q.x}-${q.x + q.w}`));
   };
   // (a shelf x 524-924, y 1000, its left end's fall line at x 500; under it, at y 1200, two pieces with a gap under that line)
@@ -898,12 +901,14 @@ test("going down, a catch that only partly overlaps wood at its height is trimme
   assert.deepEqual(over(narrow, cn), [], `no catch lies over other wood at its height: ${JSON.stringify(cn)}`);
   assert.ok(overlapRefused.length > 0 && overlapRefused.every((w) => /^overlap: .* lies over .* no open span of 60 px is left under its fall line x 500$/.test(w)), `the bough over the 50 px gap is refused by name: ${JSON.stringify(overlapRefused)}`);
   assert.ok(cn.some((c) => c.x <= 500 && c.x + c.w >= 500 && c.y > 1200), `the end is caught under its fall line, lower down: ${JSON.stringify(cn)}`);
-  assert.deepEqual(towerFalls('down', [...narrow, ...cn.map((c, k) => solid(c.x, c.y, c.w, 100 + k))], FLOOR, W), [], 'no blind drop is left');
+  assert.deepEqual(towerFalls('down', [...held(narrow, cn), ...cn.map((c, k) => solid(c.x, c.y, c.w, 100 + k))], FLOOR, W), [], 'no blind drop is left');
   // a gap of 60 px: the bough is trimmed to it, joined to the wood either side, none refused
   const fits = [solid(524, 1000, 400, 1), solid(200, 1200, 270, 2), solid(530, 1200, 300, 3), solid(0, FLOOR, W, 4)];
   const cf = towerCatches('down', fits, [], FLOOR, W);
   assert.deepEqual(over(fits, cf), [], `no catch lies over other wood at its height: ${JSON.stringify(cf)}`);
-  assert.ok(cf.some((c) => c.x === 470 && c.w === 60 && c.y === 1200), `the bough is trimmed to the open span 470-530: ${JSON.stringify(cf)}`);
+  // (the trim's remnant 470-530 meets 530-830 at the trim's own end: one floor, so it is MERGED into it, ENG-CATCH-m; its other end,
+  //  470, is the bough's own, laid flush with 200-470 by the no-slot rule, not a trim's)
+  assert.ok(cf.some((c) => c.x === 470 && c.x + c.w === 830 && c.y === 1200 && JSON.stringify(c.into) === '[3]'), `the bough is trimmed to the open span 470-530 and merged with 530-830: ${JSON.stringify(cf)}`);
   assert.deepEqual(overlapRefused, [], 'none refused');
 });
 
@@ -941,7 +946,34 @@ test("THE GUARANTEE refuses by name a down tower that would leave two pieces of 
     ['the 60 px gap', [solid(524, 1000, 400, 1), solid(200, 1200, 270, 2), solid(530, 1200, 300, 3), solid(0, FLOOR, W, 4)], []],
   ] as Array<[string, Platform[], Vine[]]>) {
     const cs = towerCatches('down', ps, vs, FLOOR, W);
-    const all = [...ps, ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
+    const all = [...held(ps, cs), ...cs.map((c, k) => solid(c.x, c.y, c.w, 100 + k))];
     assert.deepEqual(downInvariant(all, vs, [], FLOOR, W).map((m) => m.line), [], `${name}: the lay as returned keeps the invariant: ${JSON.stringify(cs)}`);
   }
 });
+
+test("THE TRIM LEAVES NO SEAM: a catch trimmed off wood of its own kind at its height is merged with it, one piece, never a remnant flush with it; one of another kind keeps its seam, named (1-4's middle bot stopped dead at three such seams, ENG-CATCH-m, R-165.573)", () => {
+  const W = 1280, FLOOR = 1481;
+  /** every two pieces of one floor the lay holds as two: flush (end meets start within 1 px), one top, one kind, a catch among them */
+  const seams = (ps: readonly Platform[], cs: ReadonlyArray<{ x: number; y: number; w: number; into?: number[] }>) => {
+    const wood = [...held(ps, cs).map((p) => ({ x: p.x, y: p.y, w: p.width, h: p.height, k: JSON.stringify([p.type, p.style ?? 'branch', p.creak]), c: false })), ...cs.map((c) => ({ ...c, h: 24, k: JSON.stringify(['solid', 'branch', undefined]), c: true }))];
+    return wood.flatMap((a) => wood.filter((b) => b !== a && (a.c || b.c) && Math.abs(a.x + a.w - b.x) <= 1 && a.y === b.y && a.h === b.h && a.k === b.k).map((b) => `${a.x}-${a.x + a.w} | ${b.x}-${b.x + b.w} at y ${a.y}`));
+  };
+  /** the seams at the trim's own cut, x (a seam the lay made flush on purpose, the no-slot rule's, is not the trim's) */
+  const cutAt = (ls: string[], x: number) => ls.filter((l) => l.includes(`-${x} | ${x}-`));
+  // 1. ENG-CATCH-b's toy: the mend's catch 536-716 is trimmed off the storey 136-554 at the storey's end: the remnant 554-716 met it there
+  const vine = { id: 1, x: 554, topY: 1256, bottomY: FLOOR, swaySpeed: 1, swayPhase: 0, vineType: 'tree_climb' } as Vine;
+  const b1 = [solid(650, 1000, 269, 1), solid(136, 1256, 418, 2), solid(0, FLOOR, W, 3)];
+  const c1 = towerCatches('down', b1, [vine], FLOOR, W);
+  assert.deepEqual(cutAt(seams(b1, c1), 554), [], `the trim leaves no seam with the storey it was trimmed off: ${JSON.stringify(c1)}`);
+  assert.ok(c1.some((c) => c.y === 1256 && c.x === 136 && c.x + c.w >= 626), `the storey and the catch are one piece, under the shelf's fall line: ${JSON.stringify(c1)}`);
+  // 2. the 60 px gap: the remnant 470-530 met 530-830 at the trim's end
+  const b2 = [solid(524, 1000, 400, 1), solid(200, 1200, 270, 2), solid(530, 1200, 300, 3), solid(0, FLOOR, W, 4)];
+  const c2 = towerCatches('down', b2, [], FLOOR, W);
+  assert.deepEqual(cutAt(seams(b2, c2), 530), [], `the trim leaves no seam at 530: ${JSON.stringify(c2)}`);
+  // 3. the same, the piece it is trimmed off a creaking limb (another kind): never merged (the limb would grow), its seam named
+  const b3 = [solid(524, 1000, 400, 1), solid(200, 1200, 270, 2), { ...solid(530, 1200, 300, 3), creak: 1.5 } as Platform, solid(0, FLOOR, W, 4)];
+  const c3 = towerCatches('down', b3, [], FLOOR, W);
+  assert.ok(c3.every((c) => !c.into?.length), `nothing is merged into a creaking limb: ${JSON.stringify(c3)}`);
+  assert.ok(trimSeams.some((l) => /^seam: the trim's 470-530 meets 530-830 at y 1200: another kind$/.test(l)), `its seam is named: ${JSON.stringify(trimSeams)}`);
+});
+
