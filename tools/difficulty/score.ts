@@ -46,8 +46,8 @@ import type { Ride } from '../../src/game/ride.ts';
 import { snapWindow } from '../../src/game/gen2/rideLay.ts';
 import { safeWindow } from '../../src/game/gen2/lineFaults.ts';
 import { lineInCover, type FollowRow } from '../../src/game/follow.ts';
-import type { FollowStage } from '../../src/game/followPlay.ts';
-import { WATCH, type Bush } from '../../src/game/watcher.ts';
+import { FollowPlay, type FollowStage } from '../../src/game/followPlay.ts';
+import { WATCH, type Bush, type WatchZone } from '../../src/game/watcher.ts';
 import { MOVES } from '../../src/game/fight.ts';
 /** the rolling nuts and fruit (rolling.ts, BUILD-18's 1-8): read from the game where the tree has it; a tree without it builds no stage
  *  with `rolling`, so nothing here asks for it */
@@ -641,7 +641,11 @@ export const deadlineBits = (open: number): number => Math.log2(1 + REF_S / Math
  *     STAKES.soft + fetch x STAKES.replayPerSec ('soft'). A stretch whose first look only warns (freeFirst; every heron on Easy) makes its
  *     first crossing a free retry.
  * N: the cages freed before the crossing, at most the stage's goal (the easiest way he has: on Easy he need bring only targetCount home).
- * Right-running stages only (safeWindow flies to the right); a left-running follow stage is refused, not guessed.
+ * EITHER WAY (ENG-METER-L, R-165.578): a left-running follow stage (2-8's parade home) is read in a mirror (x -> -x: mirrorFollow), the
+ * same open ground, clumps, line, stops and fetches as the right-running stage it reflects, then read back to the stage's own x; its
+ * leave is NOT the mirror's (the herons' first look sweeps world +x whichever way he runs: watcher.ts newWatch), so it is flown the way
+ * the stage runs (leaveWindow: safeWindow's own flight, every x read by dir, the game's FollowPlay with the stage's dir). A crossing's a
+ * and b are in his travel: on a left-running stage a > b. A travel the meter cannot read is refused, not guessed.
  */
 export interface LineCrossing {
   /** the open ground: from a (A's far end, or the stretch's start) to b (B's near end, or the stretch's end) */
@@ -658,7 +662,82 @@ export function stopSpan(B: Bush, n: number, gap: number): number {
   }
   return Math.max(0, px - 1);
 }
+/** a reed clump seen in the mirror x -> -x (its left end is the reflection of its right one) */
+const mirrorBush = <T extends { x: number; w: number }>(c: T): T => ({ ...c, x: -(c.x + c.w) });
+/**
+ * A follow stage seen in the mirror x -> -x, as far as the line channel reads it (lineCrossings' open ground and stops, safeWindow's
+ * flight: the zones' spans and setbacks, the reeds, the solid ground FollowPlay walks on, the splash-back water, the exit), its travel
+ * turned. A flood's live deep water (a function of x) is not mirrored: nothing here reads it.
+ */
+export function mirrorFollow(fs: FollowStage): FollowStage {
+  const span = <T extends { x0: number; x1: number }>(q: T): T => ({ ...q, x0: -q.x1, x1: -q.x0 });
+  return {
+    exitX: -fs.exitX, dir: (fs.dir ?? 1) === 1 ? -1 : 1,
+    zones: fs.zones.map((z) => ({ ...span(z), ...(z.setback !== undefined ? { setback: -z.setback } : {}) })),
+    covers: fs.covers.map(mirrorBush),
+    platforms: fs.platforms.map((p) => ({ ...p, x: -(p.x + p.width) })),
+    safeWater: fs.safeWater.map(span),
+  };
+}
+/**
+ * The longest time (s) he may leave clump A for clump B over one cycle of the herons, flown the way the stage runs: dir 1 is lineFaults'
+ * own safeWindow (the number every right-running stage has always had); dir -1 is that flight read the other way (him walked in from
+ * past A's right end to 30 px inside its LEFT end, the line bunched behind him to his right, his run to 30 px inside B's left end, every
+ * little one past B's right end + 10), the game's FollowPlay with the stage's own dir, so its herons wade and look as they do in the game.
+ */
+export function leaveWindow(row: FollowRow, easy: boolean, A: Bush, B: Bush, zones: readonly WatchZone[], platforms: FollowStage['platforms'], safeWater: FollowStage['safeWater'], n: number, dir: 1 | -1): number {
+  if (dir === 1) return safeWindow(row, easy, A, B, zones, platforms, safeWater, n);
+  const calm = Math.max(...zones.map((z) => z.calm[0]));
+  const cycle = calm + Math.max(...zones.map((z) => z.warn ?? WATCH.warn)) + Math.max(...zones.map((z) => z.pass ?? WATCH.pass));
+  const settle = cycle * 2;
+  const dt = 1 / 30;
+  const y = A.y;
+  const safe: boolean[] = [];
+  for (let L = 0; L < cycle - 1e-6; L += 0.1) {
+    const in0 = A.x + A.w + 400;
+    const fp = new FollowPlay(row, easy, { exitX: -1e9, dir: -1, zones, covers: [A, B], platforms, safeWater: safeWater ?? [] }, { x: in0, y });
+    const at = A.x + 30;
+    fp.step(dt, { x: in0, y, vy: 0, grounded: true }, undefined, () => 0);
+    for (let x = in0 - 120; x > at; x -= 120) fp.step(dt, { x, y, vy: 0, grounded: true }, undefined, () => 0);
+    fp.step(dt, { x: at, y, vy: 0, grounded: true }, undefined, () => 0);
+    for (let i = 0; i < n; i++) fp.free('duck', { x: at + row.gap * (i + 1), y }, { x: at + row.gap * (i + 1), y });
+    let x = at;
+    let seen = false;
+    const stop = B.x + 30;
+    const end = settle + L + 12;
+    for (let t = 0; t < end && !seen; t += dt) {
+      if (t >= settle + L && x > stop) x = Math.max(stop, x - PHYS.maxRun * dt);
+      const ev = fp.step(dt, { x, y, vy: 0, grounded: true }, undefined, () => 0);
+      if (ev.spooked.length && t >= settle + L) seen = true;
+      if (x <= stop && fp.line.every((f) => f.state === 'follow' && !f.moved && f.x > B.x + 10 && f.x < B.x + B.w - 10)) break;
+    }
+    safe.push(!seen && fp.line.every((f) => f.state === 'follow' && f.x < B.x + B.w - 10));
+  }
+  let best = 0;
+  let run = 0;
+  for (const ok of [...safe, ...safe]) {
+    run = ok ? run + 1 : 0;
+    best = Math.max(best, Math.min(run, safe.length));
+  }
+  return best * 0.1;
+}
+/** a left-running follow stage's crossings: the mirror's (mirrorFollow), read back to the stage's x, each leave flown leftward */
+function leftCrossings(fs: FollowStage, row: FollowRow, setting: Setting, cages: readonly number[], target: number): LineCrossing[] {
+  const easy = setting === 'easy';
+  const back = (c: Bush | null): Bush | null => (c ? mirrorBush(c) : null);
+  return lineCrossings(mirrorFollow(fs), row, setting, cages.map((x) => -x), target).map((m) => {
+    const a = -m.a, b = -m.b, A = back(m.A), B = back(m.B);
+    const y = (A ?? B)!.y;
+    // (the stretch's start and end are a clump of their own for the flight, as lineCrossings gives them: 400 px past each end)
+    const A1: Bush = A ?? { x: a, w: 400, y, kind: 'reeds' };
+    const B1: Bush = B ?? { x: b - 400, w: 400, y, kind: 'reeds' };
+    const zs = fs.zones.filter((q) => q.x0 < a && q.x1 > b);
+    const safe = m.first ? 0 : leaveWindow(row, easy, A1, B1, zs, fs.platforms, fs.safeWater, m.n, -1);
+    return { ...m, a, b, A, B, safe };
+  });
+}
 export function lineCrossings(fs: FollowStage, row: FollowRow, setting: Setting, cages: readonly number[], target: number): LineCrossing[] {
+  if ((fs.dir ?? 1) === -1) return leftCrossings(fs, row, setting, cages, target);
   if ((fs.dir ?? 1) !== 1) throw new UnpricedPiece('line:follow', 'a left-running follow stage (safeWindow flies to the right)');
   const easy = setting === 'easy';
   const covers = fs.covers.filter((c) => !c.secret && !c.hanging).sort((p, q) => p.x - q.x) as Bush[];
@@ -732,18 +811,20 @@ export function cageChallenges(st: any, beats: readonly Beat[]): Array<Omit<Chal
 export function lineChallenges(fs: FollowStage, row: FollowRow, samples: Sample[], setting: Setting, cages: readonly number[], target: number): Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> {
   const out: Array<Omit<Challenge, 'overlap' | 'novelty' | 'points'>> = [];
   for (const c of lineCrossings(fs, row, setting, cages, target)) {
-    const zs = fs.zones.filter((q) => q.x0 < c.b && q.x1 > c.a);
+    const lo = Math.min(c.a, c.b), hi = Math.max(c.a, c.b);
+    const zs = fs.zones.filter((q) => q.x0 < hi && q.x1 > lo);
     const t = clockAtX(samples, c.a);
     const stakes = c.free ? 1 : STAKES.soft + c.fetch * STAKES.replayPerSec;
     const cost: Cost = c.free ? 'retry' : 'soft';
     const open = c.first ? Math.min(...zs.map((q) => q.calm[0])) + Math.min(...zs.map((q) => q.warn ?? WATCH.warn)) - c.cross : c.safe;
     const bits = c.first ? deadlineBits(open) : windowBits(c.cycle, c.safe);
-    const what = `${c.n} following over ${Math.round(c.b - c.a)} px ${c.A ? `from the reeds at ${Math.round(c.A.x)}` : 'from the stretch\'s start'}${c.herons > 1 ? `, ${c.herons} herons` : ''}`;
+    const what = `${c.n} following over ${Math.round(hi - lo)} px ${c.A ? `from the reeds at ${Math.round(c.A.x)}` : 'from the stretch\'s start'}${c.herons > 1 ? `, ${c.herons} herons` : ''}`;
     out.push({ t, x: c.a, kind: 'line', bits, cost, stakes, threat: true, span: [t, t + c.cross],
       note: `${what}: crossing ${c.cross.toFixed(2)}s, ${c.first ? `first calm leaves ${open.toFixed(2)}s` : `safe to leave ${c.safe.toFixed(1)}s of ${c.cycle.toFixed(1)}s`}${c.free ? ' (first look only warns)' : `; a spook: fetch ${c.fetch.toFixed(1)}s`}` });
     if (c.B && c.stop !== null) {
       const w = c.stop / PHYS.maxRun;
-      out.push({ t: clockAtX(samples, c.B.x), x: c.B.x, kind: 'line-stop', bits: deadlineBits(w), cost, stakes, threat: false,
+      const near = (fs.dir ?? 1) === -1 ? c.B.x + c.B.w : c.B.x; // (where his travel meets the clump)
+      out.push({ t: clockAtX(samples, near), x: near, kind: 'line-stop', bits: deadlineBits(w), cost, stakes, threat: false,
         note: `stop in the reeds at ${Math.round(c.B.x)} (${Math.round(c.B.w)} px) holding him + ${c.n}: ${c.stop} px, ${w.toFixed(2)}s at a run` });
     }
   }

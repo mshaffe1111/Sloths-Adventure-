@@ -330,7 +330,7 @@
    "bot": "tools/inspect/firsttimer.ts#LINE_SKILL",
    "channel": "tools/difficulty/score.ts#lineChallenges",
    "rows": [],
-   "note": "the little ones that follow him home (proto.follow, followPlay.ts): the heron reads only the line; priced crossing by crossing (lineCrossings: the leave by lineFaults' flown safeWindow, the stop in the reeds by lineInCover, a spook's fetch as stakes); METER-4"
+   "note": "the little ones that follow him home (proto.follow, followPlay.ts): the heron reads only the line; priced crossing by crossing (lineCrossings: the leave by lineFaults' flown safeWindow, the stop in the reeds by lineInCover, a spook's fetch as stakes); METER-4. Either way he runs (ENG-METER-L, R-165.578: 2-8's parade home runs left): a left-running follow stage is read in a mirror (mirrorFollow: the same ground, stops and fetches), its leave flown leftward (leaveWindow: safeWindow's flight with the game's FollowPlay at dir -1, since the herons' first look sweeps world +x whichever way he runs)"
   },
   "move:bounce": {
    "bot": "tools/inspect/firsttimer.ts#FirstTimerRun.bounceBack",
