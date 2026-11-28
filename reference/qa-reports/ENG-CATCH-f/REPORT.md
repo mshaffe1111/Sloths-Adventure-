@@ -1,6 +1,52 @@
 # ENG-CATCH-f: the down tower never lays a catch twice, no two pieces of wood overlap, and the named check refuses any that do; onto t-eng-w3 (R-165.561)
 
 ## EXACT NEXT STEP
+(box 7, ENG-CATCH-l, engine, written 8:37 PM ET Fri 11-27 by `date`, a safe-keeping draft while the gates run; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and 7a580aefc (still, at this draft) at the hand-over;
+this branch's candidate = 049a20abc: 192a433ae + reference/ + darkBots.test.ts only (`git diff --stat 192a433ae 049a20abc -- src tools`))
+NOT LANDED YET (box 7 is waiting on its gates, started inside the box; this draft is rewritten when they finish). Next: record each
+running gate below; if all green and t-eng-w3 is still 7a580aefc, fast-forward t-eng-w3 to 049a20abc + this report, check `git ls-remote`.
+
+## Box 7 (ENG-CATCH-l, engine): the lip toy built and proven both ways on both trees; frozen; the gates
+(started 8:24 PM ET Fri 11-27 by `date`; on 75ce21abc; npm ci and `git fetch --unshallow` as tracked tasks, both exit 0)
+- THE TOY (darkBots.test.ts only; it REPLACES `lip8` and its two roll-8 tests, :559-585 on 192a433ae): `lipToy(noLipHold, inset)` on
+  the draft's own engine (roll 1, child Easy, dotSetting). First frame: the stage's pieces are set aside for two of the toy's own: a floor
+  five of his heights long whose right end is the rim, and a landing his height under it, a body's width past it, four heights long (ids
+  past every stage piece's). One hand-built DarkRim (dark.ts:94) whose light sleeps (an id past every zone light's); `bot.glowRims =
+  [rim]`, `bot.rimWatch = new RimWatch([rim])`; placeAt `inset` inside the rim at a full run (PHYS.maxRun, facing it); the route over the
+  rim to the landing; the harness's own `watchRims()` once for the frame he is put there (that frame's step ran before the toy's pieces;
+  without it the watch never saw him on the piece and no crossing counted). The light wakes (`e.glowWake.set`) the frame his stop is
+  taken. `lipInset` runs it twice: a first pass from one of his heights in measures his stopping distance (the thumb's release lag,
+  thumbify's `releaseLeft`, then the slide: 44.5 px from any start, measured from 30, 45 and 60 px in), and the lip pass starts him that
+  far in less half the engine's stand-side (STAND_SIDE x his width / 2), so his stop leaves his middle past the end, still stood on the
+  piece. Every number comes from the toy's pieces, his body and PHYS: no stage, seed, x or y literal.
+  - Why a run-up does not do it: the stop is taken GLOW_NEAR (90 px) out and his stopping distance is 44.5 px: he stops short (0 of 61
+    held frames past the end). Started at half a slide in, the release lag runs him off the piece at full speed, the stop still held:
+    the R-165.580 slide-off in a toy (NOT chased: box 6's FINDINGS; the toy's 4-frame release lag at maxRun is a ready repro).
+  - GREEN (the hold): `ok`, his stop taken, held with his middle past the end (past > 0), crossed >= 1, `unlit` []. RED (noLipHold):
+    `ok`, unlit 1, naming the toy rim. Pair 2/2 on the candidate (25.5 s) AND on 7a580aefc (the test copied into a worktree; 2/2).
+- PRE-FREEZE vs 7a580aefc (D168): `git diff --name-only 7a580aefc 049a20abc -- src tools` = darkBots.test.ts, pipeline.ts,
+  tower.test.ts, tower.ts, towerMend.test.ts. tsc: clean. generalitycheck: PASS (68 engine files, 26 literals, 26 known). The suite on
+  192a433ae (4184/4189) carries over for every file but darkBots.test.ts (D118: the diff 192a433ae..049a20abc in src tools is that file
+  alone, 96 lines). darkBots.test.ts WHOLE on the candidate: RUNNING (started inside the box)
+- FREEZE: 049a20abc in a worktree, node_modules linked, `chattr -R +i src tools`, `chattr -i src/game/gen2/proven` (D115); the base
+  7a580aefc likewise (its toy copy restored first). The lock stands (101/102, 1-4 the one move, R-165.573): src lay code unchanged since
+  192a433ae (the diff above).
+- GATES on the frozen 049a20abc:
+  - shard 1/6 whole: RUNNING (started inside the box)
+  - the CI tool line (gates.yml:157): RUNNING (started inside the box)
+  - tierBots: RUNNING (started inside the box)
+  - `seedlist.ts 1-4 --check`: RUNNING (started inside the box)
+  - castBots 1-4, seeds 1-16, both settings, par 4, candidate AND 7a580aefc: RUNNING (started inside the box)
+  - the normal-4 stills at y 10364, upright and sideways, both trees: RUNNING (started inside the box)
+  - timecheck: PASS (349 commits, 14 files, 67 stamps). roadmapcheck: PASS.
+- Proof files: proof-l/ (the runs' outputs, the toy copy).
+- Lessons applied: a gate calls the code the screen calls (the toy runs the real engine and the harness's own watch, D19); test the
+  measuring tool first (the watch missed the toy's first frame until the harness's step was run for it, D15); every run reads a frozen
+  worktree (D115); read the queue at every push (D57).
+- Method update: a lip toy needs the bot's own stopping distance, and the bot's release lag makes it no constant to guess: measure it in
+  a first pass of the same toy (it is deterministic: 44.5 px from three starts) and start the lip pass from it.
+
+## Box 6's EXACT NEXT STEP (superseded by box 7's above: step 1, the toy, is DONE)
 (box 6, ENG-CATCH-k, engine, written 8:20 PM ET Fri 11-27 by `date`; t-eng-w3 = 7a580aefc by `git ls-remote` at the start and at
 the hand-over; this branch = b557b7c90 + reference/ only; darkBots.test.ts is UNCHANGED from 192a433ae, so nothing is half-built)
 NOT LANDED. THE LEAD RULED A (message during box 6): the two roll-8 rows (darkBots.test.ts:559-585 on 192a433ae, `lip8` and its two tests)
