@@ -1,7 +1,63 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
-## EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:42 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+## EXACT NEXT STEP (session 14, BUILD-29-n, hand-over 7:08 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
+BOX CLOCK (by `date`): start 6:46:33 PM ET; stops (each with its cause): 6:52:42-7:03:14 PM the lock's --check half run ALONE (10m32s against the base's 7m10s: nothing heavy beside it, by the brief), the roar script and this report written meanwhile; 7:03:52-7:05:58 the 2-stage lock across 74d88d236, alone; the suite started 7:06 and was RUNNING at the hand-over (finished and recorded after it, below); hand-over at the time above (inside the 28-minute box).
+WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed: the one gate run is NOT finished). The FROZEN head is **ae5d22ce6**
+(step 0 only, on top of box 13's 6ce989f8e); this hand-over commit adds only reference/ (report, stills-n tools and logs). Pushed to
+**t-build-29-m** (safe-keeping). The next box: `git fetch origin t-build-29-m && git checkout -B t-build-29 origin/t-build-29-m`; freeze
+ae5d22ce6 again (`git worktree add --detach <dir> ae5d22ce6`, node_modules link, `chattr -R +i src tools`, `chattr -i src/game/gen2/proven`)
+and run only what is LEFT below on it (every gate already recorded here was read on ae5d22ce6; src has not changed since).
+DONE:
+0. THE LEAD'S CORRECTION (ae5d22ce6): w2Arc29.ts:73 `TEACH_29 = ['drum', 'roar']` (lines-2-9.md:41-42, D50); box 13's storyTips entry
+   and its comment DELETED (w2Arc29.ts is now box 12's file plus the one word). Words unchanged (LINES_29.roar). No other file names
+   TEACH_29 or w29.roar (grep of src and tools).
+1. PRE-FREEZE on ae5d22ce6's tree: tsc CLEAN (5.4 s); generalitycheck PASS; **storyTipScan --check PASS "0 laid tip line(s) dropped on
+   Tips (Normal's default) over 17 listed stage(s), 158 laid line(s) read"**; **teachFirstScan 2-9: "0 miss(es) over 200 roll(s) of 1
+   listed stage(s)"** (stills-n/*-step0.txt); the WHOLE files (box 13's 14 + every importer of w2Arc29: bargeRow, riverLay, w2Stages +
+   teachFirstScan.test, tipwalk.test; 19 files): **tests 156, pass 156, fail 0**. `git ls-remote` at 6:51 PM: main 49fdc8cb6, t-build-29
+   f4e77273 (unmoved), t-eng-late 6ce4aa9b. FROZEN: /home/user/frozen-n at ae5d22ce6, immutable (lsattr shown).
+2. THE ONE GATE RUN, on ae5d22ce6 (each line its verdict and counts):
+   - **THE LOCK, the --check half, ALONE** (nothing else ran beside it but two git commands): `lockall.ts --layouts 16 --check
+     base.json` (main 49fdc8cb6's base, sha256 764b4dd982f2af88 verified), 6:52:42-7:03:14 PM ET (10m32s), exit 1 (no --intended
+     passed): **"lock: 98/102 stages unchanged"**. Moved: **2-9** (every part: the level); **2-5: proto.dress** (ENG-DECOR's, named);
+     **2-1 and 2-4: the whole lay**; "gen2 gained verdicts and drops (not hashed)" on 40 stages (verdict-only lines). NOTHING ELSE MOVED.
+     gates/lockcheck-ae5d22ce6.txt. VERDICT: PASS (every move is one the brief names).
+   - **2-1 / 2-4 ACROSS 74d88d236** (the one 1-stage lock, as BUILD-28-o did; 74d88d236 changes only seeds-2-1.ts, seeds-2-4.ts and
+     provenIndex.ts): recorded at 74d88d236 (detached tree), checked on ae5d22ce6: **"lock: 2/2 stages unchanged"**, exit 0, 7:03:52-
+     7:05:58 PM. So the head's 2-1 and 2-4 are exactly 74d88d236's lay. gates/lock-2-1-2-4-across-74d88d236.txt. VERDICT: PASS.
+   - **timecheck** `node tools/timecheck.mjs --repo . --range 49fdc8cb6..HEAD` on ae5d22ce6: **"183 commits, 8 files, 2052 lines they
+     wrote, 47 stamps: PASS"**. gates/timecheck-ae5d22ce6.txt.
+   - **THE SUITE in 6 shards** (deploy.yml:38's own `--test-shard=i/6`, the CLAUDE.md glob) on ae5d22ce6, three at a time: STARTED
+     7:06 PM, RUNNING at the hand-over: its totals are added by the next commit on this branch ("BUILD-29-n: the suite's 6 shard totals") once it ends; a box that does not find that commit runs the 6 shards first (LEFT b).
+LEFT (the next box, in order, on ae5d22ce6 frozen):
+a. ReadNotifications. `git ls-remote`: main 49fdc8cb6, t-build-29 f4e77273 (if either moved, stop and tell the lead). Re-freeze ae5d22ce6.
+b. If the suite's 6 shard totals are not in item 2 above, run them FIRST (`--test-shard=i/6`, the frozen tree). Then, each with its verdict
+   and counts line: the CI tool line (gates.yml:157, the whole list); seedlist --check for EVERY list (`registrycheck.ts --lists`, all
+   shards); tierBots (`npx tsx --test tools/inspect/tierBots.test.ts`); `registrycheck.ts --stage 2-9`; drawcheck; `castBots.ts --stage
+   2-9 --seeds 1-40` both settings; storyTipScan --check; `tipwalk.ts --layouts 4`; `teachFirstScan.ts --check --seeds 20`. (storyTipScan
+   and teachFirstScan 2-9 already PASS on this same src, item 1, but run on the main tree before the freeze: run them on the frozen tree.)
+   No list is rebuilt, so no pin grep is due. The lock half is DONE (above): do not re-run it.
+c. THE STILLS OF RECORD on ae5d22ce6 (vite on the frozen tree), upright AND sideways, Normal AND Easy, judged at 1x and 2x: the roar line
+   (stills-n/roar.mjs, below: a FRESH context for each shot); Easy's frog at the quay (dress list x 29464) and the frog upright both settings
+   (crop by eye); the journal page with fix (1)'s line (pokeyJournal.ts:69); guard / quay / pads on both settings (stand him with y =
+   top - height). Name any rough spot plainly (the frog's pale outline at 1x).
+d. LAND: `git push origin <head>:t-build-29` as a fast-forward of f4e77273 (no force); `git ls-remote` equal; message the lead the hash
+   and every counts line. The head that lands is this branch's head (src = ae5d22ce6's; later commits reference/ only).
+e. THE DEBRIEF (level.md): what 2-9 is; bot numbers both settings; the job's clock across boxes 12-14; Learned.
+THE ROAR STILL, HOW (read from the code, not tried yet on the page): engine.ts:3355-3368 says a stage tip only when (a) he is past h.x,
+(b) his FEET (y + height) are inside h.band, (c) he is not swimming, and (d) `tipHeard(stage, 'tip:<text>')` is false: a tip marked heard is
+NEVER said again on that device. Box 13's shoot.mjs set y = the platform's top and roar.mjs y = top - 2 (read in their code), so his
+feet stood a body BELOW the bank, outside the band: the likely cause (a reading of the code, NOT yet proven on the page; its scripts made
+a fresh context per shot, so tipHeard is not the cause there). stills-n/roar.mjs does it the engine's way: a fresh context per shot, every other tip
+marked said, Pokey stood with feet ON a bank top inside the band 60-380 px before the tip, then the page's own touch input holds right
+(`e.input.triggerTouchMove('right')`, TouchController.tsx's call) with the page's loop running. Run: vite on the FROZEN tree
+(`cd <frozen> && npx vite --port 5199`), then `PW=/opt/node-tools/node_modules/playwright/index.mjs node
+reference/qa-reports/BUILD-29/stills-n/roar.mjs 5199 <out> normal` (and easy). Judge each by eye at 1x and 2x.
+LEARNED (n): (1) a once-per-device tip can be tried ONCE per context: every still of a tip starts from a fresh context (tipHeard). (2) a
+placed Pokey stands with y = top - height: his feet, not his head, on the bank (h.band is judged on the feet).
+LESSONS APPLIED: :23 (ReadNotifications first and before the report: none queued); :27 (the kind read in lines-2-9.md:41-42, the importers grepped across src and tools); :31/:54 (every time pasted from `date`); :83 (no gate left running at the stop: the suite was waited for and recorded); D115 (every run on the frozen, immutable tree).
+## (superseded) EXACT NEXT STEP (session 13, BUILD-29-m, hand-over 6:42 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 6:21:42 PM ET; stops (each with its cause): 6:26 the roar line did not show on the real page from a teleport
 (Pokey placed at the tip's x, 20 s wait: the line never rose; the scan passes, the page still is NOT proven); 6:27-6:29 the frog found by
 eye on a full still after the probe's world-to-screen sum missed (the dress `b` is not screen y less camera y: crop by eye, not by sum);

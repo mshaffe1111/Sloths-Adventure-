@@ -1,7 +1,7 @@
 // BUILD-29-n: Dot's roar line ON THE REAL PAGE, raised the way the engine says a tip (engine.ts:3355-3368, tipwalk.ts's walk):
-// a FRESH context each time (tipHeard is per device: a line marked heard is never said again, which is why box 13's later tries showed
-// nothing), every other tip marked said (none queued ahead), Pokey stood ON the bank with his FEET inside the roar tip's own height band
-// (h.band; box 13 set y to the platform's top, so his feet sat a body below it), then the page's own touch input holds right
+// a FRESH context each time (tipHeard is per device: a line marked heard is never said again on it), every other tip marked said (none
+// queued ahead), Pokey stood ON the bank with his FEET inside the roar tip's own height band (h.band; box 13's scripts set y to the
+// platform's top, so his feet sat a body below it: the likely cause, read in the code, not yet proven), then the page's own touch input holds right
 // (e.input.triggerTouchMove, as TouchController.tsx does) and the page's own loop runs. Shot when the words are in the page.
 // node roar.mjs <port> <outdir> <normal|easy>
 import path from 'node:path'; import fs from 'node:fs';
