@@ -1,0 +1,15 @@
+castBots 2-9, seeds 1-40; the floor 120 s (STAGE-RULES.md:77)
+kid    normal PASS 22/40; under the floor 0; time median 214.1 s (min 196.9); hits 2 lives 11 (water 11, foe:turtle 2); cleared kick 279; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 41
+        fail 11: shrine rescued x1  (seeds 5,17,3,23,35,20,24,36,2,30,38)
+        fail 4: shrine rescued x2  (seeds 1,9,29,14)
+        fail 3: shrine rescued x3  (seeds 4,32,18)
+kid    easy   PASS 24/40; under the floor 0; time median 239.9 s (min 220); hits 4 lives 2 (foe:turtle 4, water 2); cleared kick 279; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 41
+        fail 11: shrine rescued x1  (seeds 1,17,31,35,39,12,20,32,36,10,22)
+        fail 5: shrine rescued x2  (seeds 5,21,25,8,34)
+adult  normal PASS 40/40; under the floor 0; time median 170.4 s (min 164.6); hits 0 lives 0 (none); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+adult  easy   PASS 40/40; under the floor 0; time median 182.9 s (min 176.3); hits 0 lives 0 (none); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  normal PASS 40/40; under the floor 0; time median 364.4 s (min 330.9); hits 2 lives 12 (water 12, other 1, foe:turtle 1); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+child  easy   PASS 40/40; under the floor 0; time median 297.1 s (min 259.7); hits 13 lives 19 (water 19, other 8, foe:turtle 5); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle normal PASS 40/40; under the floor 0; time median 202.3 s (min 189.3); hits 3 lives 5 (water 5, foe:turtle 1, other 2); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+middle easy   PASS 40/40; under the floor 0; time median 205.5 s (min 188); hits 5 lives 3 (other 4, water 3, foe:turtle 1); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40
+expert normal PASS 40/40; under the floor 0; time median 185.4 s (min 171.3); hits 2 lives 2 (foe:turtle 2, water 2); cleared kick 280; told of traps 0/40; first trap sprung 0/40; traps sprung 0/0; turned back 0; left 40

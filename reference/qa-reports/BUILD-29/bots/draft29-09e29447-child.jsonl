@@ -1,0 +1,9 @@
+{"bot":"child","setting":"normal","seed":1,"pass":true,"time":358.4,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":0,"hitBy":{},"stuck":[]}
+{"bot":"child","setting":"normal","seed":2,"pass":true,"time":370.8,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":2,"hitBy":{"foe:turtle":2},"stuck":[{"x":21244,"what":"nothing in the way the bot can see"}]}
+{"bot":"child","setting":"normal","seed":3,"pass":true,"time":376.6,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":0,"hitBy":{},"stuck":[]}
+{"bot":"child","setting":"normal","seed":4,"pass":true,"time":354.9,"end":"shrine","goal":{"got":7,"need":5},"lives":1,"hits":0,"hitBy":{"water":1},"stuck":[]}
+{"bot":"child","setting":"normal","seed":5,"pass":true,"time":384.4,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":0,"hitBy":{},"stuck":[]}
+{"bot":"child","setting":"normal","seed":6,"pass":true,"time":357.7,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":0,"hitBy":{},"stuck":[]}
+{"bot":"child","setting":"normal","seed":7,"pass":true,"time":361.8,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":0,"hitBy":{},"stuck":[]}
+{"bot":"child","setting":"normal","seed":8,"pass":true,"time":359.4,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":1,"hitBy":{"foe:turtle":1},"stuck":[]}
+{"bot":"child","setting":"normal","seed":9,"pass":true,"time":373,"end":"shrine","goal":{"got":7,"need":5},"lives":0,"hits":0,"hitBy":{},"stuck":[]}

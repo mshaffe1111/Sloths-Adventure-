@@ -1,0 +1,269 @@
+TAP version 13
+# Subtest: a deep river over a lower leg (normal): its flat fill ends at its strip's foot and the earth runs on to the ceiling; one with no leg under it is unchanged
+ok 1 - a deep river over a lower leg (normal): its flat fill ends at its strip's foot and the earth runs on to the ceiling; one with no leg under it is unchanged
+  ---
+  duration_ms: 4907.182072
+  type: 'test'
+  ...
+# Subtest: a deep river over a lower leg (easy): its flat fill ends at its strip's foot and the earth runs on to the ceiling; one with no leg under it is unchanged
+ok 2 - a deep river over a lower leg (easy): its flat fill ends at its strip's foot and the earth runs on to the ceiling; one with no leg under it is unchanged
+  ---
+  duration_ms: 934.39149
+  type: 'test'
+  ...
+# Subtest: vGradient: one gradient per (ends, stops) and context, not one a frame
+ok 3 - vGradient: one gradient per (ends, stops) and context, not one a frame
+  ---
+  duration_ms: 18.146409
+  type: 'test'
+  ...
+# Subtest: cropToBox: a picture wholly inside is drawn whole; one across the box keeps exactly the part inside, at the same scale
+ok 4 - cropToBox: a picture wholly inside is drawn whole; one across the box keeps exactly the part inside, at the same scale
+  ---
+  duration_ms: 0.286303
+  type: 'test'
+  ...
+# Subtest: polygonInBox: one clip to the cut outline is the box and the outline in turn (a river under two painted banks, and a concave one)
+ok 5 - polygonInBox: one clip to the cut outline is the box and the outline in turn (a river under two painted banks, and a concave one)
+  ---
+  duration_ms: 197.758398
+  type: 'test'
+  ...
+# Subtest: aboveLinesPath: the outline clipAboveLines clips to, point for point
+ok 6 - aboveLinesPath: the outline clipAboveLines clips to, point for point
+  ---
+  duration_ms: 1.115618
+  type: 'test'
+  ...
+# Subtest: 2-3's lines are the story keeper's, word for word (reference/story/lines-2-3.md, KEEPER-23-29 t-keeper-23-29@e5f754d8), and the stage says them
+ok 7 - 2-3's lines are the story keeper's, word for word (reference/story/lines-2-3.md, KEEPER-23-29 t-keeper-23-29@e5f754d8), and the stage says them
+  ---
+  duration_ms: 429.856999
+  type: 'test'
+  ...
+# Subtest: the row: 2-3 rolls from its own kit (World 2 with 2-3 rows), CLEAN on both settings, the arc beat for beat, only its own bricks
+ok 8 - the row: 2-3 rolls from its own kit (World 2 with 2-3 rows), CLEAN on both settings, the arc beat for beat, only its own bricks
+  ---
+  duration_ms: 471.415595
+  type: 'test'
+  ...
+# Subtest: five little ones in reed cages (a duckling, an otter pup, a capybara pup, an otter up the post, a capybara), every one laid where the design puts it, none past the exit, no animal anywhere
+ok 9 - five little ones in reed cages (a duckling, an otter pup, a capybara pup, an otter up the post, a capybara), every one laid where the design puts it, none past the exit, no animal anywhere
+  ---
+  duration_ms: 0.758183
+  type: 'test'
+  ...
+# Subtest: Dot teaches before the thing: `follow` 800+ px before the first cage, `heron` and `look` 800+ px before the first reeds' near edge
+ok 10 - Dot teaches before the thing: `follow` 800+ px before the first cage, `heron` and `look` 800+ px before the first reeds' near edge
+  ---
+  duration_ms: 0.217078
+  type: 'test'
+  ...
+# Subtest: the line on the stage as played: lineFaults clean on both settings (reeds wide enough, open mud and pond short enough, two herons leave a window); Easy one heron, its reeds 340
+ok 11 - the line on the stage as played: lineFaults clean on both settings (reeds wide enough, open mud and pond short enough, two herons leave a window); Easy one heron, its reeds 340
+  ---
+  duration_ms: 5009.261289
+  type: 'test'
+  ...
+# Subtest: the mooring post is World 2's new painting (w2-new\#mooring-post, the lead's ruling 8:05 PM ET 11-20): the sheet preloads on 2-3, the post stands on the rope's bank as its climb's look (no kapok trunk), both settings
+ok 12 - the mooring post is World 2's new painting (w2-new\#mooring-post, the lead's ruling 8:05 PM ET 11-20): the sheet preloads on 2-3, the post stands on the rope's bank as its climb's look (no kapok trunk), both settings
+  ---
+  duration_ms: 1.822358
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 13 - the out-and-back toy (normal): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+  ---
+  duration_ms: 4337.648828
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+ok 14 - the out-and-back toy (easy): the race leg under the out leg and its rivers show, the out leg's earth ends above them as a ceiling, not a straight cut
+  ---
+  duration_ms: 1471.439315
+  type: 'test'
+  ...
+# Subtest: a stage whose lay stacks no leg has no stacked zone, so its ground draws exactly as before (the ruling (b): 1-4 and 7-4 untouched)
+ok 15 - a stage whose lay stacks no leg has no stacked zone, so its ground draws exactly as before (the ruling (b): 1-4 and 7-4 untouched)
+  ---
+  duration_ms: 0.680379
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+ok 16 - the out-and-back toy (normal): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+  ---
+  duration_ms: 4121.182617
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+ok 17 - the out-and-back toy (easy): the out leg's rivers end at the ceiling, not in a column over the race leg (the engine's own river painter)
+  ---
+  duration_ms: 359.038713
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+ok 18 - the out-and-back toy: the painted underside hangs its roots below the ceiling line (banks and pools), over their own spans only
+  ---
+  duration_ms: 408.706458
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 19 - the out-and-back toy (normal, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 557.059086
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 20 - the out-and-back toy (normal, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 457.297508
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 21 - the out-and-back toy (normal, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 294.345092
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 22 - the out-and-back toy (easy, seed 1): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 293.112938
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 23 - the out-and-back toy (easy, seed 2): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 293.199378
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+ok 24 - the out-and-back toy (easy, seed 3): no other leg's paint stands in his air anywhere over the race leg's band, ends and the descent's floor included
+  ---
+  duration_ms: 191.182967
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal): a wall standing on the race leg's band is drawn whole, as with no ceiling
+ok 25 - the out-and-back toy (normal): a wall standing on the race leg's band is drawn whole, as with no ceiling
+  ---
+  duration_ms: 595.807535
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy): a wall standing on the race leg's band is drawn whole, as with no ceiling
+ok 26 - the out-and-back toy (easy): a wall standing on the race leg's band is drawn whole, as with no ceiling
+  ---
+  duration_ms: 517.403695
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (normal): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+ok 27 - the out-and-back toy (normal): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+  ---
+  duration_ms: 263.307478
+  type: 'test'
+  ...
+# Subtest: the out-and-back toy (easy): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+ok 28 - the out-and-back toy (easy): a wall beside a lower floor runs its soil down to the view's foot, no seam at the floor's end
+  ---
+  duration_ms: 471.136489
+  type: 'test'
+  ...
+# Subtest: a big pad is about two Pokeys wide and clearly bigger than a small one; the crown lily stays giant
+ok 29 - a big pad is about two Pokeys wide and clearly bigger than a small one; the crown lily stays giant
+  ---
+  duration_ms: 9.154414
+  type: 'test'
+  ...
+# Subtest: every pond piece he stands on is drawn with its painted top exactly on its floor (art = floor), mirrored or not
+ok 30 - every pond piece he stands on is drawn with its painted top exactly on its floor (art = floor), mirrored or not
+  ---
+  duration_ms: 0.694115
+  type: 'test'
+  ...
+# Subtest: his feet stand inside the painted pad, never on its far rim or in the water: the floor line sits 30-55% down the painting
+ok 31 - his feet stand inside the painted pad, never on its far rim or in the water: the floor line sits 30-55% down the painting
+  ---
+  duration_ms: 0.240228
+  type: 'test'
+  ...
+# Subtest: 2b: a safe river log's waterline crosses its painted bark at least 60% of the way down (long and short logs)
+ok 32 - 2b: a safe river log's waterline crosses its painted bark at least 60% of the way down (long and short logs)
+  ---
+  duration_ms: 0.846053
+  type: 'test'
+  ...
+# Subtest: 2c: the river under a painted bank stops at the bank's own painted face, both ends; a side with no bank runs straight down
+ok 33 - 2c: the river under a painted bank stops at the bank's own painted face, both ends; a side with no bank runs straight down
+  ---
+  duration_ms: 2.434412
+  type: 'test'
+  ...
+# Subtest: layRiver carries a raft row's look onto every carrier; a log row's carriers are exactly as before
+ok 34 - layRiver carries a raft row's look onto every carrier; a log row's carriers are exactly as before
+  ---
+  duration_ms: 1.681474
+  type: 'test'
+  ...
+# Subtest: the judge reads a raft row as the log row it is (riverFaults, lianaDrops: the same numbers)
+ok 35 - the judge reads a raft row as the log row it is (riverFaults, lianaDrops: the same numbers)
+  ---
+  duration_ms: 43.43889
+  type: 'test'
+  ...
+# Subtest: drawn on World 2's painted water: a raft is the painted raft (puzzle-kit\#raft), its deck the carrier's top; a log is still the painted log
+ok 36 - drawn on World 2's painted water: a raft is the painted raft (puzzle-kit\#raft), its deck the carrier's top; a log is still the painted log
+  ---
+  duration_ms: 102.632685
+  type: 'test'
+  ...
+# Subtest: drawn where no painted sheet draws: a raft is the raft painter, never a barge or a pad; logs keep their river looks; a moving raft keeps its family
+ok 37 - drawn where no painted sheet draws: a raft is the raft painter, never a barge or a pad; logs keep their river looks; a moving raft keeps its family
+  ---
+  duration_ms: 1.613992
+  type: 'test'
+  ...
+# Subtest: loaded before play: a kit that places a raft row asks for the kit's sheet; the log toy does not; 2-4 (listed) does, and only it
+ok 38 - loaded before play: a kit that places a raft row asks for the kit's sheet; the log toy does not; 2-4 (listed) does, and only it
+  ---
+  duration_ms: 20.610265
+  type: 'test'
+  ...
+# Subtest: laid by gen2 on a rolled row (rule 23): the drop toy over the raft row builds clean on both settings, every carrier a raft
+ok 39 - laid by gen2 on a rolled row (rule 23): the drop toy over the raft row builds clean on both settings, every carrier a raft
+  ---
+  duration_ms: 1516.1261
+  type: 'test'
+  ...
+# Subtest: a stage with a river loads the safe river strip with the river sheet, before play
+ok 40 - a stage with a river loads the safe river strip with the river sheet, before play
+  ---
+  duration_ms: 1.127087
+  type: 'test'
+  ...
+# Subtest: 2-4 and 2-1 (rivers, safe on Easy and at the teach) ask for w2-props, so for the strip
+ok 41 - 2-4 and 2-1 (rivers, safe on Easy and at the teach) ask for w2-props, so for the strip
+  ---
+  duration_ms: 3.687355
+  type: 'test'
+  ...
+# Subtest: the barge: the draw path stands him on the inventory's footing, on the packed frame
+ok 42 - the barge: the draw path stands him on the inventory's footing, on the packed frame
+  ---
+  duration_ms: 1.587843
+  type: 'test'
+  ...
+# Subtest: the barge: a 386 px log draws it 507 px whole, the deck its top, the stern and prow past its ends
+ok 43 - the barge: a 386 px log draws it 507 px whole, the deck its top, the stern and prow past its ends
+  ---
+  duration_ms: 0.275612
+  type: 'test'
+  ...
+1..43
+# tests 43
+# suites 0
+# pass 43
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23430.086048
+exit 0

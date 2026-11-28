@@ -1,0 +1,3 @@
+generality check: 71 engine files (234 exempt under the engine folders), 26 literals, 26 known
+PASS
+generality exit 0

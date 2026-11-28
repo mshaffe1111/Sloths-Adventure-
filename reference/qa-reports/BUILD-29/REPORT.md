@@ -1,6 +1,54 @@
 # BUILD-29 REPORT: 2-9 "The River King's Court" (the World 2 finale; R-165.449), release 6
 Branch t-build-29, cut from origin/t-eng-29 = 098047713 (the lead's named base). Session 1 started 5:45 PM ET Thu 11/26 (by `date`).
 
+## EXACT NEXT STEP (session 17, BUILD-29-q, DRAFT: stamped at the hand-over; branch t-build-29-q, NOT on t-build-29)
+BOX CLOCK (by `date`): start 9:05:46 PM ET; no stops (npm ci and the unshallow tracked in the background).
+WHERE IT IS: origin/t-build-29 is STILL f4e77273 (not landed). The src head is now **496271e74** (on box 16's 09e29447: the dais
+rim, step 2 below). Box 16's counts (t-build-29-m 6a28dda8b, reference/ only) merged by hash: 267c392ab. PRE-FREEZE (D168, the step-2 files vs 49fdc8cb6:
+   riverArt.ts + w2Arc29.test.ts; box 16's run covers the other 91): tsc CLEAN; generalitycheck PASS (26 literals, 26 known);
+   w2Arc29.test whole file 13/13; every test importing riverArt.ts directly (9 more files, stills-q/prefreeze-tests.txt) 43/43, 0 fail.
+STEP 1, THE BOTS x40, FIRST (frozen worktree /home/user/wt-bots of **09e29447**, alone, `npx tsx tools/inspect/castBots.ts --stage
+2-9 --seeds 1-40 --setting both --par 4 --rows`; bots/castbots-09e29447.jsonl, **360 rows**; summary bots/castbots-09e29447-summary.txt):
+  | bot | Normal pass / min s / median | Easy pass / min s / median | the record 9731ac221 (N / E) |
+  |---|---|---|---|
+  | expert | 40/40, 171.3, 185.4 | (no Easy profile) | 40/40 177.5 195.6 |
+  | middle | 40/40, 189.3, 202.3 | 40/40, 188.0, 205.5 | 40/40 200.3 214.1 / 40/40 197.0 211.2 |
+  | adult | 40/40, 164.6, 170.4 | 40/40, 176.3, 182.9 | 40/40 174.1 182.0 / 40/40 180.9 189.5 |
+  | child | 40/40, 330.9, 364.4 | 40/40, 259.7, 297.1 | 40/40 351.8 371.0 / 40/40 267.0 291.5 |
+  | kid | **22/40**, 196.9, 214.1 (18 fails: all "shrine, rescued" x1-3) | **24/40**, 220, 239.9 (16: rescued x1-2) | 0/40 (38 stranded) / 8/40 |
+  NO BOT FELL BELOW THE RECORD (so no stop message was owed). The 2-minute floor: every run of every tier over 120 s (fastest 164.6 s,
+  the adult on Normal). Kid misses: every one is a rescue at a snapper ('a turtle near' in `stuck`), 0 stranded, 0 game overs.
+  RULE 28, EVERY ROW MOVED (times 5-15 s faster on every tier; the kid 0 -> 22 and 8 -> 24), TRACED:
+  (1) NOT THE HARNESS: the record used tools/inspect/draft29.ts (the draft under fixture id 2-91); today's castBots runs the listed
+      '2-9'. draft29.ts re-run on TODAY's tree (09e29447, 67 rows before I stopped it for the box: bots/draft29-09e29447-*.jsonl)
+      moves the same way: adult N seeds 1-12 164.6-176.1 s with 0 turtle hits (record 176-191 s, turtle hits on 9 of 12); kid N
+      seeds 1-10: 6/10 pass at the shrine, 0 turtle hits (record: 10/10 STRANDED, 25-35 turtle hits each).
+  (2) NOT THE COURT, NOT THE DECOR CLEARING: a bisect on draft29.ts, kid Normal seeds 1-2 (bots/bisect-kid-*.jsonl):
+      c15d5015c (before t-eng-29's merge) and 12321f6aa (ENG-CAM29 + ENG-DECOR merged): IDENTICAL to each other and to the record
+      class (stranded, 444.6 / 449.1 s, 25 / 26 turtle hits); **4b605cdf4 (BUILD-29-l step 2b: main 49fdc8cb6 merged, release 5's "bot
+      fix")**: seed 1 PASS 214.5 s, seed 2 shrine 248.5 s, 0 turtle hits. THE MOVE IS MAIN'S BOT FIX, inherited by the merge.
+      The record table (9731ac221) predates that merge: it is STALE as a baseline; this table (09e29447) is the new record.
+  NAMED, NOT TRACED (time): which line of main's bot fix (git log 4b605cdf4^1..4b605cdf4^2) changes the snapper hits; the court
+  and decor commits after 4b605cdf4 were not bisected one by one (the bisect proves the step change is at the merge; the later rows
+  agree with draft29 on today's tree within a few seconds, not a class change).
+STEP 2, THE DAIS RIM (RENDER ONLY: src/game/riverArt.ts retintedPiece now calls retintBand; no stage, layout, collision or bot input
+  reads it, so the bot table stands; `git diff 09e29447 496271e74 --stat`: riverArt.ts + w2Arc29.test.ts + the still):
+  CAUSE, measured on w2-props.webp#dais: the band rule (mean over 185, colourless) leaves the ANTI-ALIASED rim where the pale band met
+  the pads' dark outline: colourless pixels of mean 110-185 (e.g. 192,188,173 under the left pad, row 220). FIX: retintBand re-tints the
+  band, then 2 passes over shadowEdge (a colourless pixel of mean 110-185 that TOUCHES a re-tinted one, 8 ways). Painted grey that
+  touches no re-tinted pixel is kept (the test's plant). Changed: dais 271 rim pixels (band 7650), throne 120 (band 2446). Still one
+  load-time pass per piece, one drawImage per draw as before.
+  2x CROP before/after: stills-q/q-dais-rim-2x-before-after.jpg (top: dais left pad, the light rim along its lower edge gone; bottom:
+  the throne's foot). Looked at by me at 2x: the rim is gone on the pads. ROUGH, NAMED: a few pale flecks at the stool's right foot
+  and around the throne's reeds stay; they are ABOVE the band (keying fringe of the cut, not the shadow): not this fix's scope.
+  TEST: w2Arc29.test "the dais band's anti-aliased rim is re-tinted with it" (6 pixels changed of a planted strip; plants: the
+  measured rim pixel is a rim; the band rule alone misses it; a rim with no band beside it is kept).
+STEP 3, THE REDS (each file run ALONE; stills-q/support-alone-*.txt, alone-*-*.txt):
+  - src/game/mixer/support.test.ts:41: **RED on main 49fdc8cb6** ('no seated island-earth stone in gen2 1-1 seeds 1-24', 1 of 2)
+    and RED on f4e77273 (same). INHERITED: R-165.576's family. CI: NO workflow runs src/game/mixer/ (deploy.yml:38's globs are
+    src/audio, src/game/*.test.ts, components, gen2, gen2/worlds, art; gates.yml:157's tool line names no mixer/ or validate/ file).
+  - (stumps.test.ts:40, validate.test.ts x5, riverRide.test.ts:278 on main and f4e77273: see STEP 3b below.)
+
 ## EXACT NEXT STEP (session 16, BUILD-29-p, hand-over 8:41 PM ET Fri 11/27 by `date`; head = this commit, on branch t-build-29-m, NOT on t-build-29)
 BOX CLOCK (by `date`): start 8:13:27 PM ET; no stops (npm ci tracked in the background, 1 min; vite tracked; the importer run started
 8:27:02 PM inside the box and is finished and recorded past the line, the lead's standing rule); hand-over at the time above.

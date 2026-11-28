@@ -1,0 +1,10 @@
+src/game/deepRiverLid.test.ts
+src/game/drawThrift.test.ts
+src/game/gen2/worlds/w2Arc23.test.ts
+src/game/gen2/worlds/w2Arc29.test.ts
+src/game/groundStack.test.ts
+src/game/padArt.test.ts
+src/game/riverLook.test.ts
+src/game/riverRaft.test.ts
+src/game/safeRiverPreload.test.ts
+src/game/w2NextArt.test.ts
